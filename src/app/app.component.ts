@@ -1,12 +1,24 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { LibE2eCypressForDummysService } from '../../projects/lib-e2e-cypress-for-dummys/src/public-api';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'e2e-cypress-for-dummys';
+   private commands: string[] = [];
+
+  constructor(private service: LibE2eCypressForDummysService) {
+    this.service.getCommands$().subscribe(list => this.commands = list);
+  }
+
+  public clear() {
+    this.service.clearCommands();
+  }
+
+  public getCommands() {
+    return console.log(this.commands);
+  }
 }
