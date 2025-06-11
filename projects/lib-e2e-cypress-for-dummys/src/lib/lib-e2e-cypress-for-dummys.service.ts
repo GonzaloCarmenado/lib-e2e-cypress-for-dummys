@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 export class LibE2eCypressForDummysService {
   private commandList$ = new BehaviorSubject<string[]>([]);
   private inputDebounceTimers = new Map<HTMLElement, any>();
+  private interceptors$ = new BehaviorSubject<string[]>([]);
 
   constructor(@Inject(DOCUMENT) private document: Document) {
     this.listenToClicks();
@@ -84,10 +85,44 @@ export class LibE2eCypressForDummysService {
     });
   }
 
-  private addCommand(cmd: string): void {
+  public addCommand(cmd: string): void {
     const current = this.commandList$.getValue();
     this.commandList$.next([...current, cmd]);
   }
+
+
+  //#region Interceptores
+
+  public registerInterceptor(method: string, url: string, alias: string): void {
+    const current = this.interceptors$.getValue();
+
+    const command = `cy.intercept('${method}', '${this.urlToWildcard(url)}', (req) => {
+  if (req.url.includes('${this.extractFilter(url)}')) {
+    req.alias = '${alias}';
+  }
+});`;
+
+    if (!current.includes(command)) {
+      this.interceptors$.next([...current, command]);
+    }
+  }
+
+  getInterceptors$() {
+    return this.interceptors$.asObservable();
+  }
+
+  private urlToWildcard(url: string): string {
+    // Convierte a algo tipo '**/api/v1/RequestJob/**'
+    const u = new URL(url, 'http://localhost');
+    return `**${u.pathname}/**`;
+  }
+
+  private extractFilter(url: string): string {
+    const u = new URL(url, 'http://localhost');
+    return u.search || '';
+  }
+  //#endregion Interceptores
+
 
   getCommands$() {
     return this.commandList$.asObservable();
