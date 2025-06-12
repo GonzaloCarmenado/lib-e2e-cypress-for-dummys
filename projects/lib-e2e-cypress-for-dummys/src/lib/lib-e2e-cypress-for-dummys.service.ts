@@ -9,6 +9,7 @@ export class LibE2eCypressForDummysService {
   private commandList$ = new BehaviorSubject<string[]>([]);
   private inputDebounceTimers = new Map<HTMLElement, any>();
   private interceptors$ = new BehaviorSubject<string[]>([]);
+  private isRecording$ = new BehaviorSubject<boolean>(false);
 
   constructor(@Inject(DOCUMENT) private document: Document) {
     this.listenToClicks();
@@ -17,6 +18,8 @@ export class LibE2eCypressForDummysService {
 
   private listenToClicks(): void {
     this.document.addEventListener('click', (event: MouseEvent) => {
+      if (!this.isRecording$.getValue()) return;
+
       const target = event.target as HTMLElement;
       if (!target) return;
 
@@ -40,16 +43,26 @@ export class LibE2eCypressForDummysService {
     });
   }
 
-
   private listenToInput(): void {
     this.document.addEventListener('input', (event: Event) => {
+      if (!this.isRecording$.getValue()) return;
       const target = event.target as HTMLInputElement | HTMLTextAreaElement;
       if (!target) return;
 
-      const inputTypes = ['text', 'password', 'email', 'search', 'tel', 'url', 'number', 'textarea'];
+      const inputTypes = [
+        'text',
+        'password',
+        'email',
+        'search',
+        'tel',
+        'url',
+        'number',
+        'textarea',
+      ];
       const isTextInput =
         target.tagName.toLowerCase() === 'textarea' ||
-        (target.tagName.toLowerCase() === 'input' && inputTypes.includes(target.type));
+        (target.tagName.toLowerCase() === 'input' &&
+          inputTypes.includes(target.type));
 
       if (!isTextInput) return;
 
@@ -62,26 +75,29 @@ export class LibE2eCypressForDummysService {
       }
 
       // Ponemos un debounce de 500ms (ajustable)
-      this.inputDebounceTimers.set(target, setTimeout(() => {
-        const dataCy = clickable.getAttribute('data-cy');
-        const id = clickable.id;
-        const value = target.value.replace(/'/g, "\\'");
+      this.inputDebounceTimers.set(
+        target,
+        setTimeout(() => {
+          const dataCy = clickable.getAttribute('data-cy');
+          const id = clickable.id;
+          const value = target.value.replace(/'/g, "\\'");
 
-        let cyCommand = '';
+          let cyCommand = '';
 
-        if (dataCy) {
-          cyCommand = `cy.get('[data-cy="${dataCy}"]').clear().type('${value}')`;
-        } else if (id) {
-          cyCommand = `cy.get('#${id}').clear().type('${value}')`;
-        } else {
-          cyCommand = '// No se pudo generar un selector confiable para type';
-        }
+          if (dataCy) {
+            cyCommand = `cy.get('[data-cy="${dataCy}"]').clear().type('${value}')`;
+          } else if (id) {
+            cyCommand = `cy.get('#${id}').clear().type('${value}')`;
+          } else {
+            cyCommand = '// No se pudo generar un selector confiable para type';
+          }
 
-        this.addCommand(cyCommand);
+          this.addCommand(cyCommand);
 
-        // Limpiamos el timer almacenado
-        this.inputDebounceTimers.delete(target);
-      }, 1000));
+          // Limpiamos el timer almacenado
+          this.inputDebounceTimers.delete(target);
+        }, 1000)
+      );
     });
   }
 
@@ -90,13 +106,14 @@ export class LibE2eCypressForDummysService {
     this.commandList$.next([...current, cmd]);
   }
 
-
   //#region Interceptores
 
   public registerInterceptor(method: string, url: string, alias: string): void {
     const current = this.interceptors$.getValue();
 
-    const command = `cy.intercept('${method}', '${this.urlToWildcard(url)}', (req) => {
+    const command = `cy.intercept('${method}', '${this.urlToWildcard(
+      url
+    )}', (req) => {
   if (req.url.includes('${this.extractFilter(url)}')) {
     req.alias = '${alias}';
   }
@@ -107,7 +124,7 @@ export class LibE2eCypressForDummysService {
     }
   }
 
-  getInterceptors$() {
+  public getInterceptors$() {
     return this.interceptors$.asObservable();
   }
 
@@ -123,16 +140,49 @@ export class LibE2eCypressForDummysService {
   }
   //#endregion Interceptores
 
-
-  getCommands$() {
+  public getCommands$() {
     return this.commandList$.asObservable();
   }
 
-  getCommandsSnapshot(): string[] {
+  public getCommandsSnapshot(): string[] {
     return this.commandList$.getValue();
   }
 
-  clearCommands(): void {
+  public clearCommands(): void {
     this.commandList$.next([]);
   }
+
+  //#region Métodos publicos de comunicación con componente
+  public startRecording(): void {
+    this.clearCommands();
+    this.isRecording$.next(true);
+  }
+
+  public stopRecording(): void {
+    this.isRecording$.next(false);
+    console.log(
+      'Comandos Cypress generados:\n',
+      this.getCommandsSnapshot().join('\n')
+    );
+    const interceptors = this.interceptors$.getValue();
+    console.log(
+      '\n📡 Interceptores Cypress generados:\n',
+      interceptors.join('\n')
+    );
+  }
+
+  public toggleRecording(): void {
+    const isRecording = this.isRecording$.getValue();
+    if (isRecording) {
+      this.stopRecording();
+    } else {
+      this.startRecording();
+    }
+  }
+
+  public isRecordingObservable() {
+    return this.isRecording$.asObservable();
+  }
+
+  //#endregion Métodos publicos de comunicación con componente
 }

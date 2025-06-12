@@ -6,33 +6,15 @@ import {
 } from '@gonzalocarmenado/common-connector-clients';
 import { environment } from './environments/environment';
 import { StandarResponse } from '@gonzalocarmenado/general-http-core-hub';
+import { LibE2eRecorderComponent } from '../../projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.component';
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [LibE2eRecorderComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  private commands: string[] = [];
-  private interceptors: string[] = [];
-
-  constructor(private service: LibE2eCypressForDummysService,
-    private readonly clientService: CommonConnectorClientsService
-  ) {
-    this.service.getCommands$().subscribe(list => this.commands = list);
-    this.service.getInterceptors$().subscribe(list => this.interceptors = list);
-  }
-
-  public clear() {
-    this.service.clearCommands();
-  }
-
-  public getCommands() {
-    console.log(this.commands);
-    console.log(this.interceptors);
-  }
-
-
+  constructor(private readonly clientService: CommonConnectorClientsService) {}
 
   public getClientList(): Promise<ClientModel[]> {
     return new Promise((resolve, reject) => {
