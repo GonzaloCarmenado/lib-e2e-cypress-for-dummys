@@ -14,32 +14,32 @@ export class LibE2eCypressForDummysService {
   constructor(@Inject(DOCUMENT) private document: Document) {
     this.listenToClicks();
     this.listenToInput();
+    this.listenToSelect();
   }
 
+  //#region Listener para los diferentes eventos del DOM
   private listenToClicks(): void {
-    this.document.addEventListener('click', (event: MouseEvent) => {
-      if (!this.isRecording$.getValue()) return;
-
+    this.document.addEventListener('click', (event: Event) => {
       const target = event.target as HTMLElement;
-      if (!target) return;
+      if (!target || this.isInteractiveElement(target)) return;
 
-      const clickable = target.closest<HTMLElement>('[data-cy], [id]');
-      if (clickable) {
-        const dataCy = clickable.getAttribute('data-cy');
-        const id = clickable.id;
+      const container = target.closest<HTMLElement>('[data-cy], [id]');
+      if (!container) return;
 
-        let cyCommand = '';
+      const dataCy = container.getAttribute('data-cy');
+      const id = container.id;
 
-        if (dataCy) {
-          cyCommand = `cy.get('[data-cy="${dataCy}"]').click()`;
-        } else if (id) {
-          cyCommand = `cy.get('#${id}').click()`;
-        } else {
-          cyCommand = '// No se pudo generar un selector confiable para click';
-        }
+      let cyCommand = '';
 
-        this.addCommand(cyCommand);
+      if (dataCy) {
+        cyCommand = `cy.get('[data-cy="${dataCy}"]').click()`;
+      } else if (id) {
+        cyCommand = `cy.get('#${id}').click()`;
+      } else {
+        cyCommand = '// No se pudo generar un selector confiable para click';
       }
+
+      this.addCommand(cyCommand);
     });
   }
 
@@ -101,6 +101,47 @@ export class LibE2eCypressForDummysService {
     });
   }
 
+  private listenToSelect(): void {
+    this.document.addEventListener('change', (event: Event) => {
+      const target = event.target as HTMLSelectElement;
+      if (!target || target.tagName.toLowerCase() !== 'select') return;
+
+      const container = target.closest<HTMLElement>('[data-cy], [id]');
+      if (!container) return;
+
+      const dataCy = container.getAttribute('data-cy');
+      const id = container.id;
+      const selectedValue = target.value.replace(/'/g, "\\'");
+
+      let cyCommand = '';
+
+      if (dataCy) {
+        cyCommand = `cy.get('[data-cy="${dataCy}"]').select('${selectedValue}')`;
+      } else if (id) {
+        cyCommand = `cy.get('#${id}').select('${selectedValue}')`;
+      } else {
+        cyCommand = '// No se pudo generar un selector confiable para select';
+      }
+
+      this.addCommand(cyCommand);
+    });
+  }
+
+  private isInteractiveElement(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) return false;
+
+    const tag = target.tagName.toLowerCase();
+
+    // Estos tipos los maneja otro listener
+    return (
+      tag === 'select' ||
+      tag === 'option' ||
+      tag === 'input' ||
+      tag === 'textarea'
+    );
+  }
+
+  //#endregion Listener para los diferentes eventos del DOM
   public addCommand(cmd: string): void {
     const current = this.commandList$.getValue();
     this.commandList$.next([...current, cmd]);
@@ -154,8 +195,14 @@ export class LibE2eCypressForDummysService {
 
   //#region Métodos publicos de comunicación con componente
   public startRecording(): void {
-    this.clearCommands();
     this.isRecording$.next(true);
+
+    const pathname = window.location.pathname;
+    const viewportWidth = 1900;
+    const viewportHeight = 1200;
+
+    this.addCommand(`cy.viewport(${viewportWidth}, ${viewportHeight})`);
+    this.addCommand(`cy.visit('${pathname}')`);
   }
 
   public stopRecording(): void {
