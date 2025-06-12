@@ -1,63 +1,130 @@
-# LibE2eCypressForDummys
+# 🚀 lib-e2e-cypress-for-dummys
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
+**lib-e2e-cypress-for-dummys** es una librería Angular que te permite grabar de forma automática los comandos Cypress necesarios para testear tu aplicación mientras navegas y usas la interfaz.  
+Ideal para desarrolladores que quieren acelerar la creación de tests E2E sin tener que escribirlos manualmente.  
+🎬 ¡Graba, copia y pega tus tests en segundos!
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🧐 ¿Qué hace?
 
-```bash
-ng generate component component-name
-```
+- 🎥 Graba interacciones de usuario (clicks, inputs, selects) y las convierte en comandos Cypress (`cy.get(...).click()`, `cy.get(...).type()`, etc.).
+- 🌐 Genera automáticamente comandos para interceptar peticiones HTTP y esperarlas con Cypress (`cy.intercept`, `cy.wait`).
+- 🟢 Permite iniciar y parar la grabación desde un botón flotante en la interfaz.
+- 📋 Exporta los comandos generados para que los pegues directamente en tus tests Cypress.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## ⚡ Instalación
 
-## Building
-
-To build the library, run:
-
-```bash
-ng build lib-e2e-cypress-for-dummys
-```
-
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
-
-### Publishing the Library
-
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/lib-e2e-cypress-for-dummys
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+1. Instala la librería en tu proyecto Angular:
 
 ```bash
-ng test
+npm install lib-e2e-cypress-for-dummys
 ```
 
-## Running end-to-end tests
+2. Asegúrate de tener como peer dependencies `@angular/core` y `@angular/common` versión **18.0.0 o superior**.
 
-For end-to-end (e2e) testing, run:
+---
 
-```bash
-ng e2e
+## 🚦 Uso básico
+
+1. **Importa el componente en tu módulo o componente standalone:**
+
+```ts
+import { LibE2eRecorderComponent } from 'lib-e2e-cypress-for-dummys';
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+2. **Añade el componente en tu template principal (por ejemplo, en `app.component.html`):**
 
-## Additional Resources
+```html
+<lib-e2e-recorder></lib-e2e-recorder>
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+3. **Marca los elementos que quieras que sean fácilmente seleccionables por Cypress usando el atributo `data-cy`:**
+
+```html
+<input data-cy="email-input" type="email" />
+<button data-cy="login-button">Login</button>
+```
+
+4. **(Opcional pero recomendado) Si quieres que también se graben las llamadas HTTP/interceptores, añade el interceptor en tu configuración de la app**  
+   En tu `app.config.ts`:
+
+```typescript
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { CypressHttpInterceptor } from 'lib-e2e-cypress-for-dummys';
+
+export const appConfig = {
+  providers: [
+    // ...otros providers...
+    provideHttpClient(withInterceptors([CypressHttpInterceptor])),
+  ],
+};
+```
+
+5. **Haz clic en el botón flotante ▶️ "Grabar" para empezar a grabar. Interactúa con la app y, cuando termines, pulsa ⏹️ "Parar".**
+
+6. **Copia los comandos Cypress generados desde la consola del navegador.**
+
+---
+
+## 🛠️ ¿Cómo funciona?
+
+La librería escucha eventos de usuario (click, input, change) sobre elementos con `data-cy` o `id`, y va generando los comandos Cypress correspondientes.  
+Además, si configuras el interceptor, intercepta las peticiones HTTP realizadas por Angular y añade los comandos `cy.intercept` y `cy.wait` necesarios para que tus tests sean robustos.
+
+---
+
+## 💡 Ejemplo de comandos generados
+
+```js
+cy.viewport(1900, 1200)
+cy.visit('/login')
+cy.get('[data-cy="email-input"]').clear().type('usuario@dominio.com')
+cy.get('[data-cy="password-input"]').clear().type('123456')
+cy.get('[data-cy="login-button"]').click()
+cy.intercept('POST', '**/api/v1/login/**', (req) => {
+  if (req.url.includes('login')) {
+    req.alias = 'api-v1-login';
+  }
+});
+cy.wait('@api-v1-login').then((interception) => { })
+```
+
+---
+
+## 👍 Recomendaciones
+
+- Usa siempre el atributo `data-cy` en los elementos que quieras testear para obtener selectores robustos.
+- Los comandos generados aparecen en la consola del navegador al parar la grabación.
+- Puedes limpiar la lista de comandos llamando a `clearCommands()` desde el servicio si lo necesitas.
+
+---
+
+## ⚠️ Limitaciones
+
+- Solo soporta Angular **18+**.
+- Los comandos se generan en la consola, no en un archivo.
+- No cubre todos los posibles eventos o componentes personalizados.
+
+---
+
+## 🚧 Estado del proyecto
+
+Esta librería está en desarrollo activo y puede contener errores o carecer de algunas funcionalidades.  
+Si tienes sugerencias, encuentras algún problema o necesitas una nueva característica, no dudes en escribirme a **gonzalocarmenado@gmail.com**. ¡Tu feedback es bienvenido y me ayuda a mejorar el proyecto!
+
+## 🤝 Contribuir
+
+¿Quieres mejorar la librería? ¡Genial! Puedes abrir issues o pull requests en el repositorio. Si tienes dudas, contacta con el autor.
+
+---
+
+## 📄 Licencia
+
+MIT
+
+---
+
+**Autor:** Gonzalo Carmenado 🚀

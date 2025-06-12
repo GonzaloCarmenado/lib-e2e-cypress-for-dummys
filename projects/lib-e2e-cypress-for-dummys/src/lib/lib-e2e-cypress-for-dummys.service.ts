@@ -5,7 +5,7 @@ import { INPUT_TYPES } from './models/input-types.model';
 
 //TODO: Añadir una opción de configuración para la extensión.
 // - Desactivar o modificar el debounce de los inputs.
-// - Configuración sobre si se quiere qtrabajar con elementos nativos (input, select...) o con librerías propias
+// - Configuración sobre si se quiere trabajar con elementos nativos (input, select...) o con librerías propias
 // - Exportar todo en un fichero de texto.
 // - Control de errores mejorados. Si un selector no funciona o hay dudas sobre si su implementación es correcta, avisar al usuario.
 // - Inspector de cypress. Un botón que permita al usuario inspeccionar el elemento y ver el comando Cypress generado (esto se deberá integrar

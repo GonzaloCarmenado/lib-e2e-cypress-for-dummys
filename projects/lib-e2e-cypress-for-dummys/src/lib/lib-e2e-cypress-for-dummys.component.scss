@@ -16,3 +16,26 @@
     background-color: #1565c0;
   }
 }
+
+.gear-icon-button {
+  position: fixed;
+  bottom: 52px; 
+  right: 20px;
+  z-index: 9999;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background-color: white;
+  color: #1976d2;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
