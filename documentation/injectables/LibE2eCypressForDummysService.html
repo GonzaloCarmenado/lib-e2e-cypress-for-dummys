@@ -1,0 +1,1753 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>e2e-cypress-for-dummys documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">e2e-cypress-for-dummys documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >LibE2eCypressForDummysService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts</code>
+        </p>
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#commandList$" >commandList$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#inputDebounceTimers" >inputDebounceTimers</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#interceptors$" >interceptors$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#isRecording$" >isRecording$</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#addCommand" >addCommand</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#clearCommands" >clearCommands</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#extractFilter" >extractFilter</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getCommands$" >getCommands$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getCommandsSnapshot" >getCommandsSnapshot</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getInterceptors$" >getInterceptors$</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#isInteractiveElement" >isInteractiveElement</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#isRecordingObservable" >isRecordingObservable</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#listenToClicks" >listenToClicks</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#listenToInput" >listenToInput</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#listenToSelect" >listenToSelect</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#registerInterceptor" >registerInterceptor</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#startRecording" >startRecording</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#stopRecording" >stopRecording</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#toggleRecording" >toggleRecording</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#urlToWildcard" >urlToWildcard</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(document: Document)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:53</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>document</td>
+                                                  
+                                                        <td>
+                                                                    <code>Document</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="addCommand"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>addCommand</b></span>
+                        <a href="#addCommand"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>addCommand(cmd: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="221"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:221</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Recibe una cadena de texto con el comando que se va a añadir a la lista de comandos.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>cmd</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Texto a añadir</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="clearCommands"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>clearCommands</b></span>
+                        <a href="#clearCommands"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>clearCommands()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="346"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:346</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Borra todos los comandos Cypress almacenados en las listas.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="extractFilter"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>extractFilter</b></span>
+                        <a href="#extractFilter"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>extractFilter(url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="270"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:270</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>url</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getCommands$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getCommands$</b></span>
+                        <a href="#getCommands$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getCommands$()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="334"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:334</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getCommandsSnapshot"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getCommandsSnapshot</b></span>
+                        <a href="#getCommandsSnapshot"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getCommandsSnapshot()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="338"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:338</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>string[]</code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getInterceptors$"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>getInterceptors$</b></span>
+                        <a href="#getInterceptors$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getInterceptors$()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="253"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:253</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isInteractiveElement"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>isInteractiveElement</b></span>
+                        <a href="#isInteractiveElement"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>isInteractiveElement(target: EventTarget | null)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="201"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:201</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Determina si el elemento objetivo es interactivo (input, select, textarea, option).
+Esto se utiliza para evitar generar comandos innecesarios para elementos que no son interactivos. Por ejemplo,
+al hacer click sobre un input o select, que no se genere un evento click, si no que se genere solo el evento de
+type o select evitando código innecesario.</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>target</td>
+                                            <td>
+                                                        <code>EventTarget | null</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Elemento que se ha seleccionado haciendo click sobre el</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>{boolean}</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isRecordingObservable"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>isRecordingObservable</b></span>
+                        <a href="#isRecordingObservable"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>isRecordingObservable()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="327"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:327</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="listenToClicks"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>listenToClicks</b></span>
+                        <a href="#listenToClicks"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>listenToClicks()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="68"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:68</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Escucha los eventos de clic en el documento y genera comandos Cypress para los elementos clicados.
+Se basa en atributos <code>data-cy</code> o <code>id</code> para generar selectores confiables.
+Si no se puede generar un selector confiable, se añade un comentario indicando el problema.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="listenToInput"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>listenToInput</b></span>
+                        <a href="#listenToInput"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>listenToInput()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="102"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:102</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Escucha los eventos de entrada de texto en inputs y textareas, generando comandos Cypress para limpiar y escribir el valor.
+Utiliza un debounce de 1 segundo para evitar generar múltiples comandos al escribir rápidamente.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="listenToSelect"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>listenToSelect</b></span>
+                        <a href="#listenToSelect"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>listenToSelect()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="162"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:162</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Escucha los eventos de cambio en selectores (elementos <select>) y genera comandos Cypress para seleccionar el valor.
+Utiliza atributos <code>data-cy</code> o <code>id</code> para generar selectores confiables.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="registerInterceptor"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>registerInterceptor</b></span>
+                        <a href="#registerInterceptor"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>registerInterceptor(method: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, alias: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="235"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:235</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Genera el comando de cypress para crear un interceptor. Estos son añadidos a la lista de interceptores para diferenciarlos
+del comando cy.wait(&#39;@${alias}&#39;).then((interception) =&gt; { }) que es el que se encarga de llamar al interceptor en la prueba</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>method</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Tipo de método HTTP (GET, POST, PUT, DELETE...)</p>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>url</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Url del endoint. para garantizar la utilización en distintos env, el patrón devuelto es <strong>api/vx/xxxx</strong></p>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                                <td>alias</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Recibe el alias que se va a utilizar para el interceptor.</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="startRecording"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>startRecording</b></span>
+                        <a href="#startRecording"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>startRecording()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="283"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:283</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Comienza a grabar los comandos de cypres. Activa todos los escuchadores de eventos.
+También añade el comando <code>cy.viewport()</code> para establecer el tamaño de la ventana y <code>cy.visit()</code> para visitar la página actual.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="stopRecording"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>stopRecording</b></span>
+                        <a href="#stopRecording"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>stopRecording()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="299"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:299</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Detiene la grabación de comandos de Cypress. Desactiva todos los escuchadores de eventos.
+Imprime en consola los comandos generados y los interceptores registrados.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="toggleRecording"></a>
+                    <span class="name">
+                            <span class="modifier">Public</span>
+                        <span ><b>toggleRecording</b></span>
+                        <a href="#toggleRecording"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>toggleRecording()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="318"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:318</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>permite indicar al componente en que estado se encuentra la grabación.
+Si se está grabando, se detiene la grabación y si no, se inicia. Tambien permite cambiar la
+clase del botón para hacerla más intuitiva.</p>
+</div>
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="urlToWildcard"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>urlToWildcard</b></span>
+                        <a href="#urlToWildcard"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>urlToWildcard(url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="264"
+                                    class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:264</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                        <div class="io-description"><p>Estandariza la url recibida para hacerla apta para diferentes entornos y filtros de Queystring</p>
+</div>
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                                <td>Description</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>url</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                            <td>
+                                                    <p>Url del endpoint al que se ha llamado</p>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                <p>{string}</p>
+
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="commandList$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>commandList$</b></span>
+                        <a href="#commandList$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new BehaviorSubject&lt;string[]&gt;([])</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:30</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Almacena y emite los comandos Cypress generados por las interacciones del usuario. Solo captura eventos
+de clics, entradas de texto y cambios en selectores... no almacena otro tipo de interacción como interceptores, ficheros... sin embargo
+si almacena los comandos de cypres para llamar a interceptores.
+Se inicializa como un BehaviorSubject con un array vacío.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="inputDebounceTimers"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>inputDebounceTimers</b></span>
+                        <a href="#inputDebounceTimers"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Map&lt;HTMLElement, any&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="53" class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:53</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Mapa para almacenar los temporizadores de debounce de los inputs. Se utiliza para evitar que se generen múltiples comandos
+Cypress al escribir en un input (uno por cada letra), aplicando un debounce de 1s.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="interceptors$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>interceptors$</b></span>
+                        <a href="#interceptors$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new BehaviorSubject&lt;string[]&gt;([])</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="38" class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:38</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Almacena y emite los interceptores registrados. Se inicializa como un BehaviorSubject con un array vacío.
+Los interceptores se registran con un método, una URL y un alias. Automáticamente se genera el comando cy.wait(&#39;@${alias}&#39;).then((interception) =&gt; { })
+y se añade a la variable <a href="commandList$">commandList$</a></p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isRecording$"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>isRecording$</b></span>
+                        <a href="#isRecording$"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new BehaviorSubject&lt;boolean&gt;(false)</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="46" class="link-to-prism">projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.service.ts:46</a></div>
+                        </td>
+                    </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Indica si se está grabando o no. Se inicializa como false.
+Este valor se utiliza para determinar si se deben capturar los eventos del DOM y generar comandos Cypress solo cuando el usuario
+quiere, evitando problemas de generar comandos basura.</p>
+</div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable, Inject } from &#x27;@angular/core&#x27;;
+import { DOCUMENT } from &#x27;@angular/common&#x27;;
+import { BehaviorSubject } from &#x27;rxjs&#x27;;
+import { INPUT_TYPES } from &#x27;./models/input-types.model&#x27;;
+
+//TODO: Añadir una opción de configuración para la extensión.
+// - Desactivar o modificar el debounce de los inputs.
+// - Configuración sobre si se quiere qtrabajar con elementos nativos (input, select...) o con librerías propias
+// - Exportar todo en un fichero de texto.
+// - Control de errores mejorados. Si un selector no funciona o hay dudas sobre si su implementación es correcta, avisar al usuario.
+// - Inspector de cypress. Un botón que permita al usuario inspeccionar el elemento y ver el comando Cypress generado (esto se deberá integrar
+//   de forma que ese selector especial pare la grabación para que no se pierda el orden.).
+// - Dar la opción al usuario de añadir el selector de clase CSS para casos extremos en los que sea la unica solución.
+// - Ventana de configuración en base a un fichero que se peuda exportar entre proyectos para que sea facil mantener
+//   configuraciones comunes entre proyectos.
+// - Tener un historial de pruebas realizadas, pudiendo hacer varias juntas, que se almacenen en un fichero y poder revisarlas posteriormente.
+// - Tener una ventana de previsualización de pruebas, donde se pueda ver el código generado y hacer arreglos rápidos
+@Injectable({
+  providedIn: &#x27;root&#x27;,
+})
+export class LibE2eCypressForDummysService {
+  /**
+   * Almacena y emite los comandos Cypress generados por las interacciones del usuario. Solo captura eventos
+   * de clics, entradas de texto y cambios en selectores... no almacena otro tipo de interacción como interceptores, ficheros... sin embargo
+   * si almacena los comandos de cypres para llamar a interceptores.
+   * Se inicializa como un BehaviorSubject con un array vacío.
+   * @private
+   * @memberof LibE2eCypressForDummysService
+   */
+  private commandList$ &#x3D; new BehaviorSubject&lt;string[]&gt;([]);
+  /**
+   * Almacena y emite los interceptores registrados. Se inicializa como un BehaviorSubject con un array vacío.
+   * Los interceptores se registran con un método, una URL y un alias. Automáticamente se genera el comando cy.wait(&#x27;@${alias}&#x27;).then((interception) &#x3D;&gt; { })
+   * y se añade a la variable {@link commandList$}
+   * @private
+   * @memberof LibE2eCypressForDummysService
+   */
+  private interceptors$ &#x3D; new BehaviorSubject&lt;string[]&gt;([]);
+  /**
+   * Indica si se está grabando o no. Se inicializa como false.
+   * Este valor se utiliza para determinar si se deben capturar los eventos del DOM y generar comandos Cypress solo cuando el usuario
+   * quiere, evitando problemas de generar comandos basura.
+   * @private
+   * @memberof LibE2eCypressForDummysService
+   */
+  private isRecording$ &#x3D; new BehaviorSubject&lt;boolean&gt;(false);
+  /**
+   * Mapa para almacenar los temporizadores de debounce de los inputs. Se utiliza para evitar que se generen múltiples comandos
+   * Cypress al escribir en un input (uno por cada letra), aplicando un debounce de 1s.
+   * @private
+   * @memberof LibE2eCypressForDummysService
+   */
+  private inputDebounceTimers &#x3D; new Map&lt;HTMLElement, any&gt;();
+
+  constructor(@Inject(DOCUMENT) private document: Document) {
+    this.listenToClicks();
+    this.listenToInput();
+    this.listenToSelect();
+  }
+
+  //#region Listener para los diferentes eventos del DOM
+  /**
+   * Escucha los eventos de clic en el documento y genera comandos Cypress para los elementos clicados.
+   * Se basa en atributos &#x60;data-cy&#x60; o &#x60;id&#x60; para generar selectores confiables.
+   * Si no se puede generar un selector confiable, se añade un comentario indicando el problema.
+   * @private
+   */
+  private listenToClicks(): void {
+    this.document.addEventListener(&#x27;click&#x27;, (event: Event) &#x3D;&gt; {
+      const target &#x3D; event.target as HTMLElement;
+      // Ignora elementos que no son interactivos para evitar generar basura
+      if (!target || this.isInteractiveElement(target)) return;
+
+      // Por defecto intentará coger [data-cy], sin embargo, por si no se tiene control sobre el HTML que queremos
+      // (por ejemplo una librería extera), también se puede usar el id del elemento.
+      const container &#x3D; target.closest&lt;HTMLElement&gt;(&#x27;[data-cy], [id]&#x27;);
+      if (!container) return;
+
+      const dataCy &#x3D; container.getAttribute(&#x27;data-cy&#x27;);
+      const id &#x3D; container.id;
+
+      let cyCommand &#x3D; &#x27;&#x27;;
+
+      if (dataCy) {
+        cyCommand &#x3D; &#x60;cy.get(&#x27;[data-cy&#x3D;&quot;${dataCy}&quot;]&#x27;).click()&#x60;;
+      } else if (id) {
+        cyCommand &#x3D; &#x60;cy.get(&#x27;#${id}&#x27;).click()&#x60;;
+      } else {
+        cyCommand &#x3D; &#x27;// No se pudo generar un selector confiable para click&#x27;;
+      }
+      // Añade el comando generado a la lista de comandos
+      this.addCommand(cyCommand);
+    });
+  }
+
+  /**
+   * Escucha los eventos de entrada de texto en inputs y textareas, generando comandos Cypress para limpiar y escribir el valor.
+   * Utiliza un debounce de 1 segundo para evitar generar múltiples comandos al escribir rápidamente.
+   * @private
+   * @memberof LibE2eCypressForDummysService
+   */
+  private listenToInput(): void {
+    this.document.addEventListener(&#x27;input&#x27;, (event: Event) &#x3D;&gt; {
+      if (!this.isRecording$.getValue()) return;
+      const target &#x3D; event.target as HTMLInputElement | HTMLTextAreaElement;
+      if (!target) return;
+
+      const isTextInput &#x3D;
+        target.tagName.toLowerCase() &#x3D;&#x3D;&#x3D; &#x27;textarea&#x27; ||
+        (target.tagName.toLowerCase() &#x3D;&#x3D;&#x3D; &#x27;input&#x27; &amp;&amp;
+          INPUT_TYPES.includes(target.type));
+
+      // No continua si el input tiene un tipo que no está reconocido dentro de nuestro listado
+      if (!isTextInput) return;
+
+      // Por defecto intentará coger [data-cy], sin embargo, por si no se tiene control sobre el HTML que queremos
+      // (por ejemplo una librería extera), también se puede usar el id del elemento.
+      const clickable &#x3D; target.closest&lt;HTMLElement&gt;(&#x27;[data-cy], [id]&#x27;);
+
+      if (!clickable) return;
+
+      // Limpia cualquier temporizador anterior para este input
+      if (this.inputDebounceTimers.has(target)) {
+        clearTimeout(this.inputDebounceTimers.get(target));
+      }
+
+      // Ponemos un debounce de 1000ms para evitar que se repitan de manera innecesaria los comandos con cada
+      // caracter que se escribe.
+      this.inputDebounceTimers.set(
+        target,
+        setTimeout(() &#x3D;&gt; {
+          const dataCy &#x3D; clickable.getAttribute(&#x27;data-cy&#x27;);
+          const id &#x3D; clickable.id;
+          const value &#x3D; target.value.replace(/&#x27;/g, &quot;\\&#x27;&quot;);
+
+          let cyCommand &#x3D; &#x27;&#x27;;
+
+          if (dataCy) {
+            cyCommand &#x3D; &#x60;cy.get(&#x27;[data-cy&#x3D;&quot;${dataCy}&quot;]&#x27;).clear().type(&#x27;${value}&#x27;)&#x60;;
+          } else if (id) {
+            cyCommand &#x3D; &#x60;cy.get(&#x27;#${id}&#x27;).clear().type(&#x27;${value}&#x27;)&#x60;;
+          } else {
+            cyCommand &#x3D; &#x27;// No se pudo generar un selector confiable para type&#x27;;
+          }
+
+          // Añade el comando generado a la lista de comandos
+          this.addCommand(cyCommand);
+
+          // Limpiamos el timer almacenado
+          this.inputDebounceTimers.delete(target);
+        }, 1000)
+      );
+    });
+  }
+
+  /**
+   * Escucha los eventos de cambio en selectores (elementos &lt;select&gt;) y genera comandos Cypress para seleccionar el valor.
+   * Utiliza atributos &#x60;data-cy&#x60; o &#x60;id&#x60; para generar selectores confiables.
+   * @private
+   * @memberof LibE2eCypressForDummysService
+   */
+  private listenToSelect(): void {
+    this.document.addEventListener(&#x27;change&#x27;, (event: Event) &#x3D;&gt; {
+      const target &#x3D; event.target as HTMLSelectElement;
+      // Ignora elementos que no son selectores para evitar generar basura
+      if (!target || target.tagName.toLowerCase() !&#x3D;&#x3D; &#x27;select&#x27;) return;
+
+      // Por defecto intentará coger [data-cy], sin embargo, por si no se tiene control sobre el HTML que queremos
+      // (por ejemplo una librería extera), también se puede usar el id del elemento.
+      const container &#x3D; target.closest&lt;HTMLElement&gt;(&#x27;[data-cy], [id]&#x27;);
+      if (!container) return;
+
+      const dataCy &#x3D; container.getAttribute(&#x27;data-cy&#x27;);
+      const id &#x3D; container.id;
+      const selectedValue &#x3D; target.value.replace(/&#x27;/g, &quot;\\&#x27;&quot;);
+
+      let cyCommand &#x3D; &#x27;&#x27;;
+
+      if (dataCy) {
+        cyCommand &#x3D; &#x60;cy.get(&#x27;[data-cy&#x3D;&quot;${dataCy}&quot;]&#x27;).select(&#x27;${selectedValue}&#x27;)&#x60;;
+      } else if (id) {
+        cyCommand &#x3D; &#x60;cy.get(&#x27;#${id}&#x27;).select(&#x27;${selectedValue}&#x27;)&#x60;;
+      } else {
+        cyCommand &#x3D; &#x27;// No se pudo generar un selector confiable para select&#x27;;
+      }
+      // Añade el comando generado a la lista de comandos
+      this.addCommand(cyCommand);
+    });
+  }
+
+  /**
+   * Determina si el elemento objetivo es interactivo (input, select, textarea, option).
+   * Esto se utiliza para evitar generar comandos innecesarios para elementos que no son interactivos. Por ejemplo,
+   * al hacer click sobre un input o select, que no se genere un evento click, si no que se genere solo el evento de
+   * type o select evitando código innecesario.
+   * @private
+   * @param {(EventTarget | null)} target Elemento que se ha seleccionado haciendo click sobre el
+   * @return {*}  {boolean}
+   * @memberof LibE2eCypressForDummysService
+   */
+  private isInteractiveElement(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) return false;
+
+    const tag &#x3D; target.tagName.toLowerCase();
+
+    // Estos tipos los maneja otro listener
+    return (
+      tag &#x3D;&#x3D;&#x3D; &#x27;select&#x27; ||
+      tag &#x3D;&#x3D;&#x3D; &#x27;option&#x27; ||
+      tag &#x3D;&#x3D;&#x3D; &#x27;input&#x27; ||
+      tag &#x3D;&#x3D;&#x3D; &#x27;textarea&#x27;
+    );
+  }
+
+  //#endregion Listener para los diferentes eventos del DOM
+  /**
+   * Recibe una cadena de texto con el comando que se va a añadir a la lista de comandos.
+   * @param {string} cmd Texto a añadir
+   * @memberof LibE2eCypressForDummysService
+   */
+  public addCommand(cmd: string): void {
+    const current &#x3D; this.commandList$.getValue();
+    this.commandList$.next([...current, cmd]);
+  }
+
+  //#region Interceptores
+  /**
+   * Genera el comando de cypress para crear un interceptor. Estos son añadidos a la lista de interceptores para diferenciarlos
+   * del comando cy.wait(&#x27;@${alias}&#x27;).then((interception) &#x3D;&gt; { }) que es el que se encarga de llamar al interceptor en la prueba
+   * @param {string} method Tipo de método HTTP (GET, POST, PUT, DELETE...)
+   * @param {string} url Url del endoint. para garantizar la utilización en distintos env, el patrón devuelto es **api/vx/xxxx**
+   * @param {string} alias Recibe el alias que se va a utilizar para el interceptor.
+   * @memberof LibE2eCypressForDummysService
+   */
+  public registerInterceptor(method: string, url: string, alias: string): void {
+    const current &#x3D; this.interceptors$.getValue();
+
+    const command &#x3D; &#x60;cy.intercept(&#x27;${method}&#x27;, &#x27;${this.urlToWildcard(
+      url
+    )}&#x27;, (req) &#x3D;&gt; {
+        if (req.url.includes(&#x27;${this.extractFilter(url)}&#x27;)) {
+          req.alias &#x3D; &#x27;${alias}&#x27;;
+        }
+      });&#x60;;
+
+    // Si el comando ya existe, no lo añade de nuevo
+    // Esto evita que se dupliquen los interceptores en la lista
+    if (!current.includes(command)) {
+      this.interceptors$.next([...current, command]);
+    }
+  }
+
+  public getInterceptors$() {
+    return this.interceptors$.asObservable();
+  }
+
+  /**
+   * Estandariza la url recibida para hacerla apta para diferentes entornos y filtros de Queystring
+   * @private
+   * @param {string} url Url del endpoint al que se ha llamado
+   * @return {*}  {string}
+   * @memberof LibE2eCypressForDummysService
+   */
+  private urlToWildcard(url: string): string {
+    // Convierte a algo tipo &#x27;**/api/v1/RequestJob/**&#x27;
+    const u &#x3D; new URL(url, &#x27;http://localhost&#x27;);
+    return &#x60;**${u.pathname}/**&#x60;;
+  }
+
+  private extractFilter(url: string): string {
+    const u &#x3D; new URL(url, &#x27;http://localhost&#x27;);
+    return u.search || &#x27;&#x27;;
+  }
+  //#endregion Interceptores
+
+  //#region Métodos publicos de comunicación con componente
+
+  /**
+   * Comienza a grabar los comandos de cypres. Activa todos los escuchadores de eventos.
+   * También añade el comando &#x60;cy.viewport()&#x60; para establecer el tamaño de la ventana y &#x60;cy.visit()&#x60; para visitar la página actual.
+   * @memberof LibE2eCypressForDummysService
+   */
+  public startRecording(): void {
+    this.isRecording$.next(true);
+
+    const pathname &#x3D; window.location.pathname;
+    const viewportWidth &#x3D; 1900;
+    const viewportHeight &#x3D; 1200;
+
+    this.addCommand(&#x60;cy.viewport(${viewportWidth}, ${viewportHeight})&#x60;);
+    this.addCommand(&#x60;cy.visit(&#x27;${pathname}&#x27;)&#x60;);
+  }
+
+  /**
+   * Detiene la grabación de comandos de Cypress. Desactiva todos los escuchadores de eventos.
+   * Imprime en consola los comandos generados y los interceptores registrados.
+   * @memberof LibE2eCypressForDummysService
+   */
+  public stopRecording(): void {
+    this.isRecording$.next(false);
+    console.log(
+      &#x27;Comandos Cypress generados:\n&#x27;,
+      this.getCommandsSnapshot().join(&#x27;\n&#x27;)
+    );
+    const interceptors &#x3D; this.interceptors$.getValue();
+    console.log(
+      &#x27;\n📡 Interceptores Cypress generados:\n&#x27;,
+      interceptors.join(&#x27;\n&#x27;)
+    );
+  }
+
+  /**
+   * permite indicar al componente en que estado se encuentra la grabación.
+   * Si se está grabando, se detiene la grabación y si no, se inicia. Tambien permite cambiar la
+   * clase del botón para hacerla más intuitiva.
+   * @memberof LibE2eCypressForDummysService
+   */
+  public toggleRecording(): void {
+    const isRecording &#x3D; this.isRecording$.getValue();
+    if (isRecording) {
+      this.stopRecording();
+    } else {
+      this.startRecording();
+    }
+  }
+
+  public isRecordingObservable() {
+    return this.isRecording$.asObservable();
+  }
+
+  //#endregion Métodos publicos de comunicación con componente
+
+  //#region Métodos miscelaneos
+  public getCommands$() {
+    return this.commandList$.asObservable();
+  }
+
+  public getCommandsSnapshot(): string[] {
+    return this.commandList$.getValue();
+  }
+
+  /**
+   * Borra todos los comandos Cypress almacenados en las listas.
+   * @memberof LibE2eCypressForDummysService
+   */
+  public clearCommands(): void {
+    this.commandList$.next([]);
+    this.interceptors$.next([]);
+  }
+
+  //#endregion Métodos miscelaneos
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'LibE2eCypressForDummysService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

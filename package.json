@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "docs:lib": "npx compodoc projects/lib-e2e-cypress-for-dummys/src/lib --tsconfig projects/lib-e2e-cypress-for-dummys/tsconfig.lib.json"
   },
   "private": true,
   "dependencies": {
@@ -17,16 +18,17 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@gonzalocarmenado/common-connector-clients": "^0.0.5",
+    "@gonzalocarmenado/general-http-core-hub": "^0.0.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0",
-    "@gonzalocarmenado/common-connector-clients": "^0.0.5",
-    "@gonzalocarmenado/general-http-core-hub": "^0.0.5"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.9",
     "@angular/cli": "^19.2.9",
     "@angular/compiler-cli": "^19.2.0",
+    "@compodoc/compodoc": "^1.1.26",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",

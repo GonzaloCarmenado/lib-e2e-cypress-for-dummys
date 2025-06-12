@@ -8,7 +8,7 @@ import { LibE2eCypressForDummysService } from './lib-e2e-cypress-for-dummys.serv
   standalone: true,
 })
 export class LibE2eRecorderComponent {
-  isRecording = false;
+  public isRecording = false;
 
   constructor(private e2eService: LibE2eCypressForDummysService) {
     this.e2eService.isRecordingObservable().subscribe((val: any) => {
@@ -16,7 +16,7 @@ export class LibE2eRecorderComponent {
     });
   }
 
-  toggle(): void {
+  public toggle(): void {
     this.e2eService.toggleRecording();
   }
 }
