@@ -1,13 +1,12 @@
 <button class="e2e-recorder-button" (click)="toggle()">
   {{ isRecording ? '⏹️ Parar' : '▶️ Grabar' }}
 </button>
-<button class="test-icon-button" (click)="openTestpanel()">
+<button #testBtn class="test-icon-button" (click)="openTestpanel()">
   📝
 </button>
 <button class="gear-icon-button" (click)="openSettings()">
   ⚙️
 </button>
-<p-dialog header="Previsualizador de comandos Cypress"  [(visible)]="showTestPanel"
-  [style]="{ width: '30rem' }">
+<p-dialog header="Previsualizador de comandos Cypress"  [(visible)]="showTestPanel">
   <test-previsualizer-component [cypressCommands]="cypressCommands"></test-previsualizer-component>
 </p-dialog>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'test-previsualizer-component',
@@ -9,10 +9,20 @@ import { Component, Input } from '@angular/core';
   imports: [CommonModule]
 })
 export class TestPrevisualizerComponent {
-
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   @Input() public cypressCommands: string[] = [];
   constructor() {
     
+  }
+
+  public ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+    try {
+      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+    } catch (err) {}
   }
 
 }

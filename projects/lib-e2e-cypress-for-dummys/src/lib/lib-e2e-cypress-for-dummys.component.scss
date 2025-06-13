@@ -86,10 +86,10 @@
 }
 
 :host ::ng-deep .p-dialog-content {
+  max-height: none !important;
+  overflow-y: visible !important;
   padding: 1rem 1.5rem;
   background-color: #ffffff;
-  max-height: 60vh;
-  overflow-y: auto;
 }
 
 :host ::ng-deep .p-dialog-close-button {
