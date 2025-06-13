@@ -219,8 +219,10 @@ export class LibE2eCypressForDummysService {
    * @memberof LibE2eCypressForDummysService
    */
   public addCommand(cmd: string): void {
-    const current = this.commandList$.getValue();
-    this.commandList$.next([...current, cmd]);
+    if(this.isRecording$.getValue()){
+      const current = this.commandList$.getValue();
+      this.commandList$.next([...current, cmd]);
+    }
   }
 
   //#region Interceptores

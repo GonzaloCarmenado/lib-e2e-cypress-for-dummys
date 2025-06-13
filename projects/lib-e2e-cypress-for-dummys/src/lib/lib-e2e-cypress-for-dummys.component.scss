@@ -39,3 +39,66 @@
     background-color: #f0f0f0;
   }
 }
+
+.test-icon-button {
+  position: fixed;
+  bottom: 52px; 
+  right: 55px;
+  z-index: 9999;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background-color: white;
+  color: #1976d2;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}
+:host ::ng-deep .p-dialog {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  background: linear-gradient(to bottom, #fefefe, #f3f3f3);
+  backdrop-filter: blur(4px);
+}
+
+:host ::ng-deep .p-dialog-header {
+  background: #2d2d2d;
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 1px solid #444;
+}
+
+:host ::ng-deep .p-dialog-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+:host ::ng-deep .p-dialog-content {
+  padding: 1rem 1.5rem;
+  background-color: #ffffff;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+:host ::ng-deep .p-dialog-close-button {
+  color: #ffffff;
+  background: transparent;
+  border: none;
+}
+
+:host ::ng-deep .p-dialog .p-resizable-handle {
+  background: transparent;
+  border: none;
+}
