@@ -6,7 +6,9 @@ import {
   provideHttpClient,
   withInterceptors,
 } from '@angular/common/http';
-import { CypressHttpInterceptor } from '../../projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys-interceptor.service';
+import { CypressHttpInterceptor } from '../../projects/lib-e2e-cypress-for-dummys/src/lib/services/lib-e2e-cypress-for-dummys-interceptor.service';
+import { provideIndexedDb } from 'ngx-indexed-db';
+import { dbConfig } from '../../projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.module';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,6 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     provideHttpClient(withInterceptors([CypressHttpInterceptor])),
-          provideAnimationsAsync(),
+    provideAnimationsAsync(),
+    provideIndexedDb(dbConfig),
   ],
 };

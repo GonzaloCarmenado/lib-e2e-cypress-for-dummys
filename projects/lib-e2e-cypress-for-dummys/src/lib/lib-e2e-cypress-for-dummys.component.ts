@@ -1,11 +1,13 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { LibE2eCypressForDummysService } from './lib-e2e-cypress-for-dummys.service';
+import { LibE2eCypressForDummysService } from './services/lib-e2e-cypress-for-dummys.service';
 import {
   MatDialog,
 } from '@angular/material/dialog';
 import { ConfigurationComponent } from './components/configurations/configuration.component';
 import { DialogModule } from 'primeng/dialog';
 import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
+import { SaveTestComponent } from './components/save-test-data/save-test-data.component';
+import { LibE2eCypressForDummysPersistentService } from './services/lib-e2e-cypress-for-dummys-persist.service';
 @Component({
   selector: 'lib-e2e-recorder',
   templateUrl: './lib-e2e-cypress-for-dummys.component.html',
@@ -13,19 +15,28 @@ import { TestPrevisualizerComponent } from './components/test-previsualizer/test
   standalone: true,
   imports: [
     DialogModule,
-    TestPrevisualizerComponent]
+    TestPrevisualizerComponent,
+    SaveTestComponent]
 })
 export class LibE2eRecorderComponent {
   @ViewChild('testBtn', { read: ElementRef }) testBtn!: ElementRef<HTMLButtonElement>;
   public dialogPositionStyle: any = {};
   public isRecording = false;
+  public controlFirstTimeData = true;
   public showTestPanel = false;
+  public showSavePanel = false;
   public cypressCommands: string[] = [];
   private readonly dialog = inject(MatDialog);
 
-  constructor(private e2eService: LibE2eCypressForDummysService) {
+  constructor(private e2eService: LibE2eCypressForDummysService,
+    private readonly persistService: LibE2eCypressForDummysPersistentService
+  ) {
     this.e2eService.isRecordingObservable().subscribe((val: any) => {
       this.isRecording = val;
+      if (this.isRecording === false && this.controlFirstTimeData === false) {
+        this.saveTestDataPanel();
+      }
+      this.controlFirstTimeData = false;
     });
     this.e2eService.getCommands$().subscribe(commands => {
       this.cypressCommands = commands;
@@ -59,10 +70,10 @@ export class LibE2eRecorderComponent {
         const btnRect = this.testBtn.nativeElement.getBoundingClientRect();
         const dialog = document.querySelector('.p-dialog');
         if (dialog) {
-          const dialogWidth = 480; 
-          const dialogHeight = 400; 
+          const dialogWidth = 480;
+          const dialogHeight = 400;
           let left = btnRect.left + window.scrollX + (btnRect.width / 2) - (dialogWidth / 2);
-          let top = btnRect.top + window.scrollY - dialogHeight - 8; 
+          let top = btnRect.top + window.scrollY - dialogHeight - 8;
 
           // Evita que se salga por la izquierda
           if (left < 8) left = 8;
@@ -81,4 +92,22 @@ export class LibE2eRecorderComponent {
       }, 0);
     }
   }
+
+  public saveTestDataPanel(): void {
+    this.showSavePanel = true;
+  }
+
+  //#region CallBAcks de componentes hijos
+  public onSaveTest(description: string | null): void {
+    this.showSavePanel = false;
+    if (description) {
+      this.persistService.insertTest({
+        description: description,
+      });
+    }
+    this.persistService.getAllTests().subscribe((tests) => {
+      console.log('Tests guardados:', tests);
+    });
+  }
+  //#endregion CallBAcks de componentes hijos
 }

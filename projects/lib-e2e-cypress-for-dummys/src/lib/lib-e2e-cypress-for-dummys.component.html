@@ -10,3 +10,7 @@
 <p-dialog header="Previsualizador de comandos Cypress"  [(visible)]="showTestPanel">
   <test-previsualizer-component [cypressCommands]="cypressCommands"></test-previsualizer-component>
 </p-dialog>
+
+<p-dialog header="¿Guardar la grabación?"  [(visible)]="showSavePanel">
+  <save-test-data-component (savetest)="onSaveTest($event)"></save-test-data-component>
+</p-dialog>

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
-import { INPUT_TYPES } from './models/input-types.model';
+import { INPUT_TYPES } from '../models/input-types.model';
 
 //TODO: Añadir una opción de configuración para la extensión.
 // - Desactivar o modificar el debounce de los inputs.

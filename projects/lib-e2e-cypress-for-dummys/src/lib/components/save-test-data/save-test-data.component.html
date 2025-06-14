@@ -1,0 +1,23 @@
+<div *ngIf="step === 'ask'" class="save-test-dialog">
+  <p class="save-test-title">¿Desea guardar la prueba?</p>
+  <div class="save-test-actions">
+    <button class="btn btn-primary" (click)="askSave()">Sí</button>
+    <button class="btn btn-danger" (click)="cancel()">No</button>
+  </div>
+</div>
+<div *ngIf="step === 'desc'" class="save-test-dialog">
+  <label class="save-test-label">
+    Descripción de la prueba <span class="save-test-hint">(texto para el <code>it()</code> de Cypress)</span>:
+    <textarea [(ngModel)]="description"
+              rows="4"
+              class="save-test-textarea"></textarea>
+  </label>
+  <div class="save-test-actions">
+    <button class="btn btn-success"
+            (click)="confirmSave()"
+            [disabled]="!description.trim()">
+      Guardar
+    </button>
+    <button class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+  </div>
+</div>
