@@ -25,6 +25,13 @@ npm install lib-e2e-cypress-for-dummys
 
 2. Asegúrate de tener como peer dependencies `@angular/core` y `@angular/common` versión **18.0.0 o superior**.
 
+3. Añade a los proveedores el la configuración de la BBDD .
+```bash
+    providers: [
+      provideIndexedDb(dbConfig),
+    ]
+```
+
 ---
 
 ## 🚦 Uso básico
