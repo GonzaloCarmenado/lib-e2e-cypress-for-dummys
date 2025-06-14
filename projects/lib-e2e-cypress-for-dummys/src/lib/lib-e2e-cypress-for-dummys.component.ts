@@ -114,6 +114,7 @@ export class LibE2eRecorderComponent {
         console.log('Guardado con id', id);
       });
     }
+    this.e2eService.clearCommands();
   }
   //#endregion CallBAcks de componentes hijos
 }

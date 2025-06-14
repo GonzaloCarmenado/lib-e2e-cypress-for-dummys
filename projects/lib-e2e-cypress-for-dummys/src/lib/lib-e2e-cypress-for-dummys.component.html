@@ -1,14 +1,20 @@
-<button class="e2e-recorder-button" (click)="toggle()">
+<button class="e2e-recorder-button tooltip" (click)="toggle()">
   {{ isRecording ? '⏹️ Parar' : '▶️ Grabar' }}
 </button>
-<button #testBtn class="saved-test-icon-button" (click)="openSavedTestsPanel()">
+
+<button #testBtn class="saved-test-icon-button tooltip" (click)="openSavedTestsPanel()">
   📋
+  <span class="tooltip-text">Ver pruebas guardadas</span>
 </button>
-<button #testBtn class="test-icon-button" (click)="openTestpanel()">
+
+<button #testBtn class="test-icon-button tooltip right-edge" (click)="openTestpanel()">
   📝
+  <span class="tooltip-text">Previsualizar comandos Cypress</span>
 </button>
-<button class="gear-icon-button" (click)="openSettings()">
+
+<button class="gear-icon-button tooltip right-edge" (click)="openSettings()">
   ⚙️
+  <span class="tooltip-text">Configuración</span>
 </button>
 <p-dialog header="Previsualizador de comandos Cypress"
   [(visible)]="showTestPanel">
@@ -17,7 +23,7 @@
 </p-dialog>
 
 <p-dialog header="Pruebas guardadas" [(visible)]="showSavedTestsPanel">
-  <test-editor-component></test-editor-component>
+  <test-editor-component  [visible]="showSavedTestsPanel"></test-editor-component>
 </p-dialog>
 
 <p-dialog header="¿Guardar la grabación?" [(visible)]="showSavePanel">

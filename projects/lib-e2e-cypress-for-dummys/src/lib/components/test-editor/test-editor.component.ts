@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { DatePipe } from '@angular/common';
 
@@ -9,14 +9,17 @@ import { DatePipe } from '@angular/common';
   standalone: true,
   imports: [DatePipe]
 })
-export class TestEditorComponent implements OnInit {
-  tests: any[] = [];
-  expandedIndex: number | null = null;
+export class TestEditorComponent implements OnChanges {
+  @Input()public visible = false;
+  public tests: any[] = [];
+  public expandedIndex: number | null = null;
 
   constructor(private persistService: LibE2eCypressForDummysPersistentService) {}
 
-  public ngOnInit() {
-    this.loadTests();
+  public ngOnChanges(changes: SimpleChanges) {
+    if (changes['visible']?.currentValue) {
+      this.loadTests();
+    }
   }
 
   public loadTests() {
