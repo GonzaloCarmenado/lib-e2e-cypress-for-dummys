@@ -1,11 +1,6 @@
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LibE2eCypressForDummysService } from './services/lib-e2e-cypress-for-dummys.service';
-import {
-  MatDialog,
-} from '@angular/material/dialog';
-import { ConfigurationComponent } from './components/configurations/configuration.component';
-import { DialogModule } from 'primeng/dialog';
-import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
+import { DialogModule } from 'primeng/dialog'; import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
 import { SaveTestComponent } from './components/save-test-data/save-test-data.component';
 import { LibE2eCypressForDummysPersistentService } from './services/lib-e2e-cypress-for-dummys-persist.service';
 import { LibE2eCypressForDummysTransformationService } from './lib-e2e-cypress-for-dummys.transformation.service';
@@ -16,8 +11,7 @@ import { TestEditorComponent } from './components/test-editor/test-editor.compon
   styleUrls: ['./lib-e2e-cypress-for-dummys.component.scss'],
   standalone: true,
   imports: [
-    DialogModule,
-    TestPrevisualizerComponent,
+    DialogModule, TestPrevisualizerComponent,
     SaveTestComponent,
     TestEditorComponent]
 })
@@ -30,7 +24,6 @@ export class LibE2eRecorderComponent {
   public showSavePanel = false;
   public showSavedTestsPanel = false;
   public cypressCommands: string[] = [];
-  private readonly dialog = inject(MatDialog);
 
   constructor(private e2eService: LibE2eCypressForDummysService,
     private readonly persistService: LibE2eCypressForDummysPersistentService,
@@ -53,14 +46,7 @@ export class LibE2eRecorderComponent {
   }
 
   public openSettings(): void {
-    const dialogRef = this.dialog.open(ConfigurationComponent, {
-      height: '400px',
-      width: '600px',
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-
-    });
+    //
   }
 
   public openTestpanel(): void {
