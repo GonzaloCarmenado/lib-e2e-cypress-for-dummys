@@ -9,8 +9,13 @@ export class LibE2eCypressForDummysPersistentService {
   constructor(private dbService: NgxIndexedDBService) {}
 
   // Insertar un test
-  public insertTest(data: any): Observable<number> {
-    return this.dbService.add('tests', { data }).pipe(
+  public insertTest(description: string, commandsAndItBlock: string): Observable<number> {
+    const test = {
+      description,
+      commandsAndItBlock,
+      createdAt: Date.now()
+    };
+    return this.dbService.add('tests', test).pipe(
       map(result => result.id)
     );
   }

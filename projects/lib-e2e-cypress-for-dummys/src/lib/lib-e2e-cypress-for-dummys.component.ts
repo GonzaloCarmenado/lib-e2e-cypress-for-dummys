@@ -8,6 +8,8 @@ import { DialogModule } from 'primeng/dialog';
 import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
 import { SaveTestComponent } from './components/save-test-data/save-test-data.component';
 import { LibE2eCypressForDummysPersistentService } from './services/lib-e2e-cypress-for-dummys-persist.service';
+import { LibE2eCypressForDummysTransformationService } from './lib-e2e-cypress-for-dummys.transformation.service';
+import { TestEditorComponent } from './components/test-editor/test-editor.component';
 @Component({
   selector: 'lib-e2e-recorder',
   templateUrl: './lib-e2e-cypress-for-dummys.component.html',
@@ -16,7 +18,8 @@ import { LibE2eCypressForDummysPersistentService } from './services/lib-e2e-cypr
   imports: [
     DialogModule,
     TestPrevisualizerComponent,
-    SaveTestComponent]
+    SaveTestComponent,
+    TestEditorComponent]
 })
 export class LibE2eRecorderComponent {
   @ViewChild('testBtn', { read: ElementRef }) testBtn!: ElementRef<HTMLButtonElement>;
@@ -25,11 +28,13 @@ export class LibE2eRecorderComponent {
   public controlFirstTimeData = true;
   public showTestPanel = false;
   public showSavePanel = false;
+  public showSavedTestsPanel = false;
   public cypressCommands: string[] = [];
   private readonly dialog = inject(MatDialog);
 
   constructor(private e2eService: LibE2eCypressForDummysService,
-    private readonly persistService: LibE2eCypressForDummysPersistentService
+    private readonly persistService: LibE2eCypressForDummysPersistentService,
+    private readonly transformationService: LibE2eCypressForDummysTransformationService
   ) {
     this.e2eService.isRecordingObservable().subscribe((val: any) => {
       this.isRecording = val;
@@ -92,6 +97,9 @@ export class LibE2eRecorderComponent {
       }, 0);
     }
   }
+  public openSavedTestsPanel(): void {
+    this.showSavedTestsPanel = !this.showSavedTestsPanel;
+  }
 
   public saveTestDataPanel(): void {
     this.showSavePanel = true;
@@ -101,13 +109,11 @@ export class LibE2eRecorderComponent {
   public onSaveTest(description: string | null): void {
     this.showSavePanel = false;
     if (description) {
-      this.persistService.insertTest({
-        description: description,
+      const completeTest: string = this.transformationService.generateItDescription(description, this.cypressCommands)
+      this.persistService.insertTest(description, completeTest).subscribe(id => {
+        console.log('Guardado con id', id);
       });
     }
-    this.persistService.getAllTests().subscribe((tests) => {
-      console.log('Tests guardados:', tests);
-    });
   }
   //#endregion CallBAcks de componentes hijos
 }

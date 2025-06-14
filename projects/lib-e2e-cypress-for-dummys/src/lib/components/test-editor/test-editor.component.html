@@ -1,0 +1,27 @@
+<div class="test-list-container">
+  <h2 class="test-list-title">Pruebas guardadas</h2>
+  @if (tests?.length === 0) {
+    <div class="test-list-empty">
+      No hay pruebas guardadas aún.
+    </div>
+  }
+  @for (test of tests; track test; let i = $index) {
+    <div class="test-card">
+      <div class="test-card-header" (click)="toggleExpand(i)">
+        <div>
+          <span class="test-card-desc">{{ test.description }}</span>
+          <span class="test-card-date">{{ test.createdAt | date:'short' }}</span>
+        </div>
+        <button class="btn btn-secondary btn-expand">
+          {{ expandedIndex === i ? '▲' : '▼' }}
+        </button>
+      </div>
+      @if (expandedIndex === i) {
+        <div class="test-card-body">
+          <pre class="test-card-commands">{{ test.commandsAndItBlock }}</pre>
+          <button class="btn btn-danger btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();">Eliminar</button>
+        </div>
+      }
+    </div>
+  }
+</div>

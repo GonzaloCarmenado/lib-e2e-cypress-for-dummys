@@ -1,16 +1,26 @@
 <button class="e2e-recorder-button" (click)="toggle()">
   {{ isRecording ? '⏹️ Parar' : '▶️ Grabar' }}
 </button>
+<button #testBtn class="saved-test-icon-button" (click)="openSavedTestsPanel()">
+  📋
+</button>
 <button #testBtn class="test-icon-button" (click)="openTestpanel()">
   📝
 </button>
 <button class="gear-icon-button" (click)="openSettings()">
   ⚙️
 </button>
-<p-dialog header="Previsualizador de comandos Cypress"  [(visible)]="showTestPanel">
-  <test-previsualizer-component [cypressCommands]="cypressCommands"></test-previsualizer-component>
+<p-dialog header="Previsualizador de comandos Cypress"
+  [(visible)]="showTestPanel">
+  <test-previsualizer-component
+    [cypressCommands]="cypressCommands"></test-previsualizer-component>
 </p-dialog>
 
-<p-dialog header="¿Guardar la grabación?"  [(visible)]="showSavePanel">
-  <save-test-data-component (savetest)="onSaveTest($event)"></save-test-data-component>
+<p-dialog header="Pruebas guardadas" [(visible)]="showSavedTestsPanel">
+  <test-editor-component></test-editor-component>
+</p-dialog>
+
+<p-dialog header="¿Guardar la grabación?" [(visible)]="showSavePanel">
+  <save-test-data-component
+    (savetest)="onSaveTest($event)"></save-test-data-component>
 </p-dialog>
