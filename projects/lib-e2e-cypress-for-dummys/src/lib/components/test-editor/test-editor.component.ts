@@ -10,16 +10,20 @@ import { DatePipe } from '@angular/common';
   imports: [DatePipe]
 })
 export class TestEditorComponent implements OnChanges {
-  @Input()public visible = false;
+  @Input() public visible = false;
   public tests: any[] = [];
   public expandedIndex: number | null = null;
 
-  constructor(private persistService: LibE2eCypressForDummysPersistentService) {}
+  constructor(private persistService: LibE2eCypressForDummysPersistentService) { }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['visible']?.currentValue) {
       this.loadTests();
     }
+  }
+
+  public copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text);
   }
 
   public loadTests() {

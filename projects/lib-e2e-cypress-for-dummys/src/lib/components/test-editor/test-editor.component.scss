@@ -90,3 +90,54 @@
   align-self: flex-end;
   margin-top: 0.5rem;
 }
+
+.test-card-actions {
+    display: ruby;
+    gap: 0.5rem;
+    text-align: end;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+
+.btn-copy,
+.btn-delete {
+  margin-right: 10px;
+  min-width: 110px; // asegura ancho mínimo igual
+  height: 2.4rem;   // altura fija para ambos
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  font-size: 1rem;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  justify-content: center;
+}
+
+.btn-copy {
+  background: #1976d2;
+  &:hover {
+    background: #1565c0;
+  }
+}
+
+.btn-delete {
+  background: #e53935;
+  &:hover {
+    background: #b71c1c;
+  }
+}
+
+// Opcional: fuerza el tamaño de los iconos emoji para igualar altura
+.btn-copy span,
+.btn-delete span {
+  font-size: 1.2em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}

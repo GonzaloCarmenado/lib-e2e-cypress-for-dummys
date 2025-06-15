@@ -25,10 +25,17 @@ export class SaveTestComponent {
   }
 
   public confirmSave() {
+    this.restartComponent();
     this.savetest.emit(this.description.trim());
   }
 
   public cancel() {
+    this.restartComponent();
     this.savetest.emit(null);
+  }
+
+  public restartComponent() {
+    this.step = 'ask';
+    this.description = '';
   }
 }

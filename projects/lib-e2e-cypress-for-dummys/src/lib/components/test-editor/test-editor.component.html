@@ -18,7 +18,14 @@
       @if (expandedIndex === i) {
         <div class="test-card-body">
           <pre class="test-card-commands">{{ test.commandsAndItBlock }}</pre>
-          <button class="btn btn-danger btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();">Eliminar</button>
+          <div class="test-card-actions">
+            <button class="btn btn-copy" (click)="copyToClipboard(test.commandsAndItBlock); $event.stopPropagation();" title="Copiar al portapapeles">
+              📋 Copiar
+            </button>
+            <button class="btn btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();" title="Eliminar prueba">
+              🗑️ Eliminar
+            </button>
+          </div>
         </div>
       }
     </div>
