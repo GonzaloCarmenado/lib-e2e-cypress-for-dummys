@@ -65,33 +65,24 @@ export class LibE2eCypressForDummysService {
    * Si no se puede generar un selector confiable, se añade un comentario indicando el problema.
    * @private
    */
-  private listenToClicks(): void {
-    this.document.addEventListener('click', (event: Event) => {
-      const target = event.target as HTMLElement;
-      // Ignora elementos que no son interactivos para evitar generar basura
-      if (!target || this.isInteractiveElement(target)) return;
+private listenToClicks(): void {
+  this.document.addEventListener('click', (event: Event) => {
+    const target = event.target as HTMLElement;
+    if (!target || this.isInteractiveElement(target)) return;
+    const container = target.closest<HTMLElement>('[data-cy], [id]');
+    if (!container) return;
 
-      // Por defecto intentará coger [data-cy], sin embargo, por si no se tiene control sobre el HTML que queremos
-      // (por ejemplo una librería extera), también se puede usar el id del elemento.
-      const container = target.closest<HTMLElement>('[data-cy], [id]');
-      if (!container) return;
+    const selector = this.getReliableSelector(container);
+    let cyCommand = '';
 
-      const dataCy = container.getAttribute('data-cy');
-      const id = container.id;
-
-      let cyCommand = '';
-
-      if (dataCy) {
-        cyCommand = `cy.get('[data-cy="${dataCy}"]').click()`;
-      } else if (id) {
-        cyCommand = `cy.get('#${id}').click()`;
-      } else {
-        cyCommand = '// No se pudo generar un selector confiable para click';
-      }
-      // Añade el comando generado a la lista de comandos
-      this.addCommand(cyCommand);
-    });
-  }
+    if (selector) {
+      cyCommand = `cy.get('${selector}').click()`;
+    } else {
+      cyCommand = '// No se pudo generar un selector confiable para click';
+    }
+    this.addCommand(cyCommand);
+  });
+}
 
   /**
    * Escucha los eventos de entrada de texto en inputs y textareas, generando comandos Cypress para limpiar y escribir el valor.
@@ -99,59 +90,45 @@ export class LibE2eCypressForDummysService {
    * @private
    * @memberof LibE2eCypressForDummysService
    */
-  private listenToInput(): void {
-    this.document.addEventListener('input', (event: Event) => {
-      if (!this.isRecording$.getValue()) return;
-      const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-      if (!target) return;
+ private listenToInput(): void {
+  this.document.addEventListener('input', (event: Event) => {
+    if (!this.isRecording$.getValue()) return;
+    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+    if (!target) return;
 
-      const isTextInput =
-        target.tagName.toLowerCase() === 'textarea' ||
-        (target.tagName.toLowerCase() === 'input' &&
-          INPUT_TYPES.includes(target.type));
+    const isTextInput =
+      target.tagName.toLowerCase() === 'textarea' ||
+      (target.tagName.toLowerCase() === 'input' &&
+        INPUT_TYPES.includes(target.type));
 
-      // No continua si el input tiene un tipo que no está reconocido dentro de nuestro listado
-      if (!isTextInput) return;
+    if (!isTextInput) return;
 
-      // Por defecto intentará coger [data-cy], sin embargo, por si no se tiene control sobre el HTML que queremos
-      // (por ejemplo una librería extera), también se puede usar el id del elemento.
-      const clickable = target.closest<HTMLElement>('[data-cy], [id]');
+    const clickable = target.closest<HTMLElement>('[data-cy], [id]');
+    if (!clickable) return;
 
-      if (!clickable) return;
+    if (this.inputDebounceTimers.has(target)) {
+      clearTimeout(this.inputDebounceTimers.get(target));
+    }
 
-      // Limpia cualquier temporizador anterior para este input
-      if (this.inputDebounceTimers.has(target)) {
-        clearTimeout(this.inputDebounceTimers.get(target));
-      }
+    this.inputDebounceTimers.set(
+      target,
+      setTimeout(() => {
+        const selector = this.getReliableSelector(clickable);
+        const value = target.value.replace(/'/g, "\\'");
+        let cyCommand = '';
 
-      // Ponemos un debounce de 1000ms para evitar que se repitan de manera innecesaria los comandos con cada
-      // caracter que se escribe.
-      this.inputDebounceTimers.set(
-        target,
-        setTimeout(() => {
-          const dataCy = clickable.getAttribute('data-cy');
-          const id = clickable.id;
-          const value = target.value.replace(/'/g, "\\'");
+        if (selector) {
+          cyCommand = `cy.get('${selector}').clear().type('${value}')`;
+        } else {
+          cyCommand = '// No se pudo generar un selector confiable para type';
+        }
 
-          let cyCommand = '';
-
-          if (dataCy) {
-            cyCommand = `cy.get('[data-cy="${dataCy}"]').clear().type('${value}')`;
-          } else if (id) {
-            cyCommand = `cy.get('#${id}').clear().type('${value}')`;
-          } else {
-            cyCommand = '// No se pudo generar un selector confiable para type';
-          }
-
-          // Añade el comando generado a la lista de comandos
-          this.addCommand(cyCommand);
-
-          // Limpiamos el timer almacenado
-          this.inputDebounceTimers.delete(target);
-        }, 1000)
-      );
-    });
-  }
+        this.addCommand(cyCommand);
+        this.inputDebounceTimers.delete(target);
+      }, 1000)
+    );
+  });
+}
 
   /**
    * Escucha los eventos de cambio en selectores (elementos <select>) y genera comandos Cypress para seleccionar el valor.
@@ -159,34 +136,26 @@ export class LibE2eCypressForDummysService {
    * @private
    * @memberof LibE2eCypressForDummysService
    */
-  private listenToSelect(): void {
-    this.document.addEventListener('change', (event: Event) => {
-      const target = event.target as HTMLSelectElement;
-      // Ignora elementos que no son selectores para evitar generar basura
-      if (!target || target.tagName.toLowerCase() !== 'select') return;
+private listenToSelect(): void {
+  this.document.addEventListener('change', (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    if (!target || target.tagName.toLowerCase() !== 'select') return;
 
-      // Por defecto intentará coger [data-cy], sin embargo, por si no se tiene control sobre el HTML que queremos
-      // (por ejemplo una librería extera), también se puede usar el id del elemento.
-      const container = target.closest<HTMLElement>('[data-cy], [id]');
-      if (!container) return;
+    const container = target.closest<HTMLElement>('[data-cy], [id]');
+    if (!container) return;
 
-      const dataCy = container.getAttribute('data-cy');
-      const id = container.id;
-      const selectedValue = target.value.replace(/'/g, "\\'");
+    const selector = this.getReliableSelector(container);
+    const selectedValue = target.value.replace(/'/g, "\\'");
+    let cyCommand = '';
 
-      let cyCommand = '';
-
-      if (dataCy) {
-        cyCommand = `cy.get('[data-cy="${dataCy}"]').select('${selectedValue}')`;
-      } else if (id) {
-        cyCommand = `cy.get('#${id}').select('${selectedValue}')`;
-      } else {
-        cyCommand = '// No se pudo generar un selector confiable para select';
-      }
-      // Añade el comando generado a la lista de comandos
-      this.addCommand(cyCommand);
-    });
-  }
+    if (selector) {
+      cyCommand = `cy.get('${selector}').select('${selectedValue}')`;
+    } else {
+      cyCommand = '// No se pudo generar un selector confiable para select';
+    }
+    this.addCommand(cyCommand);
+  });
+}
 
   /**
    * Determina si el elemento objetivo es interactivo (input, select, textarea, option).
@@ -349,6 +318,34 @@ export class LibE2eCypressForDummysService {
     this.commandList$.next([]);
     this.interceptors$.next([]);
   }
+
+  /**
+ * Devuelve el selector Cypress más fiable para un elemento: primero [data-cy], luego id si es "fiable".
+ * Si no hay ninguno, devuelve null.
+ */
+private getReliableSelector(element: HTMLElement): string | null {
+  const dataCy = element.getAttribute('data-cy');
+  debugger
+  if (dataCy) {
+    return `[data-cy="${dataCy}"]`;
+  }
+  const id = element.id;
+  // Filtros: descarta ids generados por frameworks o sospechosos
+  const forbiddenPrefixes = [
+    'cdk-', 'mat-', 'p-', 'ng-', 'mdc-', 'primeng-', 'auto-', 'field-', 'input-', 'select-'
+  ];
+  const isCustomId =
+    id &&
+    id.length < 25 &&
+    /^[a-zA-Z][\w-]*$/.test(id) &&
+    !forbiddenPrefixes.some(prefix => id.startsWith(prefix)) &&
+    !/^\d+$/.test(id);
+
+  if (isCustomId) {
+    return `#${id}`;
+  }
+  return null;
+}
 
   //#endregion Métodos miscelaneos
 }
