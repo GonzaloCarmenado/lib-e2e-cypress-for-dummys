@@ -325,7 +325,6 @@ private listenToSelect(): void {
  */
 private getReliableSelector(element: HTMLElement): string | null {
   const dataCy = element.getAttribute('data-cy');
-  debugger
   if (dataCy) {
     return `[data-cy="${dataCy}"]`;
   }

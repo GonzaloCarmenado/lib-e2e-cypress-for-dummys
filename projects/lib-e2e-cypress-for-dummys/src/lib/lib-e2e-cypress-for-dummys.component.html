@@ -16,17 +16,15 @@
   ⚙️
   <span class="tooltip-text">Configuración</span>
 </button>
-<p-dialog header="Previsualizador de comandos Cypress"
-  [(visible)]="showTestPanel">
-  <test-previsualizer-component
-    [cypressCommands]="cypressCommands"></test-previsualizer-component>
+<p-dialog header="Previsualizador de comandos Cypress" [(visible)]="showTestPanel">
+  <test-previsualizer-component [cypressCommands]="cypressCommands"></test-previsualizer-component>
 </p-dialog>
 
 <p-dialog header="Pruebas guardadas" [(visible)]="showSavedTestsPanel">
-  <test-editor-component  [visible]="showSavedTestsPanel"></test-editor-component>
+  <test-editor-component [visible]="showSavedTestsPanel"></test-editor-component>
 </p-dialog>
 
+
 <p-dialog header="¿Guardar la grabación?" [(visible)]="showSavePanel">
-  <save-test-data-component
-    (savetest)="onSaveTest($event)"></save-test-data-component>
+  <save-test-data-component #saveTestVC (savetest)="onSaveTest($event)"></save-test-data-component>
 </p-dialog>

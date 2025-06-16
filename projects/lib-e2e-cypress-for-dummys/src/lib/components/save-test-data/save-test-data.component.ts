@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './save-test-data.component.html',
   styleUrls: ['./save-test-data.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule],
 })
 export class SaveTestComponent {
   /**
@@ -25,12 +25,10 @@ export class SaveTestComponent {
   }
 
   public confirmSave() {
-    this.restartComponent();
     this.savetest.emit(this.description.trim());
   }
 
   public cancel() {
-    this.restartComponent();
     this.savetest.emit(null);
   }
 
