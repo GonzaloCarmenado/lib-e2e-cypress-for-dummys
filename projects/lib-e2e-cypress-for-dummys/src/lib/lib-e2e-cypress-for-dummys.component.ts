@@ -99,6 +99,7 @@ export class LibE2eRecorderComponent {
   }
 
   //#region CallBAcks de componentes hijos
+  // ...existing code...
   public onSaveTest(description: string | null): void {
     this.saveTestCR.restartComponent();
     if (description) {
@@ -107,14 +108,22 @@ export class LibE2eRecorderComponent {
           description,
           this.cypressCommands
         );
+      // 1. Obtener interceptores actuales
+      const interceptors = this.e2eService.getInterceptorsSnapshot();
+      // 2. Pasar interceptores a insertTest
       this.persistService
-        .insertTest(description, completeTest)
+        .insertTest(description, completeTest, interceptors)
         .subscribe((id) => {
           console.log('Guardado con id', id);
         });
+      // 3. Limpiar interceptores tras guardar
+      if (this.e2eService.clearInterceptors) {
+        this.e2eService.clearInterceptors();
+      }
     }
     this.showSavePanel = false;
     this.e2eService.clearCommands();
   }
+  // ...existing code...
   //#endregion CallBAcks de componentes hijos
 }

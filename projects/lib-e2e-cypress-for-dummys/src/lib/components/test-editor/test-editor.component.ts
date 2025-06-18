@@ -7,14 +7,17 @@ import { DatePipe } from '@angular/common';
   templateUrl: './test-editor.component.html',
   styleUrls: ['./test-editor.component.scss'],
   standalone: true,
-  imports: [DatePipe]
+  imports: [DatePipe],
 })
 export class TestEditorComponent implements OnChanges {
   @Input() public visible = false;
   public tests: any[] = [];
   public expandedIndex: number | null = null;
+  public interceptorsByTest!: { [testId: number]: string[] };
 
-  constructor(private persistService: LibE2eCypressForDummysPersistentService) { }
+  constructor(private persistService: LibE2eCypressForDummysPersistentService) {
+    this.interceptorsByTest = {};
+  }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['visible']?.currentValue) {
@@ -26,15 +29,47 @@ export class TestEditorComponent implements OnChanges {
     navigator.clipboard.writeText(text);
   }
 
-  public loadTests() {
-    this.persistService.getAllTests().subscribe(tests => this.tests = tests);
+  public copyInterceptors(testId: number): void {
+    const interceptors = this.interceptorsByTest[testId];
+    if (interceptors && interceptors.length) {
+      navigator.clipboard.writeText(interceptors.join('\n'));
+    }
   }
 
-  public toggleExpand(index: number) {
+  public loadTests() {
+    this.persistService
+      .getAllTests()
+      .subscribe((tests) => (this.tests = tests));
+  }
+
+  public toggleExpand(index: number): void {
     this.expandedIndex = this.expandedIndex === index ? null : index;
+    if (this.expandedIndex !== null) {
+      const test = this.tests[this.expandedIndex];
+      if (test && test.id && !this.interceptorsByTest[test.id]) {
+        this.persistService
+          .getInterceptorsByTestId(test.id)
+          .subscribe((records) => {
+            const allCommands = records.map((r) => r.commands).join('\n');
+            this.interceptorsByTest[test.id] = allCommands
+              ? allCommands
+                  .split('\n')
+                  .map((line) => line.trim())
+                  .filter((line) => !!line)
+              : [];
+          });
+      }
+    }
   }
 
   public deleteTest(id: number) {
     this.persistService.deleteTest(id).subscribe(() => this.loadTests());
+  }
+
+  public hasInterceptors(testId: number): boolean {
+    return (
+      Array.isArray(this.interceptorsByTest[testId]) &&
+      this.interceptorsByTest[testId].length > 0
+    );
   }
 }

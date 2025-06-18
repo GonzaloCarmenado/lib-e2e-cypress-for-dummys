@@ -1,20 +1,11 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { NgxIndexedDBModule, DBConfig } from 'ngx-indexed-db';
+import { dataBaseConfiguration } from './models/BBDD/data-base-configuration.model';
 
-export const dbConfig: DBConfig  = {
-  name: 'E2ECypressDB',
-  version: 1,
-  objectStoresMeta: [{
-    store: 'tests',
-    storeConfig: { keyPath: 'id', autoIncrement: true },
-    storeSchema: [
-      { name: 'data', keypath: 'data', options: { unique: false } }
-    ]
-  }]
-};
+export const dbConfig: DBConfig = dataBaseConfiguration;
 
 @NgModule({
   imports: [NgxIndexedDBModule.forRoot(dbConfig)],
-  exports: []
+  exports: [],
 })
 export class LibE2eCypressForDummysModule {}

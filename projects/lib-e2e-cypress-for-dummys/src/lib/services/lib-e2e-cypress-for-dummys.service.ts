@@ -205,9 +205,9 @@ export class LibE2eCypressForDummysService {
    */
   public registerInterceptor(method: string, url: string, alias: string): void {
     const current = this.interceptors$.getValue();
-
     const command = `cy.intercept('${method}', '${this.urlToWildcard(
-      url
+      url,
+      method
     )}').as('${alias}')`;
 
     // Si el comando ya existe, no lo añade de nuevo
@@ -225,18 +225,18 @@ export class LibE2eCypressForDummysService {
    * Estandariza la url recibida para hacerla apta para diferentes entornos y filtros de Queystring
    * @private
    * @param {string} url Url del endpoint al que se ha llamado
+   * @param {string} method Metodo del endpoint
    * @return {*}  {string}
    * @memberof LibE2eCypressForDummysService
    */
-  private urlToWildcard(url: string): string {
-    // Convierte a algo tipo '**/api/v1/RequestJob/**'
+  private urlToWildcard(url: string, method: string): string {
     const u = new URL(url, 'http://localhost');
-    return `**${u.pathname}/**`;
-  }
-
-  private extractFilter(url: string): string {
-    const u = new URL(url, 'http://localhost');
-    return u.search || '';
+    // Si es GET y tiene query string, termina en /**
+    if (method.toUpperCase() === 'GET' && u.search) {
+      return `**${u.pathname}/**`;
+    }
+    // Para POST (y otros), solo el path
+    return `**${u.pathname}`;
   }
   //#endregion Interceptores
 
@@ -306,6 +306,13 @@ export class LibE2eCypressForDummysService {
     return this.commandList$.getValue();
   }
 
+  public getInterceptorsSnapshot(): string[] {
+    return this.interceptors$.getValue();
+  }
+
+  public clearInterceptors(): void {
+    this.interceptors$.next([]);
+  }
   /**
    * Borra todos los comandos Cypress almacenados en las listas.
    * @memberof LibE2eCypressForDummysService

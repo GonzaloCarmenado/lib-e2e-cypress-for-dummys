@@ -1,33 +1,55 @@
 <div class="test-list-container">
   @if (tests.length === 0) {
-    <div class="test-list-empty">
-      No hay pruebas guardadas aún.
-    </div>
+  <div class="test-list-empty">
+    No hay pruebas guardadas aún.
+  </div>
   }
   @for (test of tests; track test; let i = $index) {
-    <div class="test-card">
-      <div class="test-card-header" (click)="toggleExpand(i)">
-        <div>
-          <span class="test-card-desc">{{ test.description }}</span>
-          <span class="test-card-date">{{ test.createdAt | date:'short' }}</span>
-        </div>
-        <button class="btn btn-secondary btn-expand">
-          {{ expandedIndex === i ? '▲' : '▼' }}
-        </button>
+  <div class="test-card">
+    <div class="test-card-header" (click)="toggleExpand(i)">
+      <div>
+        <span class="test-card-desc">{{ test.description }}</span>
+        <span class="test-card-date">{{ test.createdAt | date:'short' }}</span>
       </div>
-      @if (expandedIndex === i) {
-        <div class="test-card-body">
-          <pre class="test-card-commands">{{ test.commandsAndItBlock }}</pre>
-          <div class="test-card-actions">
-            <button class="btn btn-copy" (click)="copyToClipboard(test.commandsAndItBlock); $event.stopPropagation();" title="Copiar al portapapeles">
+      <button class="btn btn-secondary btn-expand">
+        {{ expandedIndex === i ? '▲' : '▼' }}
+      </button>
+    </div>
+    @if (expandedIndex === i) {
+    <div class="test-card-body">
+      <div class="test-card-section">
+        <div class="test-card-section-header">
+          <span>Comandos Cypress</span>
+          <button class="btn btn-copy" (click)="copyToClipboard(test.commandsAndItBlock); $event.stopPropagation();"
+            title="Copiar comandos Cypress">
+            📋 Copiar
+          </button>
+        </div>
+        <pre class="test-card-commands">{{ test.commandsAndItBlock }}</pre>
+      </div>
+      @if(hasInterceptors(test.id)){
+      <ng-container>
+        <div class="test-card-section">
+          <div class="test-card-section-header">
+            <span class="test-card-interceptors-title">Interceptores asociados</span>
+            <button class="btn btn-copy" (click)="copyInterceptors(test.id); $event.stopPropagation();"
+              title="Copiar interceptores">
               📋 Copiar
             </button>
-            <button class="btn btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();" title="Eliminar prueba">
-              🗑️ Eliminar
-            </button>
           </div>
+          <pre class="test-card-interceptors">
+            {{ interceptorsByTest[test.id].join('\n') }}
+                  </pre>
         </div>
+      </ng-container>
       }
+      <div class="test-card-actions">
+        <button class="btn btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();" title="Eliminar prueba">
+          🗑️ Eliminar
+        </button>
+      </div>
     </div>
+    }
+  </div>
   }
 </div>
