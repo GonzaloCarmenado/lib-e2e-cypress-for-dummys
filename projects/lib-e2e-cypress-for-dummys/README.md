@@ -25,6 +25,15 @@ npm install lib-e2e-cypress-for-dummys
 
 2. Asegúrate de tener como peer dependencies `@angular/core` y `@angular/common` versión **18.0.0 o superior**.
 
+3. En función de tu versión de Angular, instalar `primeng` en la versión que corresponda  (18, 19...).
+
+4. Añade a los proveedores el la configuración de la BBDD .
+```bash
+    providers: [
+      provideIndexedDb(dbConfig),
+    ]
+```
+
 ---
 
 ## 🚦 Uso básico

@@ -8,6 +8,7 @@ import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-
   standalone: true,
 })
 export class ConfigurationComponent {
+    public showExportSection = true;
   constructor(
     private persistService: LibE2eCypressForDummysPersistentService
   ) {}
@@ -37,7 +38,6 @@ export class ConfigurationComponent {
     const reader = new FileReader();
     reader.onload = async () => {
       try {
-        debugger;
         const data = JSON.parse(reader.result as string);
         await this.persistService.clearAllData().toPromise();
         await this.persistService.ingestFileData(data.tests, data.interceptors);

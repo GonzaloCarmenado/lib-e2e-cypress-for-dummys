@@ -17,3 +17,77 @@
 .btn-primary:hover {
   background: #1565c0;
 }
+.config-collapsible-section {
+  width: 555px;
+  margin: 2rem 0;
+  border-radius: 8px;
+  background: #f5f7fa;
+  box-shadow: 0 2px 8px #0001;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.5rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  background: #1976d2;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.collapsible-header:hover {
+  background: #1565c0;
+}
+
+.collapsible-icon {
+  font-size: 1.2rem;
+  margin-left: 1rem;
+}
+
+.collapsible-content {
+  padding: 1.5rem;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+}
+
+.config-export-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-primary {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.7rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: #1565c0;
+}
+.btn-success {
+  background: #43a047;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.7rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-success:hover {
+  background: #388e3c;
+}
