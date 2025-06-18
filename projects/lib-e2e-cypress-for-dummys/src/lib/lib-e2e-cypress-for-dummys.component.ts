@@ -6,6 +6,7 @@ import { SaveTestComponent } from './components/save-test-data/save-test-data.co
 import { LibE2eCypressForDummysPersistentService } from './services/lib-e2e-cypress-for-dummys-persist.service';
 import { LibE2eCypressForDummysTransformationService } from './lib-e2e-cypress-for-dummys.transformation.service';
 import { TestEditorComponent } from './components/test-editor/test-editor.component';
+import { ConfigurationComponent } from './components/configurations/configuration.component';
 @Component({
   selector: 'lib-e2e-recorder',
   templateUrl: './lib-e2e-cypress-for-dummys.component.html',
@@ -16,6 +17,7 @@ import { TestEditorComponent } from './components/test-editor/test-editor.compon
     TestPrevisualizerComponent,
     SaveTestComponent,
     TestEditorComponent,
+    ConfigurationComponent,
   ],
 })
 export class LibE2eRecorderComponent {
@@ -28,6 +30,7 @@ export class LibE2eRecorderComponent {
   public showTestPanel = false;
   public showSavePanel = false;
   public showSavedTestsPanel = false;
+  public showConfigurationPanel = false;
   public cypressCommands: string[] = [];
 
   constructor(
@@ -52,7 +55,7 @@ export class LibE2eRecorderComponent {
   }
 
   public openSettings(): void {
-    //
+    this.showConfigurationPanel = !this.showConfigurationPanel;
   }
 
   public openTestpanel(): void {

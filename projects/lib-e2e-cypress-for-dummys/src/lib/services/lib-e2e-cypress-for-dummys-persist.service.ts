@@ -88,4 +88,40 @@ export class LibE2eCypressForDummysPersistentService {
     );
   }
   //#endregion Persistencia de los interceptores
+
+  public clearAllData(): Observable<void> {
+    return new Observable<void>((observer) => {
+      Promise.all([
+        this.dbService.clear('tests'),
+        this.dbService.clear('interceptors'),
+      ]).then(() => {
+        observer.next();
+        observer.complete();
+      });
+    });
+  }
+
+  public ingestFileData(tests: any[], interceptors: any[]): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (Array.isArray(tests)) {
+          for (const test of tests) {
+            const { id, ...testWithoutId } = test;
+            await this.dbService.add('tests', testWithoutId).toPromise();
+          }
+        }
+        if (Array.isArray(interceptors)) {
+          for (const interceptor of interceptors) {
+            const { id, ...interceptorWithoutId } = interceptor;
+            await this.dbService
+              .add('interceptors', interceptorWithoutId)
+              .toPromise();
+          }
+        }
+        resolve();
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
 }

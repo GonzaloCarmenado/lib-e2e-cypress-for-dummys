@@ -1,0 +1,19 @@
+.config-export-section {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+}
+.btn-primary {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.7rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: #1565c0;
+}

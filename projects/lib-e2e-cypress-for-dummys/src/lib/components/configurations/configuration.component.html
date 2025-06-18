@@ -1,1 +1,7 @@
-Work in progress...
+<div class="config-export-section">
+    <button class="btn btn-primary" (click)="exportAllData()">Exportar datos de la BBDD</button>
+    <label class="btn btn-success" style="margin-left: 1rem; cursor:pointer;">
+        Importar datos
+        <input type="file" accept="application/json" (change)="importAllData($event)" style="display:none;">
+    </label>
+</div>

@@ -28,3 +28,7 @@
 <p-dialog header="¿Guardar la grabación?" [(visible)]="showSavePanel">
   <save-test-data-component #saveTestVC (savetest)="onSaveTest($event)"></save-test-data-component>
 </p-dialog>
+
+<p-dialog header="Configuración" [(visible)]="showConfigurationPanel">
+  <configuration-component></configuration-component>
+</p-dialog>
