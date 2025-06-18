@@ -65,24 +65,24 @@ export class LibE2eCypressForDummysService {
    * Si no se puede generar un selector confiable, se añade un comentario indicando el problema.
    * @private
    */
-private listenToClicks(): void {
-  this.document.addEventListener('click', (event: Event) => {
-    const target = event.target as HTMLElement;
-    if (!target || this.isInteractiveElement(target)) return;
-    const container = target.closest<HTMLElement>('[data-cy], [id]');
-    if (!container) return;
+  private listenToClicks(): void {
+    this.document.addEventListener('click', (event: Event) => {
+      const target = event.target as HTMLElement;
+      if (!target || this.isInteractiveElement(target)) return;
+      const container = target.closest<HTMLElement>('[data-cy], [id]');
+      if (!container) return;
 
-    const selector = this.getReliableSelector(container);
-    let cyCommand = '';
+      const selector = this.getReliableSelector(container);
+      let cyCommand = '';
 
-    if (selector) {
-      cyCommand = `cy.get('${selector}').click()`;
-    } else {
-      cyCommand = '// No se pudo generar un selector confiable para click';
-    }
-    this.addCommand(cyCommand);
-  });
-}
+      if (selector) {
+        cyCommand = `cy.get('${selector}').click()`;
+      } else {
+        cyCommand = '// No se pudo generar un selector confiable para click';
+      }
+      this.addCommand(cyCommand);
+    });
+  }
 
   /**
    * Escucha los eventos de entrada de texto en inputs y textareas, generando comandos Cypress para limpiar y escribir el valor.
@@ -90,45 +90,45 @@ private listenToClicks(): void {
    * @private
    * @memberof LibE2eCypressForDummysService
    */
- private listenToInput(): void {
-  this.document.addEventListener('input', (event: Event) => {
-    if (!this.isRecording$.getValue()) return;
-    const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-    if (!target) return;
+  private listenToInput(): void {
+    this.document.addEventListener('input', (event: Event) => {
+      if (!this.isRecording$.getValue()) return;
+      const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+      if (!target) return;
 
-    const isTextInput =
-      target.tagName.toLowerCase() === 'textarea' ||
-      (target.tagName.toLowerCase() === 'input' &&
-        INPUT_TYPES.includes(target.type));
+      const isTextInput =
+        target.tagName.toLowerCase() === 'textarea' ||
+        (target.tagName.toLowerCase() === 'input' &&
+          INPUT_TYPES.includes(target.type));
 
-    if (!isTextInput) return;
+      if (!isTextInput) return;
 
-    const clickable = target.closest<HTMLElement>('[data-cy], [id]');
-    if (!clickable) return;
+      const clickable = target.closest<HTMLElement>('[data-cy], [id]');
+      if (!clickable) return;
 
-    if (this.inputDebounceTimers.has(target)) {
-      clearTimeout(this.inputDebounceTimers.get(target));
-    }
+      if (this.inputDebounceTimers.has(target)) {
+        clearTimeout(this.inputDebounceTimers.get(target));
+      }
 
-    this.inputDebounceTimers.set(
-      target,
-      setTimeout(() => {
-        const selector = this.getReliableSelector(clickable);
-        const value = target.value.replace(/'/g, "\\'");
-        let cyCommand = '';
+      this.inputDebounceTimers.set(
+        target,
+        setTimeout(() => {
+          const selector = this.getReliableSelector(clickable);
+          const value = target.value.replace(/'/g, "\\'");
+          let cyCommand = '';
 
-        if (selector) {
-          cyCommand = `cy.get('${selector}').clear().type('${value}')`;
-        } else {
-          cyCommand = '// No se pudo generar un selector confiable para type';
-        }
+          if (selector) {
+            cyCommand = `cy.get('${selector}').clear().type('${value}')`;
+          } else {
+            cyCommand = '// No se pudo generar un selector confiable para type';
+          }
 
-        this.addCommand(cyCommand);
-        this.inputDebounceTimers.delete(target);
-      }, 1000)
-    );
-  });
-}
+          this.addCommand(cyCommand);
+          this.inputDebounceTimers.delete(target);
+        }, 1000)
+      );
+    });
+  }
 
   /**
    * Escucha los eventos de cambio en selectores (elementos <select>) y genera comandos Cypress para seleccionar el valor.
@@ -136,26 +136,26 @@ private listenToClicks(): void {
    * @private
    * @memberof LibE2eCypressForDummysService
    */
-private listenToSelect(): void {
-  this.document.addEventListener('change', (event: Event) => {
-    const target = event.target as HTMLSelectElement;
-    if (!target || target.tagName.toLowerCase() !== 'select') return;
+  private listenToSelect(): void {
+    this.document.addEventListener('change', (event: Event) => {
+      const target = event.target as HTMLSelectElement;
+      if (!target || target.tagName.toLowerCase() !== 'select') return;
 
-    const container = target.closest<HTMLElement>('[data-cy], [id]');
-    if (!container) return;
+      const container = target.closest<HTMLElement>('[data-cy], [id]');
+      if (!container) return;
 
-    const selector = this.getReliableSelector(container);
-    const selectedValue = target.value.replace(/'/g, "\\'");
-    let cyCommand = '';
+      const selector = this.getReliableSelector(container);
+      const selectedValue = target.value.replace(/'/g, "\\'");
+      let cyCommand = '';
 
-    if (selector) {
-      cyCommand = `cy.get('${selector}').select('${selectedValue}')`;
-    } else {
-      cyCommand = '// No se pudo generar un selector confiable para select';
-    }
-    this.addCommand(cyCommand);
-  });
-}
+      if (selector) {
+        cyCommand = `cy.get('${selector}').select('${selectedValue}')`;
+      } else {
+        cyCommand = '// No se pudo generar un selector confiable para select';
+      }
+      this.addCommand(cyCommand);
+    });
+  }
 
   /**
    * Determina si el elemento objetivo es interactivo (input, select, textarea, option).
@@ -188,7 +188,7 @@ private listenToSelect(): void {
    * @memberof LibE2eCypressForDummysService
    */
   public addCommand(cmd: string): void {
-    if(this.isRecording$.getValue()){
+    if (this.isRecording$.getValue()) {
       const current = this.commandList$.getValue();
       this.commandList$.next([...current, cmd]);
     }
@@ -208,11 +208,7 @@ private listenToSelect(): void {
 
     const command = `cy.intercept('${method}', '${this.urlToWildcard(
       url
-    )}', (req) => {
-        if (req.url.includes('${this.extractFilter(url)}')) {
-          req.alias = '${alias}';
-        }
-      });`;
+    )}').as('${alias}')`;
 
     // Si el comando ya existe, no lo añade de nuevo
     // Esto evita que se dupliquen los interceptores en la lista
@@ -320,31 +316,40 @@ private listenToSelect(): void {
   }
 
   /**
- * Devuelve el selector Cypress más fiable para un elemento: primero [data-cy], luego id si es "fiable".
- * Si no hay ninguno, devuelve null.
- */
-private getReliableSelector(element: HTMLElement): string | null {
-  const dataCy = element.getAttribute('data-cy');
-  if (dataCy) {
-    return `[data-cy="${dataCy}"]`;
-  }
-  const id = element.id;
-  // Filtros: descarta ids generados por frameworks o sospechosos
-  const forbiddenPrefixes = [
-    'cdk-', 'mat-', 'p-', 'ng-', 'mdc-', 'primeng-', 'auto-', 'field-', 'input-', 'select-'
-  ];
-  const isCustomId =
-    id &&
-    id.length < 25 &&
-    /^[a-zA-Z][\w-]*$/.test(id) &&
-    !forbiddenPrefixes.some(prefix => id.startsWith(prefix)) &&
-    !/^\d+$/.test(id);
+   * Devuelve el selector Cypress más fiable para un elemento: primero [data-cy], luego id si es "fiable".
+   * Si no hay ninguno, devuelve null.
+   */
+  private getReliableSelector(element: HTMLElement): string | null {
+    const dataCy = element.getAttribute('data-cy');
+    if (dataCy) {
+      return `[data-cy="${dataCy}"]`;
+    }
+    const id = element.id;
+    // Filtros: descarta ids generados por frameworks o sospechosos
+    const forbiddenPrefixes = [
+      'cdk-',
+      'mat-',
+      'p-',
+      'ng-',
+      'mdc-',
+      'primeng-',
+      'auto-',
+      'field-',
+      'input-',
+      'select-',
+    ];
+    const isCustomId =
+      id &&
+      id.length < 25 &&
+      /^[a-zA-Z][\w-]*$/.test(id) &&
+      !forbiddenPrefixes.some((prefix) => id.startsWith(prefix)) &&
+      !/^\d+$/.test(id);
 
-  if (isCustomId) {
-    return `#${id}`;
+    if (isCustomId) {
+      return `#${id}`;
+    }
+    return null;
   }
-  return null;
-}
 
   //#endregion Métodos miscelaneos
 }

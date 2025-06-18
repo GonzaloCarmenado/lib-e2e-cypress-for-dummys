@@ -24,7 +24,7 @@ export const CypressHttpInterceptor = (
           event instanceof HttpResponse
         ) {
           const url = req.urlWithParams;
-          const alias = generateAlias(url);
+          const alias = generateAlias(req.method, url);
 
           // Guarda el interceptor si es nuevo
           e2eService.registerInterceptor(req.method, url, alias);
@@ -39,12 +39,12 @@ export const CypressHttpInterceptor = (
   );
 };
 
-function generateAlias(url: string): string {
+function generateAlias(method: string, url: string): string {
   try {
     const u = new URL(url, 'http://localhost');
     const path = u.pathname.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-');
-    return path.replace(/^-|-$/g, '');
+    return `${method.toLowerCase()}-${path.replace(/^-|-$/g, '')}`;
   } catch {
-    return 'intercepted-request';
+    return `${method.toLowerCase()}-intercepted-request`;
   }
 }
