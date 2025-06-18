@@ -1,64 +1,82 @@
 # 🚀 lib-e2e-cypress-for-dummys
 
-**lib-e2e-cypress-for-dummys** es una librería Angular que te permite grabar de forma automática los comandos Cypress necesarios para testear tu aplicación mientras navegas y usas la interfaz.  
-Ideal para desarrolladores que quieren acelerar la creación de tests E2E sin tener que escribirlos manualmente.  
-🎬 ¡Graba, copia y pega tus tests en segundos!
+> 🇪🇸 [Leer este README en español](./README.es.md)
+
+**lib-e2e-cypress-for-dummys** is an Angular library that automatically records the Cypress commands needed to test your application while you browse and use the interface.  
+Ideal for developers who want to speed up E2E test creation without writing them manually.  
+🎬 Record, copy, save, import/export, and manage your E2E tests in seconds!
 
 ---
 
-## 🧐 ¿Qué hace?
+## 🧐 What does it do?
 
-- 🎥 Graba interacciones de usuario (clicks, inputs, selects) y las convierte en comandos Cypress (`cy.get(...).click()`, `cy.get(...).type()`, etc.).
-- 🌐 Genera automáticamente comandos para interceptar peticiones HTTP y esperarlas con Cypress (`cy.intercept`, `cy.wait`).
-- 🟢 Permite iniciar y parar la grabación desde un botón flotante en la interfaz.
-- 📋 Exporta los comandos generados para que los pegues directamente en tus tests Cypress.
+- 🎥 Records user interactions (clicks, inputs, selects...) and converts them into Cypress commands (`cy.get(...).click()`, `cy.get(...).type()`, etc.).
+- 🌐 Automatically generates commands to intercept and wait for HTTP requests using Cypress (`cy.intercept`, `cy.wait`).
+- 🟢 Allows starting and stopping the recording from a floating button on the interface.
+- 📋 Exports the generated commands so you can paste them directly into your Cypress tests.
+- 💾 Saves and manages recorded tests in a local IndexedDB database, accessible from the interface itself.
+- 🗂️ View, copy, delete, and organize your saved tests from a visual editor.
+- 📦 Import and export all your tests and database settings with a single click.
+- ⚙️ Configuration panel to manage the database and other advanced options.
+- 🧩 Support for Cypress interceptors associated with each test.
+- 🧠 Generates robust selectors: prioritizes `[data-cy]` and filters auto-generated IDs from frameworks.
 
 ---
 
-## ⚡ Instalación
+## ⚡ Installation
 
-1. Instala la librería en tu proyecto Angular:
+1. Install the library in your Angular project:
 
 ```bash
 npm install lib-e2e-cypress-for-dummys
 ```
 
-2. Asegúrate de tener como peer dependencies `@angular/core` y `@angular/common` versión **18.0.0 o superior**.
-
-3. En función de tu versión de Angular, instalar `primeng` en la versión que corresponda  (18, 19...).
-
-4. Añade a los proveedores el la configuración de la BBDD .
-```bash
-    providers: [
-      provideIndexedDb(dbConfig),
-    ]
-```
+> **Note:** Required dependencies like `ngx-indexed-db` will be installed automatically if you don’t already have them, as they are listed in the library’s `peerDependencies`.  
+> Just make sure you have `@angular/core` and `@angular/common` version **18.0.0 or higher**.  
+> You also need to install the **primeng** library in the version suitable for your Angular version.
 
 ---
 
-## 🚦 Uso básico
+## 🚦 Basic Usage
 
-1. **Importa el componente en tu módulo o componente standalone:**
+### 1. **Configure IndexedDB**
 
-```ts
+In your configuration file (e.g., `app.config.ts` or main module):
+
+```typescript
+import { NgxIndexedDBModule } from 'ngx-indexed-db';
+import { dataBaseConfiguration } from 'lib-e2e-cypress-for-dummys';
+
+@NgModule({
+  imports: [
+    NgxIndexedDBModule.forRoot(dataBaseConfiguration),
+    // ...other imports
+  ],
+})
+export class AppModule {}
+```
+
+### 2. **Import the main component into your module or standalone component:**
+
+```typescript
 import { LibE2eRecorderComponent } from 'lib-e2e-cypress-for-dummys';
 ```
 
-2. **Añade el componente en tu template principal (por ejemplo, en `app.component.html`):**
+### 3. **Add the component in your main template (e.g., in `app.component.html`):**
 
 ```html
 <lib-e2e-recorder></lib-e2e-recorder>
 ```
 
-3. **Marca los elementos que quieras que sean fácilmente seleccionables por Cypress usando el atributo `data-cy`:**
+### 4. **Tag elements you want easily selectable by Cypress with the `data-cy` attribute:**
 
 ```html
 <input data-cy="email-input" type="email" />
 <button data-cy="login-button">Login</button>
 ```
 
-4. **(Opcional pero recomendado) Si quieres que también se graben las llamadas HTTP/interceptores, añade el interceptor en tu configuración de la app**  
-   En tu `app.config.ts`:
+### 5. **(Optional but recommended) If you want to record HTTP calls/interceptors as well, add the interceptor to your app config**  
+   In your `app.config.ts`:
 
 ```typescript
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -66,74 +84,97 @@ import { CypressHttpInterceptor } from 'lib-e2e-cypress-for-dummys';
 
 export const appConfig = {
   providers: [
-    // ...otros providers...
+    // ...other providers...
     provideHttpClient(withInterceptors([CypressHttpInterceptor])),
   ],
 };
 ```
 
-5. **Haz clic en el botón flotante ▶️ "Grabar" para empezar a grabar. Interactúa con la app y, cuando termines, pulsa ⏹️ "Parar".**
+### 6. **Done! Use the interface:**
 
-6. **Copia los comandos Cypress generados desde la consola del navegador.**
-
----
-
-## 🛠️ ¿Cómo funciona?
-
-La librería escucha eventos de usuario (click, input, change) sobre elementos con `data-cy` o `id`, y va generando los comandos Cypress correspondientes.  
-Además, si configuras el interceptor, intercepta las peticiones HTTP realizadas por Angular y añade los comandos `cy.intercept` y `cy.wait` necesarios para que tus tests sean robustos.
+- Click the floating ▶️ "Record" button to start recording. Interact with the app, then press ⏹️ "Stop".
+- Click 📋 to view the list of saved tests (they’re stored in IndexedDB and accessible for copying or deletion).
+- Click 📝 to preview the generated Cypress commands from the current session.
+- Click ⚙️ to open the configuration panel, where you can import/export the entire database of tests/interceptors.
 
 ---
 
-## 💡 Ejemplo de comandos generados
+## 🛠️ How does it work?
+
+The library listens to user events (click, input, change) on elements with `data-cy` or `id`, and generates the corresponding Cypress commands.  
+If configured, it also intercepts HTTP requests made by Angular and adds `cy.intercept` and `cy.wait` commands to ensure your tests are robust.
+
+When you save a test, it is stored in IndexedDB with a description, date, and the full generated Cypress block.  
+You can view, copy, or delete saved tests from the extension’s interface.  
+You can also import/export the entire test and interceptor database in JSON format.
+
+---
+
+## 🧩 Advanced Features
+
+- **Visual Test Editor:** View, copy, delete, and organize your saved tests. Each test can be expanded to view its Cypress commands and associated interceptors.
+- **"Copy" Button:** Copy the full Cypress command block or only the associated interceptors to your clipboard.
+- **"Delete" Button:** Remove a saved test from the database.
+- **Configuration Panel:** Export all tests/interceptors to a JSON file and import from one to restore or migrate data between projects.
+- **Smart Selector:** Prioritizes `[data-cy]` and filters out auto-generated IDs to avoid fragile selectors.
+- **Database Migration:** The database structure is prepared for future migrations and expansions.
+
+---
+
+## 💡 Example of Generated Commands
 
 ```js
-cy.viewport(1900, 1200)
-cy.visit('/login')
-cy.get('[data-cy="email-input"]').clear().type('usuario@dominio.com')
-cy.get('[data-cy="password-input"]').clear().type('123456')
-cy.get('[data-cy="login-button"]').click()
-cy.intercept('POST', '**/api/v1/login/**', (req) => {
-  if (req.url.includes('login')) {
-    req.alias = 'api-v1-login';
-  }
+it('User login', () => {
+  cy.viewport(1900, 1200)
+  cy.visit('/login')
+  cy.get('[data-cy="email-input"]').clear().type('usuario@dominio.com')
+  cy.get('[data-cy="password-input"]').clear().type('123456')
+  cy.get('[data-cy="login-button"]').click()
+  cy.intercept('POST', '**/api/v1/login/**', (req) => {
+    if (req.url.includes('login')) {
+      req.alias = 'api-v1-login';
+    }
+  });
+  cy.wait('@api-v1-login').then((interception) => { })
 });
-cy.wait('@api-v1-login').then((interception) => { })
 ```
 
 ---
 
-## 👍 Recomendaciones
+## 👍 Recommendations
 
-- Usa siempre el atributo `data-cy` en los elementos que quieras testear para obtener selectores robustos.
-- Los comandos generados aparecen en la consola del navegador al parar la grabación.
-- Puedes limpiar la lista de comandos llamando a `clearCommands()` desde el servicio si lo necesitas.
-
----
-
-## ⚠️ Limitaciones
-
-- Solo soporta Angular **18+**.
-- Los comandos se generan en la consola, no en un archivo.
-- No cubre todos los posibles eventos o componentes personalizados.
+- Always use the `data-cy` attribute on elements you want to test for robust selectors.
+- Generated commands appear in the browser console after stopping the recording and also in the preview interface.
+- You can clear the command list by calling `clearCommands()` from the service if needed.
+- Tests saved in IndexedDB are persistent: they won’t be deleted when you close the browser or restart the computer (unless manually cleared or using incognito mode).
+- To migrate or share your tests across projects, use the export/import functionality from the configuration panel.
 
 ---
 
-## 🚧 Estado del proyecto
+## ⚠️ Limitations
 
-Esta librería está en desarrollo activo y puede contener errores o carecer de algunas funcionalidades.  
-Si tienes sugerencias, encuentras algún problema o necesitas una nueva característica, no dudes en escribirme a **gonzalocarmenado@gmail.com**. ¡Tu feedback es bienvenido y me ayuda a mejorar el proyecto!
-
-## 🤝 Contribuir
-
-¿Quieres mejorar la librería? ¡Genial! Puedes abrir issues o pull requests en el repositorio. Si tienes dudas, contacta con el autor.
+- Only supports Angular **18+**.
+- Commands are generated in the console and UI, not as physical files.
+- Does not cover all possible events or custom components.
+- If you change the DB structure, make sure to update the version in the configuration to avoid migration errors.
 
 ---
 
-## 📄 Licencia
+## 🚧 Project Status
+
+This library is under active development and may contain bugs or lack certain features.  
+If you have suggestions, encounter any issues, or need a new feature, feel free to email me at **gonzalocarmenado@gmail.com**. Your feedback is welcome and helps improve the project!
+
+## 🤝 Contributing
+
+Want to improve the library? Great! You can open issues or pull requests in the repository. If you have any questions, contact the author at **gonzalocarmenado@gmail.com**.
+
+---
+
+## 📄 License
 
 MIT
 
 ---
 
-**Autor:** Gonzalo Carmenado 🚀
+**Author:** Gonzalo
