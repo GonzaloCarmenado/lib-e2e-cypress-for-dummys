@@ -5,15 +5,9 @@ import { INPUT_TYPES } from '../models/input-types.model';
 
 //TODO: Añadir una opción de configuración para la extensión.
 // - Desactivar o modificar el debounce de los inputs.
-// - Configuración sobre si se quiere trabajar con elementos nativos (input, select...) o con librerías propias
-// - Exportar todo en un fichero de texto.
 // - Control de errores mejorados. Si un selector no funciona o hay dudas sobre si su implementación es correcta, avisar al usuario.
 // - Inspector de cypress. Un botón que permita al usuario inspeccionar el elemento y ver el comando Cypress generado (esto se deberá integrar
 //   de forma que ese selector especial pare la grabación para que no se pierda el orden.).
-// - Dar la opción al usuario de añadir el selector de clase CSS para casos extremos en los que sea la unica solución.
-// - Ventana de configuración en base a un fichero que se peuda exportar entre proyectos para que sea facil mantener
-//   configuraciones comunes entre proyectos.
-// - Tener un historial de pruebas realizadas, pudiendo hacer varias juntas, que se almacenen en un fichero y poder revisarlas posteriormente.
 // - Tener una ventana de previsualización de pruebas, donde se pueda ver el código generado y hacer arreglos rápidos
 @Injectable({
   providedIn: 'root',

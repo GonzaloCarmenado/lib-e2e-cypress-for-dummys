@@ -7,6 +7,7 @@ import { LibE2eCypressForDummysPersistentService } from './services/lib-e2e-cypr
 import { LibE2eCypressForDummysTransformationService } from './lib-e2e-cypress-for-dummys.transformation.service';
 import { TestEditorComponent } from './components/test-editor/test-editor.component';
 import { ConfigurationComponent } from './components/configurations/configuration.component';
+import { TranslationService } from './services/lib-e2e-cypress-for-dummys-translate.service';
 @Component({
   selector: 'lib-e2e-recorder',
   templateUrl: './lib-e2e-cypress-for-dummys.component.html',
@@ -36,7 +37,8 @@ export class LibE2eRecorderComponent {
   constructor(
     private e2eService: LibE2eCypressForDummysService,
     private readonly persistService: LibE2eCypressForDummysPersistentService,
-    private readonly transformationService: LibE2eCypressForDummysTransformationService
+    private readonly transformationService: LibE2eCypressForDummysTransformationService,
+    public readonly translation: TranslationService
   ) {
     this.e2eService.isRecordingObservable().subscribe((val: any) => {
       this.isRecording = val;

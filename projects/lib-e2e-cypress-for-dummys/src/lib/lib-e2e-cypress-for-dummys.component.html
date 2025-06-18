@@ -1,5 +1,5 @@
 <button class="e2e-recorder-button tooltip" (click)="toggle()">
-  {{ isRecording ? '⏹️ Parar' : '▶️ Grabar' }}
+  {{ isRecording ? '⏹️ ' + translation.translate('MAIN_FRAME.STOP') : '▶️ ' + translation.translate('MAIN_FRAME.RECORD') }}
 </button>
 
 <button #testBtn class="saved-test-icon-button tooltip" (click)="openSavedTestsPanel()">
@@ -16,6 +16,7 @@
   ⚙️
   <span class="tooltip-text">Configuración</span>
 </button>
+
 <p-dialog header="Previsualizador de comandos Cypress" [(visible)]="showTestPanel">
   <test-previsualizer-component [cypressCommands]="cypressCommands"></test-previsualizer-component>
 </p-dialog>
