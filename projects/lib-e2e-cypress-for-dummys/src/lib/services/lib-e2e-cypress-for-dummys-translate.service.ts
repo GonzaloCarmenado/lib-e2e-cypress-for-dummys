@@ -34,7 +34,7 @@ export class TranslationService {
     return value;
   }
 
-  private detectLang(): Lang {
+  public detectLang(): Lang {
     const browserLang = navigator.language.split('-')[0];
     return browserLang === 'es' ? 'es' : 'en';
   }

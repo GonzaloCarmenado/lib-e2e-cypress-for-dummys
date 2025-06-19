@@ -18,9 +18,9 @@ export class ConfigurationComponent {
   public supportedLanguages = [
     { value: 'es', label: 'Español' },
     { value: 'en', label: 'English' },
-    { value: 'it', label: 'Italiano' },
     { value: 'fr', label: 'Français' },
-    { value: 'de', label: 'Deutsch' },
+    { value: 'it', label: 'Italiano' },
+    { value: 'de', label: 'Deutsch' }
   ];
   public translation: TranslationService;
 

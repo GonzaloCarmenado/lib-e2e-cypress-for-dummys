@@ -91,3 +91,32 @@
 .btn-success:hover {
   background: #388e3c;
 }
+
+.config-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.7rem;
+  color: #1976d2;
+  font-size: 1.05rem;
+}
+
+.styled-select {
+  width: 100%;
+  max-width: 260px;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid #bdbdbd;
+  background: #fff;
+  color: #23272e;
+  font-size: 1.05rem;
+  font-weight: 500;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 6px #0001;
+  outline: none;
+  margin-bottom: 1.2rem;
+
+  &:focus {
+    border-color: #1976d2;
+    box-shadow: 0 0 0 2px #1976d233;
+  }
+}

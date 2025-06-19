@@ -50,8 +50,15 @@ export class LibE2eRecorderComponent {
     this.e2eService.getCommands$().subscribe((commands) => {
       this.cypressCommands = commands;
     });
+
+    this.changeLanguage();
   }
 
+  private changeLanguage(): void {
+    this.translation.setLang(
+      this.translation.detectLang()
+    )
+  }
   public toggle(): void {
     this.e2eService.toggleRecording();
   }
