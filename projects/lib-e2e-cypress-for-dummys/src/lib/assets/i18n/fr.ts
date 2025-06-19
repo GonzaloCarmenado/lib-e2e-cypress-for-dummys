@@ -36,5 +36,12 @@ export const I18N_FR = {
     LOGIN: 'Connexion',
     GET_CLIENTS: 'Obtenir les clients',
     NO_ID_INPUT: 'Cet input n’a pas d’identifiant'
+  },
+  CONFIG: {
+    GENERAL: 'Général',
+    LANGUAGE: 'Langue',
+    EXPORT_IMPORT: 'Exporter / Importer les données de la BDD',
+    EXPORT_DATA: 'Exporter les données de la BDD',
+    IMPORT_DATA: 'Importer des données'
   }
 };

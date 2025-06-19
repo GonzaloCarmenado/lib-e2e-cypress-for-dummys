@@ -89,6 +89,20 @@ export class LibE2eCypressForDummysPersistentService {
   }
   //#endregion Persistencia de los interceptores
 
+  //#region Persistencia de configuración general
+  public setGeneralConfig(config: { language: string }): Observable<any> {
+    return this.dbService.clear('configuration').pipe(
+      switchMap(() => this.dbService.add('configuration', config))
+    );
+  }
+
+  public getGeneralConfig(): Observable<{ language: string } | null> {
+    return this.dbService.getAll('configuration').pipe(
+      map((records: any[]) => (records.length > 0 ? records[0] : null))
+    );
+  }
+  //#endregion
+
   public clearAllData(): Observable<void> {
     return new Observable<void>((observer) => {
       Promise.all([

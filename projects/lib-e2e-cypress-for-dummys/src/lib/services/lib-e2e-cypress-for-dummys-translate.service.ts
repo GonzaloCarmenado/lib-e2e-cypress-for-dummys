@@ -1,14 +1,21 @@
 import { Injectable } from '@angular/core';
+import { I18N_FR } from '../assets/i18n/fr';
+import { I18N_IT } from '../assets/i18n/it';
+import { I18N_DE } from '../assets/i18n/de';
 import { I18N_ES } from '../assets/i18n/es';
 import { I18N_EN } from '../assets/i18n/en';
-
-type Lang = 'es' | 'en';
+export type Lang = 'es' | 'en' | 'fr' | 'it' | 'de';
 
 @Injectable({ providedIn: 'root' })
 export class TranslationService {
   private lang: Lang = this.detectLang();
-  private translations = { es: I18N_ES, en: I18N_EN };
-
+  private translations = {
+    es: I18N_ES,
+    en: I18N_EN,
+    fr: I18N_FR,
+    it: I18N_IT,
+    de: I18N_DE
+  };
   setLang(lang: Lang) {
     this.lang = lang;
   }

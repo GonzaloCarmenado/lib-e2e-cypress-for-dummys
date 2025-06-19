@@ -36,5 +36,12 @@ export const I18N_IT = {
     LOGIN: 'Login',
     GET_CLIENTS: 'Ottieni clienti',
     NO_ID_INPUT: 'Questo input non ha identificatore'
+  },
+  CONFIG: {
+    GENERAL: 'Generale',
+    LANGUAGE: 'Lingua',
+    EXPORT_IMPORT: 'Esporta / Importa dati del database',
+    EXPORT_DATA: 'Esporta dati del database',
+    IMPORT_DATA: 'Importa dati'
   }
 };

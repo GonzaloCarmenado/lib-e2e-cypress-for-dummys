@@ -1,20 +1,33 @@
 <div class="config-collapsible-section">
+    <div class="collapsible-header" (click)="showGeneralSection = !showGeneralSection">
+        <span>{{ translation.translate('CONFIG.GENERAL') }}</span>
+        <span class="collapsible-icon">{{ showGeneralSection ? '▲' : '▼' }}</span>
+    </div>
+    @if(showGeneralSection){
+    <div class="collapsible-content">
+        <div class="config-general-section">
+            <label for="language-select">{{ translation.translate('CONFIG.LANGUAGE') }}</label>
+            <select id="language-select" class="config-select" [(ngModel)]="selectedLanguage" (change)="onLanguageChange($event)">
+                <option *ngFor="let lang of supportedLanguages" [value]="lang.value">{{ lang.label }}</option>
+            </select>
+        </div>
+    </div>
+    }
+</div>
+
+<div class="config-collapsible-section">
     <div class="collapsible-header"
         (click)="showExportSection = !showExportSection">
-        <span>Exportar / Importar datos de la BBDD</span>
-        <span class="collapsible-icon">{{ showExportSection ? '▲' : '▼'
-            }}</span>
+        <span>{{ translation.translate('CONFIG.EXPORT_IMPORT') }}</span>
+        <span class="collapsible-icon">{{ showExportSection ? '▲' : '▼' }}</span>
     </div>
     @if(showExportSection){
     <div class="collapsible-content">
         <div class="config-export-section">
-            <button class="btn btn-primary" (click)="exportAllData()">Exportar
-                datos de la BBDD</button>
-            <label class="btn btn-success"
-                style="margin-left: 1rem; cursor:pointer;">
-                Importar datos
-                <input type="file" accept="application/json"
-                    (change)="importAllData($event)" style="display:none;">
+            <button class="btn btn-primary" (click)="exportAllData()">{{ translation.translate('CONFIG.EXPORT_DATA') }}</button>
+            <label class="btn btn-success" style="margin-left: 1rem; cursor:pointer;">
+                {{ translation.translate('CONFIG.IMPORT_DATA') }}
+                <input type="file" accept="application/json" (change)="importAllData($event)" style="display:none;">
             </label>
         </div>
     </div>

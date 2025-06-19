@@ -36,5 +36,12 @@ export const I18N_DE = {
     LOGIN: 'Anmelden',
     GET_CLIENTS: 'Kunden abrufen',
     NO_ID_INPUT: 'Dieses Eingabefeld hat keine Kennung'
+  },
+  CONFIG: {
+    GENERAL: 'Allgemein',
+    LANGUAGE: 'Sprache',
+    EXPORT_IMPORT: 'Datenbankdaten exportieren / importieren',
+    EXPORT_DATA: 'Datenbankdaten exportieren',
+    IMPORT_DATA: 'Daten importieren'
   }
 };

@@ -1,17 +1,47 @@
 import { Component } from '@angular/core';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
+import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'configuration-component',
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.scss'],
   standalone: true,
+  imports: [CommonModule, FormsModule],
 })
 export class ConfigurationComponent {
-    public showExportSection = true;
+  public showExportSection = true;
+  public showGeneralSection = true;
+  public selectedLanguage = 'es';
+  public supportedLanguages = [
+    { value: 'es', label: 'Español' },
+    { value: 'en', label: 'English' },
+    { value: 'it', label: 'Italiano' },
+    { value: 'fr', label: 'Français' },
+    { value: 'de', label: 'Deutsch' },
+  ];
+  public translation: TranslationService;
+
   constructor(
-    private persistService: LibE2eCypressForDummysPersistentService
-  ) {}
+    private persistService: LibE2eCypressForDummysPersistentService,
+    translation: TranslationService
+  ) {
+    this.translation = translation;
+    this.persistService.getGeneralConfig().subscribe((config) => {
+      if (config && config.language) {
+        this.selectedLanguage = config.language;
+        this.translation.setLang(config.language as import('../../services/lib-e2e-cypress-for-dummys-translate.service').Lang);
+      }
+    });
+  }
+
+  public onLanguageChange(event: Event): void {
+    const lang = (event.target as HTMLSelectElement).value;
+    this.translation.setLang(lang as any as import('../../services/lib-e2e-cypress-for-dummys-translate.service').Lang);
+    this.persistService.setGeneralConfig({ language: lang }).subscribe();
+  }
 
   public exportAllData(): void {
     Promise.all([

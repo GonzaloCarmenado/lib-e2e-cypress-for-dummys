@@ -25,4 +25,16 @@ export const bbddDataModel = [
       { name: 'createdAt', keypath: 'createdAt', options: { unique: false } },
     ],
   },
+  {
+    store: 'configuration',
+    storeConfig: { keyPath: 'id', autoIncrement: true },
+    storeSchema: [
+      {
+        name: 'language',
+        keypath: 'language',
+        options: { unique: false },
+      },
+     
+    ],
+  },
 ];
