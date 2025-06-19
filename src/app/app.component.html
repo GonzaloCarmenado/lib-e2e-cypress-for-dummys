@@ -5,19 +5,19 @@ Password
 <input data-cy="password-input" type="password" />
 <br><br>
 <select data-cy="user-role">
-    <option value="admin">Administrador</option>
-    <option value="user">Usuario</option>
+    <option value="admin">{{ translation.translate('APP.ADMIN') }}</option>
+    <option value="user">{{ translation.translate('APP.USER') }}</option>
 </select>
 <br><br>
 
-Este input no tiene ningun identificador
+{{ translation.translate('APP.NO_ID_INPUT') }}
 <input  type="text" />
 
 <br><br>
-<button data-cy="login-button">Login</button>
+<button data-cy="login-button">{{ translation.translate('APP.LOGIN') }}</button>
 
 <br><br><br><br><br><br><br>
-<button (click)="getClientList()">Obtener clientes</button>
+<button (click)="getClientList()">{{ translation.translate('APP.GET_CLIENTS') }}</button>
 
 
 

@@ -4,32 +4,31 @@
 
 <button #testBtn class="saved-test-icon-button tooltip" (click)="openSavedTestsPanel()">
   📋
-  <span class="tooltip-text">Ver pruebas guardadas</span>
+  <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_SAVED_TESTS') }}</span>
 </button>
 
 <button #testBtn class="test-icon-button tooltip right-edge" (click)="openTestpanel()">
   📝
-  <span class="tooltip-text">Previsualizar comandos Cypress</span>
+  <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_COMMANDS') }}</span>
 </button>
 
 <button class="gear-icon-button tooltip right-edge" (click)="openSettings()">
   ⚙️
-  <span class="tooltip-text">Configuración</span>
+  <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS') }}</span>
 </button>
 
-<p-dialog header="Previsualizador de comandos Cypress" [(visible)]="showTestPanel">
+<p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_COMMANDS') }}" [(visible)]="showTestPanel">
   <test-previsualizer-component [cypressCommands]="cypressCommands"></test-previsualizer-component>
 </p-dialog>
 
-<p-dialog header="Pruebas guardadas" [(visible)]="showSavedTestsPanel">
+<p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_SAVED_TESTS') }}" [(visible)]="showSavedTestsPanel">
   <test-editor-component [visible]="showSavedTestsPanel"></test-editor-component>
 </p-dialog>
 
-
-<p-dialog header="¿Guardar la grabación?" [(visible)]="showSavePanel">
+<p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_SAVE') }}" [(visible)]="showSavePanel">
   <save-test-data-component #saveTestVC (savetest)="onSaveTest($event)"></save-test-data-component>
 </p-dialog>
 
-<p-dialog header="Configuración" [(visible)]="showConfigurationPanel">
+<p-dialog header="{{ translation.translate('MAIN_FRAME.SETTINGS') }}" [(visible)]="showConfigurationPanel">
   <configuration-component></configuration-component>
 </p-dialog>

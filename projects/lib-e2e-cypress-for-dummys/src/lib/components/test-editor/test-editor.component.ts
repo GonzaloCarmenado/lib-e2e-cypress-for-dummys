@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { DatePipe } from '@angular/common';
+import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
 
 @Component({
   selector: 'test-editor-component',
@@ -14,9 +15,14 @@ export class TestEditorComponent implements OnChanges {
   public tests: any[] = [];
   public expandedIndex: number | null = null;
   public interceptorsByTest!: { [testId: number]: string[] };
+  public translation: TranslationService;
 
-  constructor(private persistService: LibE2eCypressForDummysPersistentService) {
+  constructor(
+    private persistService: LibE2eCypressForDummysPersistentService,
+    translation: TranslationService
+  ) {
     this.interceptorsByTest = {};
+    this.translation = translation;
   }
 
   public ngOnChanges(changes: SimpleChanges) {

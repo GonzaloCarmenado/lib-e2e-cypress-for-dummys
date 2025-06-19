@@ -1,7 +1,7 @@
 <div class="test-list-container">
   @if (tests.length === 0) {
   <div class="test-list-empty">
-    No hay pruebas guardadas aún.
+    {{ translation.translate('TEST_EDITOR.EMPTY') }}
   </div>
   }
   @for (test of tests; track test; let i = $index) {
@@ -19,10 +19,10 @@
     <div class="test-card-body">
       <div class="test-card-section">
         <div class="test-card-section-header">
-          <span>Comandos Cypress</span>
+          <span>{{ translation.translate('TEST_EDITOR.COMMANDS') }}</span>
           <button class="btn btn-copy" (click)="copyToClipboard(test.commandsAndItBlock); $event.stopPropagation();"
-            title="Copiar comandos Cypress">
-            📋 Copiar
+            [title]="translation.translate('TEST_EDITOR.COPY_COMMANDS')">
+            📋 {{ translation.translate('TEST_EDITOR.COPY') }}
           </button>
         </div>
         <pre class="test-card-commands">{{ test.commandsAndItBlock }}</pre>
@@ -31,10 +31,10 @@
       <ng-container>
         <div class="test-card-section">
           <div class="test-card-section-header">
-            <span class="test-card-interceptors-title">Interceptores asociados</span>
+            <span class="test-card-interceptors-title">{{ translation.translate('TEST_EDITOR.INTERCEPTORS') }}</span>
             <button class="btn btn-copy" (click)="copyInterceptors(test.id); $event.stopPropagation();"
-              title="Copiar interceptores">
-              📋 Copiar
+              [title]="translation.translate('TEST_EDITOR.COPY_INTERCEPTORS')">
+              📋 {{ translation.translate('TEST_EDITOR.COPY') }}
             </button>
           </div>
           <pre class="test-card-interceptors">
@@ -44,8 +44,8 @@
       </ng-container>
       }
       <div class="test-card-actions">
-        <button class="btn btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();" title="Eliminar prueba">
-          🗑️ Eliminar
+        <button class="btn btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();" [title]="translation.translate('TEST_EDITOR.DELETE')">
+          🗑️ {{ translation.translate('TEST_EDITOR.DELETE_SHORT') }}
         </button>
       </div>
     </div>
