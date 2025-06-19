@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
 
 @Component({
   selector: 'save-test-data-component',
@@ -10,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
 })
 export class SaveTestComponent {
-  /**
+    /**
    * Emite la respuesta del usuario al padre. Si se envia Cualquier valor distinto de null implica que el usuario
    * a guardado el test. Si se envia null, implica que el usuario ha cancelado la acción de guardar.
    * @memberof SaveTestComponent
@@ -19,6 +20,8 @@ export class SaveTestComponent {
 
   public step: 'ask' | 'desc' = 'ask';
   public description = '';
+
+  constructor(public translation: TranslationService) {}
 
   public askSave() {
     this.step = 'desc';

@@ -1,13 +1,15 @@
+@if(translation){
 <div *ngIf="step === 'ask'" class="save-test-dialog">
-  <p class="save-test-title">¿Desea guardar la prueba?</p>
+  <p class="save-test-title">{{ translation.translate('SAVE_TEST.TITLE') }}</p>
   <div class="save-test-actions">
-    <button class="btn btn-primary" (click)="askSave()">Sí</button>
-    <button class="btn btn-danger" (click)="cancel()">No</button>
+    <button class="btn btn-primary" (click)="askSave()">{{ translation.translate('SAVE_TEST.YES') }}</button>
+    <button class="btn btn-danger" (click)="cancel()">{{ translation.translate('SAVE_TEST.NO') }}</button>
   </div>
 </div>
 <div *ngIf="step === 'desc'" class="save-test-dialog">
   <label class="save-test-label">
-    Descripción de la prueba <span class="save-test-hint">(texto para el <code>it()</code> de Cypress)</span>:
+    {{ translation.translate('SAVE_TEST.DESC_LABEL') }}
+    <span class="save-test-hint">{{ translation.translate('SAVE_TEST.DESC_HINT') }}</span>:
     <textarea [(ngModel)]="description"
               rows="4"
               class="save-test-textarea"></textarea>
@@ -16,8 +18,9 @@
     <button class="btn btn-success"
             (click)="confirmSave()"
             [disabled]="!description.trim()">
-      Guardar
+      {{ translation.translate('SAVE_TEST.SAVE') }}
     </button>
-    <button class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+    <button class="btn btn-secondary" (click)="cancel()">{{ translation.translate('SAVE_TEST.CANCEL') }}</button>
   </div>
-</div>
+</div>  
+}
