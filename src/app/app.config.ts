@@ -9,6 +9,7 @@ import {
 import { CypressHttpInterceptor } from '../../projects/lib-e2e-cypress-for-dummys/src/lib/services/lib-e2e-cypress-for-dummys-interceptor.service';
 import { provideIndexedDb } from 'ngx-indexed-db';
 import { dbConfig } from '../../projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.module';
+import { AppTranslationService } from './services/translations.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,5 +19,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([CypressHttpInterceptor])),
     provideAnimationsAsync(),
     provideIndexedDb(dbConfig),
+    AppTranslationService
   ],
 };

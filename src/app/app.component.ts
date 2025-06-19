@@ -7,7 +7,7 @@ import {
 import { environment } from './environments/environment';
 import { StandarResponse } from '@gonzalocarmenado/general-http-core-hub';
 import { LibE2eRecorderComponent } from '../../projects/lib-e2e-cypress-for-dummys/src/lib/lib-e2e-cypress-for-dummys.component';
-import { TranslationService } from '../../projects/lib-e2e-cypress-for-dummys/src/lib/services/lib-e2e-cypress-for-dummys-translate.service';
+import { AppTranslationService } from './services/translations.service';
 @Component({
   selector: 'app-root',
   imports: [LibE2eRecorderComponent],
@@ -15,10 +15,10 @@ import { TranslationService } from '../../projects/lib-e2e-cypress-for-dummys/sr
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  public translation: TranslationService;
+  public translation: AppTranslationService;
   constructor(
     private readonly clientService: CommonConnectorClientsService,
-    translation: TranslationService
+    translation: AppTranslationService
   ) {
     this.translation = translation;
   }
