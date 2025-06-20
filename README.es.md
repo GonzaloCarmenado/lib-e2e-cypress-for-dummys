@@ -1,10 +1,17 @@
 # 🚀 lib-e2e-cypress-for-dummys
 
-**lib-e2e-cypress-for-dummys** es una librería Angular que te permite grabar automáticamente los comandos Cypress necesarios para testear tu aplicación mientras navegas y usas la interfaz.  
-Ideal para desarrolladores que quieren acelerar la creación de tests E2E sin tener que escribirlos manualmente.  
-🎬 ¡Graba, copia, guarda, importa/exporta y gestiona tus tests E2E en segundos!
-
----
+<table>
+  <tr>
+    <td width="200" align="center">
+      <img src="lib-images/icon-text.png" alt="lib-e2e-cypress-for-dummys logo" width="140"/>
+    </td>
+    <td>
+      <strong>lib-e2e-cypress-for-dummys</strong> es una librería Angular que te permite grabar automáticamente los comandos Cypress necesarios para testear tu aplicación mientras navegas y usas la interfaz.<br>
+      Ideal para desarrolladores que quieren acelerar la creación de tests E2E sin tener que escribirlos manualmente.<br>
+      🎬 ¡Graba, copia, guarda, importa/exporta y gestiona tus tests E2E en segundos!
+    </td>
+  </tr>
+</table>
 
 ## 🧐 ¿Qué hace?
 
@@ -31,6 +38,7 @@ npm install lib-e2e-cypress-for-dummys
 
 > **Nota:** Las dependencias necesarias como `ngx-indexed-db` se instalarán automáticamente si no las tienes, ya que están en las `peerDependencies` de la librería.  
 > Solo asegúrate de tener `@angular/core` y `@angular/common` versión **18.0.0 o superior**.
+
 > Es necesario instalar la libreria **primeng"** en la versión que necesites en función de la versión de Angular que utilices.
 
 ---

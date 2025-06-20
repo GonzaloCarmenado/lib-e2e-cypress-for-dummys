@@ -1,4 +1,4 @@
-import { Component, ElementRef, viewChild, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, viewChild, ViewChild } from '@angular/core';
 import { LibE2eCypressForDummysService } from './services/lib-e2e-cypress-for-dummys.service';
 import { DialogModule } from 'primeng/dialog';
 import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
@@ -111,7 +111,6 @@ export class LibE2eRecorderComponent {
   }
 
   //#region CallBAcks de componentes hijos
-  // ...existing code...
   public onSaveTest(description: string | null): void {
     this.saveTestCR.restartComponent();
     if (description) {
@@ -136,6 +135,29 @@ export class LibE2eRecorderComponent {
     this.showSavePanel = false;
     this.e2eService.clearCommands();
   }
-  // ...existing code...
   //#endregion CallBAcks de componentes hijos
+
+  //#region Callbacks de componentes hijos
+  @HostListener('window:keydown', ['$event'])
+  public handleKeyboardEvent(event: KeyboardEvent) {
+    console.log(event.key.toLowerCase())
+    if (event.ctrlKey && event.key.toLowerCase() === 'r') {
+      event.preventDefault();
+      this.toggle();
+    }else if (event.ctrlKey && event.key.toLowerCase() === '1') {
+      event.preventDefault();
+      this.openSavedTestsPanel()
+    }
+    else if (event.ctrlKey && event.key.toLowerCase() === '2') {
+      event.preventDefault();
+      this.openTestpanel()
+    }
+    else if (event.ctrlKey && event.key.toLowerCase() === '3') {
+      event.preventDefault();
+      this.openSettings()
+    }
+  }
+  //#endregion Callbacks de componentes hijos
 }
+
+
