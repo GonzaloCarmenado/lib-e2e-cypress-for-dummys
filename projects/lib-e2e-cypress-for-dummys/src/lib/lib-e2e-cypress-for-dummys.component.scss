@@ -20,7 +20,7 @@
 
 .gear-icon-button {
   position: fixed;
-  bottom: 52px; 
+  bottom: 52px;
   right: 20px;
   z-index: 9999;
   width: 32px;
@@ -44,7 +44,7 @@
 
 .test-icon-button {
   position: fixed;
-  bottom: 52px; 
+  bottom: 52px;
   right: 55px;
   z-index: 9999;
   width: 32px;
@@ -68,7 +68,7 @@
 
 .saved-test-icon-button {
   position: fixed;
-  bottom: 52px; 
+  bottom: 52px;
   right: 90px;
   z-index: 9999;
   width: 32px;
@@ -133,7 +133,7 @@
 }
 
 .tooltip {
- // position: relative;
+  // position: relative;
   display: inline-block;
 }
 
@@ -174,4 +174,9 @@
 .tooltip:focus-within .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+.absolute-position {
+  z-index: 2147483647;
+  position: absolute;
 }

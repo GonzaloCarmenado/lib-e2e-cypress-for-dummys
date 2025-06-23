@@ -1,18 +1,5 @@
 # 🚀 lib-e2e-cypress-for-dummys
 
-<table>
-  <tr>
-    <td width="200" align="center">
-      <img src="assets/images/icon-text.png" alt="lib-e2e-cypress-for-dummys logo" width="140"/>
-    </td>
-    <td>
-      <strong>lib-e2e-cypress-for-dummys</strong> es una librería Angular que te permite grabar automáticamente los comandos Cypress necesarios para testear tu aplicación mientras navegas y usas la interfaz.<br>
-      Ideal para desarrolladores que quieren acelerar la creación de tests E2E sin tener que escribirlos manualmente.<br>
-      🎬 ¡Graba, copia, guarda, importa/exporta y gestiona tus tests E2E en segundos!
-    </td>
-  </tr>
-</table>
-
 ## 🧐 ¿Qué hace?
 
 - 🎥 Graba interacciones de usuario (clicks, inputs, selects...) y las convierte en comandos Cypress (`cy.get(...).click()`, `cy.get(...).type()`, etc.).
