@@ -10,17 +10,13 @@
   <label class="save-test-label">
     {{ translation.translate('SAVE_TEST.DESC_LABEL') }}
     <span class="save-test-hint">{{ translation.translate('SAVE_TEST.DESC_HINT') }}</span>:
-    <textarea [(ngModel)]="description"
-              rows="4"
-              class="save-test-textarea"></textarea>
+    <textarea [(ngModel)]="description" rows="4" class="save-test-textarea"></textarea>
   </label>
   <div class="save-test-actions">
-    <button class="btn btn-success"
-            (click)="confirmSave()"
-            [disabled]="!description.trim()">
+    <button class="btn btn-success" (click)="confirmSave()" [disabled]="!description.trim()">
       {{ translation.translate('SAVE_TEST.SAVE') }}
     </button>
     <button class="btn btn-secondary" (click)="cancel()">{{ translation.translate('SAVE_TEST.CANCEL') }}</button>
   </div>
-</div>  
+</div>
 }

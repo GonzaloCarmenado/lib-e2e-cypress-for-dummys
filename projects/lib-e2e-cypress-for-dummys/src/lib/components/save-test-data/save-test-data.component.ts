@@ -11,7 +11,7 @@ import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-tr
   imports: [CommonModule, FormsModule],
 })
 export class SaveTestComponent {
-    /**
+  /**
    * Emite la respuesta del usuario al padre. Si se envia Cualquier valor distinto de null implica que el usuario
    * a guardado el test. Si se envia null, implica que el usuario ha cancelado la acción de guardar.
    * @memberof SaveTestComponent

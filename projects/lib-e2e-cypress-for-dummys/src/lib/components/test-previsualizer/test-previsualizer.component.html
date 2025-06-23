@@ -1,3 +1,6 @@
-<div #scrollContainer style="max-height: 300px; overflow-y: auto;">
+<div #scrollContainer class="test-previsualizer-scroll">
+  <button class="btn btn-copy" (click)="copyToClipboard()">
+    📋
+  </button>
   <pre *ngFor="let cmd of cypressCommands">{{ cmd }}</pre>
 </div>
