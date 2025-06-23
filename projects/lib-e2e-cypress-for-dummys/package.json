@@ -1,11 +1,10 @@
 {
   "name": "lib-e2e-cypress-for-dummys",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "repository": {
     "type": "git",
     "url": "https://github.com/GonzaloCarmenado/lib-e2e-cypress-for-dummys"
   },
-  
   "homepage": "https://github.com/GonzaloCarmenado/lib-e2e-cypress-for-dummys/blob/main/README.md",
   "peerDependencies": {
     "@angular/common": ">=18.0.0",

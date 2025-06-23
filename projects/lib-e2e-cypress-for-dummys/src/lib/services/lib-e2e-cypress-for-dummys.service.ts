@@ -322,8 +322,11 @@ export class LibE2eCypressForDummysService {
    */
   private getReliableSelector(element: HTMLElement): string | null {
     const dataCy = element.getAttribute('data-cy');
+    const dataAtriCy = element.getAttribute('data.cy');
     if (dataCy) {
       return `[data-cy="${dataCy}"]`;
+    } else if (dataAtriCy) {
+      return `[data.cy="${dataAtriCy}"]`;
     }
     const id = element.id;
     // Filtros: descarta ids generados por frameworks o sospechosos
