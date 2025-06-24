@@ -61,8 +61,24 @@ export class LibE2eCypressForDummysService {
    */
   private listenToClicks(): void {
     this.document.addEventListener('click', (event: Event) => {
-      const target = event.target as HTMLElement;
-      if (!target || this.isInteractiveElement(target)) return;
+      let target = event.target as HTMLElement;
+      if (!target) return;
+
+      // Si el target no es interactivo y es un span, busca si su padre directo es un button con [data-cy] o [id]
+      if (!this.isInteractiveElement(target)) {
+        if (
+          target.tagName.toLowerCase() === 'span' &&
+          target.parentElement &&
+          target.parentElement.tagName.toLowerCase() === 'button' &&
+          (target.parentElement.hasAttribute('data-cy') ||
+            target.parentElement.hasAttribute('id'))
+        ) {
+          target = target.parentElement;
+        } else {
+          return;
+        }
+      }
+
       const container = target.closest<HTMLElement>('[data-cy], [id]');
       if (!container) return;
 
@@ -171,7 +187,8 @@ export class LibE2eCypressForDummysService {
       tag === 'select' ||
       tag === 'option' ||
       tag === 'input' ||
-      tag === 'textarea'
+      tag === 'textarea' ||
+      tag === 'button'
     );
   }
 
