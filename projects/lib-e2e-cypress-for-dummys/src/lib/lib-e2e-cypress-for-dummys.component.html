@@ -1,22 +1,24 @@
-<button class="e2e-recorder-button tooltip" (click)="toggle()" accesskey="r">
-  {{ isRecording ? '⏹️ ' + translation.translate('MAIN_FRAME.STOP') : '▶️ ' + translation.translate('MAIN_FRAME.RECORD')
-  }}
-</button>
-
-<button #testBtn class="saved-test-icon-button tooltip" (click)="openSavedTestsPanel()">
-  📋
-  <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_SAVED_TESTS') }}</span>
-</button>
-
-<button #testBtn class="test-icon-button tooltip right-edge" (click)="openTestpanel()">
-  📝
-  <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_COMMANDS') }}</span>
-</button>
-
-<button class="gear-icon-button tooltip right-edge" (click)="openSettings()">
-  ⚙️
-  <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS') }}</span>
-</button>
+<div class="draggable-toolbar" #toolbar (mousedown)="onDragStart($event)" [ngStyle]="toolbarPosition"
+  [class.dragging]="dragging">
+  <div class="toolbar-row">
+    <button #testBtn class="saved-test-icon-button tooltip" (click)="openSavedTestsPanel()">
+      📋
+      <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_SAVED_TESTS') }}</span>
+    </button>
+    <button #testBtn class="test-icon-button tooltip right-edge" (click)="openTestpanel()">
+      📝
+      <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_COMMANDS') }}</span>
+    </button>
+    <button class="gear-icon-button tooltip right-edge" (click)="openSettings()">
+      ⚙️
+      <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS') }}</span>
+    </button>
+  </div>
+  <button class="e2e-recorder-button tooltip" (click)="toggle()" accesskey="r">
+    {{ isRecording ? '⏹️ ' + translation.translate('MAIN_FRAME.STOP') : '▶️ ' +
+    translation.translate('MAIN_FRAME.RECORD') }}
+  </button>
+</div>
 
 <p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_COMMANDS') }}" class="absolute-position"
   [(visible)]="showTestPanel">
