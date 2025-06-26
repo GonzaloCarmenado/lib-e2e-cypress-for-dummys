@@ -32,7 +32,7 @@ export const CypressHttpInterceptor = (
           // Guarda el wait en la lista principal
           let cyWaitCommand = `cy.wait('@${alias}').then((interception) => { })`;
 
-          // Si es GET y la respuesta no es un array, añade validaciones solo si extendedHttpCommands está activo
+          // Si es GET, POST o PUT y la respuesta no es un array, añade validaciones solo si extendedHttpCommands está activo
           const extendedHttp =
             localStorage.getItem('extendedHttpCommands') === 'true';
           if (
@@ -42,12 +42,32 @@ export const CypressHttpInterceptor = (
             !Array.isArray(event.body) &&
             extendedHttp
           ) {
+            // Validar la respuesta para GET
             const validations = Object.keys(event.body)
               .filter((key) => key !== 'id' && key !== 'uid')
               .map(
                 (key) =>
                   `  expect(interception.response.body.${key}).to.equal(${JSON.stringify(
                     event.body[key]
+                  )});`
+              )
+              .join('\n');
+            cyWaitCommand = `cy.wait('@${alias}').then((interception) => {\n${validations}\n})`;
+          } else if (
+            ((req.method as string) === 'POST' ||
+              (req.method as string) === 'PUT') &&
+            req.body &&
+            typeof req.body === 'object' &&
+            !Array.isArray(req.body) &&
+            extendedHttp
+          ) {
+            // Validar el objeto enviado para POST y PUT
+            const validations = Object.keys(req.body)
+              .filter((key) => key !== 'id' && key !== 'uid')
+              .map(
+                (key) =>
+                  `  expect(interception.request.body.${key}).to.equal(${JSON.stringify(
+                    req.body[key]
                   )});`
               )
               .join('\n');

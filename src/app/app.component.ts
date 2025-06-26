@@ -47,4 +47,25 @@ export class AppComponent {
         });
     });
   }
+
+  public postClient(): Promise<number> {
+    const clientData: ClientModel = new ClientModel();
+    clientData.name = 'Test Client';
+    clientData.email = 'test@tes.com';
+    clientData.phone = '123456789';
+    clientData.lastname = 'Test 2';
+    clientData.secondLastname = 'Test 3';
+    clientData.createdAt = new Date().toISOString();
+
+    return new Promise((resolve, reject) => {
+      this.clientService
+        .postNewClient(environment.testAPI, clientData)
+        .then((saveClientResponse: StandarResponse<ClientModel>) => {
+          resolve(saveClientResponse.status);
+        })
+        .catch((message: Error) => {
+          reject(message instanceof Error ? message : new Error(message));
+        });
+    });
+  }
 }
