@@ -30,9 +30,29 @@ export const CypressHttpInterceptor = (
           e2eService.registerInterceptor(req.method, url, alias);
 
           // Guarda el wait en la lista principal
-          e2eService.addCommand(
-            `cy.wait('@${alias}').then((interception) => { })`
-          );
+          console.log(event);
+          let cyWaitCommand = `cy.wait('@${alias}').then((interception) => { })`;
+
+          // Si es GET y la respuesta no es un array, añade validaciones para cada campo excepto id/uid
+          // TODO Ver como se mejora la detección de los campos id / uid, por ejemplo para un clientId
+          if (
+            req.method === 'GET' &&
+            event.body &&
+            typeof event.body === 'object' &&
+            !Array.isArray(event.body)
+          ) {
+            const validations = Object.keys(event.body)
+              .filter((key) => key !== 'id' && key !== 'uid')
+              .map(
+                (key) =>
+                  `  expect(interception.response.body.${key}).to.equal(${JSON.stringify(
+                    event.body[key]
+                  )});`
+              )
+              .join('\n');
+            cyWaitCommand = `cy.wait('@${alias}').then((interception) => {\n${validations}\n})`;
+          }
+          e2eService.addCommand(cyWaitCommand);
         }
       },
     })

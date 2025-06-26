@@ -34,7 +34,11 @@ export const bbddDataModel = [
         keypath: 'language',
         options: { unique: false },
       },
-     
+      {
+        name: 'extendedHttpCommands',
+        keypath: 'extendedHttpCommands',
+        options: { unique: false },
+      },
     ],
   },
 ];

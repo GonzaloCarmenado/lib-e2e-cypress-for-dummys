@@ -20,7 +20,7 @@ export class ConfigurationComponent {
     { value: 'en', label: 'English' },
     { value: 'fr', label: 'Français' },
     { value: 'it', label: 'Italiano' },
-    { value: 'de', label: 'Deutsch' }
+    { value: 'de', label: 'Deutsch' },
   ];
   public translation: TranslationService;
 
@@ -32,15 +32,19 @@ export class ConfigurationComponent {
     this.persistService.getGeneralConfig().subscribe((config) => {
       if (config && config.language) {
         this.selectedLanguage = config.language;
-        this.translation.setLang(config.language as import('../../services/lib-e2e-cypress-for-dummys-translate.service').Lang);
+        this.translation.setLang(
+          config.language as import('../../services/lib-e2e-cypress-for-dummys-translate.service').Lang
+        );
       }
     });
   }
 
   public onLanguageChange(event: Event): void {
     const lang = (event.target as HTMLSelectElement).value;
-    this.translation.setLang(lang as any as import('../../services/lib-e2e-cypress-for-dummys-translate.service').Lang);
-    this.persistService.setGeneralConfig({ language: lang }).subscribe();
+    this.translation.setLang(
+      lang as any as import('../../services/lib-e2e-cypress-for-dummys-translate.service').Lang
+    );
+    this.persistService.setConfig({ language: lang }).subscribe();
   }
 
   public exportAllData(): void {

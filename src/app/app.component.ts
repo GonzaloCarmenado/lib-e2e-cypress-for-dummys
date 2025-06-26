@@ -35,4 +35,16 @@ export class AppComponent {
         });
     });
   }
+  public getClient(): Promise<ClientModel> {
+    return new Promise((resolve, reject) => {
+      this.clientService
+        .getClientById(environment.testAPI, 2)
+        .then((client: StandarResponse<ClientModel>) => {
+          resolve(client.data);
+        })
+        .catch((message: Error) => {
+          reject(message instanceof Error ? message : new Error(message));
+        });
+    });
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, viewChild, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { LibE2eCypressForDummysService } from './services/lib-e2e-cypress-for-dummys.service';
 import { DialogModule } from 'primeng/dialog';
 import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
@@ -35,7 +35,7 @@ export class LibE2eRecorderComponent {
   public cypressCommands: string[] = [];
 
   constructor(
-    private e2eService: LibE2eCypressForDummysService,
+    private readonly e2eService: LibE2eCypressForDummysService,
     private readonly persistService: LibE2eCypressForDummysPersistentService,
     private readonly transformationService: LibE2eCypressForDummysTransformationService,
     public readonly translation: TranslationService
@@ -50,14 +50,12 @@ export class LibE2eRecorderComponent {
     this.e2eService.getCommands$().subscribe((commands) => {
       this.cypressCommands = commands;
     });
-
+    this.getHttpConfigurations();
     this.changeLanguage();
   }
 
   private changeLanguage(): void {
-    this.translation.setLang(
-      this.translation.detectLang()
-    )
+    this.translation.setLang(this.translation.detectLang());
   }
   public toggle(): void {
     this.e2eService.toggleRecording();
@@ -137,27 +135,37 @@ export class LibE2eRecorderComponent {
   }
   //#endregion CallBAcks de componentes hijos
 
-  //#region Callbacks de componentes hijos
+  //#region Accesos rápidos
   @HostListener('window:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
-    console.log(event.key.toLowerCase())
+    console.log(event.key.toLowerCase());
     if (event.ctrlKey && event.key.toLowerCase() === 'r') {
       event.preventDefault();
       this.toggle();
-    }else if (event.ctrlKey && event.key.toLowerCase() === '1') {
+    } else if (event.ctrlKey && event.key.toLowerCase() === '1') {
       event.preventDefault();
-      this.openSavedTestsPanel()
-    }
-    else if (event.ctrlKey && event.key.toLowerCase() === '2') {
+      this.openSavedTestsPanel();
+    } else if (event.ctrlKey && event.key.toLowerCase() === '2') {
       event.preventDefault();
-      this.openTestpanel()
-    }
-    else if (event.ctrlKey && event.key.toLowerCase() === '3') {
+      this.openTestpanel();
+    } else if (event.ctrlKey && event.key.toLowerCase() === '3') {
       event.preventDefault();
-      this.openSettings()
+      this.openSettings();
     }
   }
-  //#endregion Callbacks de componentes hijos
+  //#endregion Accesos rápidos
+
+  //#region configurciones generales de la aplicación
+  private getHttpConfigurations(): void {
+    this.persistService.getExtendedHttpCommandsConfig().subscribe((tests) => {
+      console.log(tests);
+      if (tests === null) {
+        this.persistService
+          .setConfig({ extendedHttpCommands: 'true' })
+          .subscribe();
+        localStorage.setItem('extendedHttpCommands', 'true');
+      }
+    });
+  }
+  //#endregion configurciones generales de la aplicación
 }
-
-

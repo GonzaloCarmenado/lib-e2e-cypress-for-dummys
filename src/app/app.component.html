@@ -12,14 +12,15 @@ Password
 <br><br>
 
 {{ translation.translate('APP.NO_ID_INPUT') }}
-<input  type="text" />
+<input type="text" />
 
 <br><br>
 <button data-cy="login-button">{{ translation.translate('APP.LOGIN') }}</button>
 
 <br><br><br><br><br><br><br>
 <button (click)="getClientList()">{{ translation.translate('APP.GET_CLIENTS') }}</button>
-
+<br><br><br><br><br><br><br>
+<button (click)="getClient()">Obtener un cliente</button>
 
 
 <lib-e2e-recorder />

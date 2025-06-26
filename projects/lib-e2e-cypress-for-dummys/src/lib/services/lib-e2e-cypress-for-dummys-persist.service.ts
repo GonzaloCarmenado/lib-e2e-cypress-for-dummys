@@ -90,15 +90,36 @@ export class LibE2eCypressForDummysPersistentService {
   //#endregion Persistencia de los interceptores
 
   //#region Persistencia de configuración general
-  public setGeneralConfig(config: { language: string }): Observable<any> {
-    return this.dbService.clear('configuration').pipe(
-      switchMap(() => this.dbService.add('configuration', config))
-    );
+  // Método genérico para guardar configuración
+  public setConfig(config: Record<string, any>): Observable<any> {
+    return this.dbService
+      .clear('configuration')
+      .pipe(switchMap(() => this.dbService.add('configuration', config)));
+  }
+
+  /**
+   * @deprecated Usar setConfig({ extendedHttpCommands }) en su lugar
+   */
+  public setHttpConfig(config: {
+    extendedHttpCommands: boolean;
+  }): Observable<any> {
+    return this.setConfig(config);
   }
 
   public getGeneralConfig(): Observable<{ language: string } | null> {
+    return this.dbService
+      .getAll('configuration')
+      .pipe(map((records: any[]) => (records.length > 0 ? records[0] : null)));
+  }
+
+  public getExtendedHttpCommandsConfig(): Observable<null> {
     return this.dbService.getAll('configuration').pipe(
-      map((records: any[]) => (records.length > 0 ? records[0] : null))
+      map((records: any[]) => {
+        const found = records.find((r) =>
+          r.hasOwnProperty('extendedHttpCommands')
+        );
+        return found ?? null;
+      })
     );
   }
   //#endregion
