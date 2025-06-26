@@ -18,7 +18,7 @@ export class TestEditorComponent implements OnChanges {
   public translation: TranslationService;
 
   constructor(
-    private persistService: LibE2eCypressForDummysPersistentService,
+    private readonly persistService: LibE2eCypressForDummysPersistentService,
     translation: TranslationService
   ) {
     this.interceptorsByTest = {};
@@ -37,7 +37,7 @@ export class TestEditorComponent implements OnChanges {
 
   public copyInterceptors(testId: number): void {
     const interceptors = this.interceptorsByTest[testId];
-    if (interceptors && interceptors.length) {
+    if (interceptors?.length) {
       navigator.clipboard.writeText(interceptors.join('\n'));
     }
   }
@@ -52,7 +52,7 @@ export class TestEditorComponent implements OnChanges {
     this.expandedIndex = this.expandedIndex === index ? null : index;
     if (this.expandedIndex !== null) {
       const test = this.tests[this.expandedIndex];
-      if (test && test.id && !this.interceptorsByTest[test.id]) {
+      if (test?.id && !this.interceptorsByTest[test.id]) {
         this.persistService
           .getInterceptorsByTestId(test.id)
           .subscribe((records) => {
