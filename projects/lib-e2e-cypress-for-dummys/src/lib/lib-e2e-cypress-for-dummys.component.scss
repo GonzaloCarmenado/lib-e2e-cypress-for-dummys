@@ -1,4 +1,8 @@
 .e2e-recorder-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
   padding: 10px 16px;
   background-color: #1976d2;
   color: white;
@@ -15,6 +19,10 @@
 }
 
 .gear-icon-button {
+  position: fixed;
+  bottom: 52px;
+  right: 20px;
+  z-index: 9999;
   width: 32px;
   height: 32px;
   border: none;
@@ -35,6 +43,10 @@
 }
 
 .test-icon-button {
+  position: fixed;
+  bottom: 52px;
+  right: 55px;
+  z-index: 9999;
   width: 32px;
   height: 32px;
   border: none;
@@ -55,6 +67,10 @@
 }
 
 .saved-test-icon-button {
+  position: fixed;
+  bottom: 52px;
+  right: 90px;
+  z-index: 9999;
   width: 32px;
   height: 32px;
   border: none;
@@ -117,6 +133,7 @@
 }
 
 .tooltip {
+  // position: relative;
   display: inline-block;
 }
 
@@ -162,25 +179,4 @@
 .absolute-position {
   z-index: 2147483647;
   position: absolute;
-}
-
-/* Draggable toolbar styles */
-.draggable-toolbar {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 10000;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  cursor: grab;
-}
-.draggable-toolbar .toolbar-row {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-.draggable-toolbar.dragging {
-  opacity: 0.8;
-  cursor: grabbing;
 }

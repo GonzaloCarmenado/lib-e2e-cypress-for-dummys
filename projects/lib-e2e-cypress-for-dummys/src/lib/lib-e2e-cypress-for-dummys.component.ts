@@ -8,7 +8,6 @@ import { LibE2eCypressForDummysTransformationService } from './lib-e2e-cypress-f
 import { TestEditorComponent } from './components/test-editor/test-editor.component';
 import { ConfigurationComponent } from './components/configurations/configuration.component';
 import { TranslationService } from './services/lib-e2e-cypress-for-dummys-translate.service';
-import { CommonModule } from '@angular/common';
 @Component({
   selector: 'lib-e2e-recorder',
   templateUrl: './lib-e2e-cypress-for-dummys.component.html',
@@ -20,7 +19,6 @@ import { CommonModule } from '@angular/common';
     SaveTestComponent,
     TestEditorComponent,
     ConfigurationComponent,
-    CommonModule,
   ],
 })
 export class LibE2eRecorderComponent {
@@ -35,14 +33,6 @@ export class LibE2eRecorderComponent {
   public showSavedTestsPanel = false;
   public showConfigurationPanel = false;
   public cypressCommands: string[] = [];
-
-  public toolbarPosition: { [key: string]: string } = {
-    bottom: '20px',
-    right: '20px',
-    position: 'fixed',
-  };
-  public dragging = false;
-  private dragOffset = { x: 0, y: 0 };
 
   constructor(
     private readonly e2eService: LibE2eCypressForDummysService,
@@ -178,37 +168,4 @@ export class LibE2eRecorderComponent {
     });
   }
   //#endregion configurciones generales de la aplicación
-
-  onDragStart(event: MouseEvent) {
-    this.dragging = true;
-    const toolbar = (event.target as HTMLElement).closest(
-      '.draggable-toolbar'
-    ) as HTMLElement;
-    const rect = toolbar.getBoundingClientRect();
-    this.dragOffset = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    };
-    document.addEventListener('mousemove', this.onDragMove);
-    document.addEventListener('mouseup', this.onDragEnd);
-  }
-
-  onDragMove = (event: MouseEvent) => {
-    if (!this.dragging) return;
-    const left = event.clientX - this.dragOffset.x;
-    const top = event.clientY - this.dragOffset.y;
-    this.toolbarPosition = {
-      position: 'fixed',
-      left: left + 'px',
-      top: top + 'px',
-      right: 'auto',
-      bottom: 'auto',
-    };
-  };
-
-  onDragEnd = () => {
-    this.dragging = false;
-    document.removeEventListener('mousemove', this.onDragMove);
-    document.removeEventListener('mouseup', this.onDragEnd);
-  };
 }
