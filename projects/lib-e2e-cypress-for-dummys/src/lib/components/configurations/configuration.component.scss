@@ -120,3 +120,21 @@
     box-shadow: 0 0 0 2px #1976d233;
   }
 }
+
+.advanced-http-toggle-row {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.advanced-http-toggle-checkbox {
+  margin-right: 0.7rem;
+  width: 18px;
+  height: 18px;
+  accent-color: #1976d2;
+}
+
+.advanced-http-toggle-label {
+  margin: 0;
+  font-weight: 400;
+}

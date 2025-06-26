@@ -90,11 +90,23 @@ export class LibE2eCypressForDummysPersistentService {
   //#endregion Persistencia de los interceptores
 
   //#region Persistencia de configuración general
-  // Método genérico para guardar configuración
+  // Método genérico para guardar configuración (merge)
   public setConfig(config: Record<string, any>): Observable<any> {
-    return this.dbService
-      .clear('configuration')
-      .pipe(switchMap(() => this.dbService.add('configuration', config)));
+    return this.dbService.getAll('configuration').pipe(
+      switchMap((records: any[]) => {
+        const current = records.length > 0 ? records[0] : {};
+        const merged = { ...current, ...config };
+        // Si ya existe, actualiza; si no, añade
+        if (current.id) {
+          return this.dbService.update('configuration', {
+            ...merged,
+            id: current.id,
+          });
+        } else {
+          return this.dbService.add('configuration', merged);
+        }
+      })
+    );
   }
 
   /**

@@ -7,7 +7,7 @@ export const I18N_FR = {
     SHOW_COMMANDS: 'Aperçu des commandes Cypress',
     DIALOG_SAVED_TESTS: 'Tests enregistrés',
     DIALOG_COMMANDS: 'Aperçu des commandes Cypress',
-    DIALOG_SAVE: 'Enregistrer l’enregistrement ?'
+    DIALOG_SAVE: 'Enregistrer l’enregistrement ?',
   },
   SAVE_TEST: {
     TITLE: 'Voulez-vous enregistrer le test ?',
@@ -16,7 +16,7 @@ export const I18N_FR = {
     DESC_LABEL: 'Description du test',
     DESC_HINT: '(texte pour it() de Cypress)',
     SAVE: 'Enregistrer',
-    CANCEL: 'Annuler'
+    CANCEL: 'Annuler',
   },
   TEST_EDITOR: {
     EMPTY: 'Aucun test enregistré.',
@@ -26,7 +26,7 @@ export const I18N_FR = {
     INTERCEPTORS: 'Intercepteurs associés',
     COPY_INTERCEPTORS: 'Copier les intercepteurs',
     DELETE: 'Supprimer le test',
-    DELETE_SHORT: 'Supprimer'
+    DELETE_SHORT: 'Supprimer',
   },
   APP: {
     ADMIN: 'Administrateur',
@@ -35,13 +35,14 @@ export const I18N_FR = {
     PASSWORD: 'Mot de passe',
     LOGIN: 'Connexion',
     GET_CLIENTS: 'Obtenir les clients',
-    NO_ID_INPUT: 'Cet input n’a pas d’identifiant'
+    NO_ID_INPUT: 'Cet input n’a pas d’identifiant',
   },
   CONFIG: {
     GENERAL: 'Général',
     LANGUAGE: 'Langue',
+    ADVANCED_HTTP_CONFIG: 'Paramètres HTTP avancés',
     EXPORT_IMPORT: 'Exporter / Importer les données de la BDD',
     EXPORT_DATA: 'Exporter les données de la BDD',
-    IMPORT_DATA: 'Importer des données'
-  }
+    IMPORT_DATA: 'Importer des données',
+  },
 };

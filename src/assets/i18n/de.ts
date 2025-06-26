@@ -7,7 +7,7 @@ export const I18N_DE = {
     SHOW_COMMANDS: 'Cypress-Befehle anzeigen',
     DIALOG_SAVED_TESTS: 'Gespeicherte Tests',
     DIALOG_COMMANDS: 'Cypress-Befehle Vorschau',
-    DIALOG_SAVE: 'Aufzeichnung speichern?'
+    DIALOG_SAVE: 'Aufzeichnung speichern?',
   },
   SAVE_TEST: {
     TITLE: 'Möchten Sie den Test speichern?',
@@ -16,7 +16,7 @@ export const I18N_DE = {
     DESC_LABEL: 'Testbeschreibung',
     DESC_HINT: '(Text für Cypress it())',
     SAVE: 'Speichern',
-    CANCEL: 'Abbrechen'
+    CANCEL: 'Abbrechen',
   },
   TEST_EDITOR: {
     EMPTY: 'Noch keine Tests gespeichert.',
@@ -26,7 +26,7 @@ export const I18N_DE = {
     INTERCEPTORS: 'Zugehörige Interceptors',
     COPY_INTERCEPTORS: 'Interceptors kopieren',
     DELETE: 'Test löschen',
-    DELETE_SHORT: 'Löschen'
+    DELETE_SHORT: 'Löschen',
   },
   APP: {
     ADMIN: 'Administrator',
@@ -35,13 +35,14 @@ export const I18N_DE = {
     PASSWORD: 'Passwort',
     LOGIN: 'Anmelden',
     GET_CLIENTS: 'Kunden abrufen',
-    NO_ID_INPUT: 'Dieses Eingabefeld hat keine Kennung'
+    NO_ID_INPUT: 'Dieses Eingabefeld hat keine Kennung',
   },
   CONFIG: {
     GENERAL: 'Allgemein',
     LANGUAGE: 'Sprache',
     EXPORT_IMPORT: 'Datenbankdaten exportieren / importieren',
     EXPORT_DATA: 'Datenbankdaten exportieren',
-    IMPORT_DATA: 'Daten importieren'
-  }
+    IMPORT_DATA: 'Daten importieren',
+    ADVANCED_HTTP_CONFIG: 'Erweiterte Http-Konfiguration',
+  },
 };

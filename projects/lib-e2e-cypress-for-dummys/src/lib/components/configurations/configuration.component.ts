@@ -23,14 +23,16 @@ export class ConfigurationComponent {
     { value: 'de', label: 'Deutsch' },
   ];
   public translation: TranslationService;
+  public advancedHttpConfig =
+    localStorage.getItem('extendedHttpCommands') === 'true';
 
   constructor(
-    private persistService: LibE2eCypressForDummysPersistentService,
+    private readonly persistService: LibE2eCypressForDummysPersistentService,
     translation: TranslationService
   ) {
     this.translation = translation;
     this.persistService.getGeneralConfig().subscribe((config) => {
-      if (config && config.language) {
+      if (config?.language) {
         this.selectedLanguage = config.language;
         this.translation.setLang(
           config.language as import('../../services/lib-e2e-cypress-for-dummys-translate.service').Lang
@@ -39,12 +41,27 @@ export class ConfigurationComponent {
     });
   }
 
+  ngOnInit(): void {
+    // Sincroniza el valor con localStorage al iniciar
+    this.advancedHttpConfig =
+      localStorage.getItem('extendedHttpCommands') === 'true';
+  }
+
   public onLanguageChange(event: Event): void {
     const lang = (event.target as HTMLSelectElement).value;
     this.translation.setLang(
       lang as any as import('../../services/lib-e2e-cypress-for-dummys-translate.service').Lang
     );
     this.persistService.setConfig({ language: lang }).subscribe();
+  }
+
+  public onAdvancedHttpConfigChange(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.advancedHttpConfig = checked;
+    localStorage.setItem('extendedHttpCommands', checked ? 'true' : 'false');
+    this.persistService
+      .setConfig({ extendedHttpCommands: checked ? 'true' : 'false' })
+      .subscribe();
   }
 
   public exportAllData(): void {

@@ -7,7 +7,7 @@ export const I18N_EN = {
     SHOW_COMMANDS: 'Preview Cypress commands',
     DIALOG_SAVED_TESTS: 'Saved tests',
     DIALOG_COMMANDS: 'Cypress commands previewer',
-    DIALOG_SAVE: 'Save recording?'
+    DIALOG_SAVE: 'Save recording?',
   },
   SAVE_TEST: {
     TITLE: 'Do you want to save the test?',
@@ -16,7 +16,7 @@ export const I18N_EN = {
     DESC_LABEL: 'Test description',
     DESC_HINT: '(text for Cypress it())',
     SAVE: 'Save',
-    CANCEL: 'Cancel'
+    CANCEL: 'Cancel',
   },
   TEST_EDITOR: {
     EMPTY: 'No tests saved yet.',
@@ -26,7 +26,7 @@ export const I18N_EN = {
     INTERCEPTORS: 'Associated interceptors',
     COPY_INTERCEPTORS: 'Copy interceptors',
     DELETE: 'Delete test',
-    DELETE_SHORT: 'Delete'
+    DELETE_SHORT: 'Delete',
   },
   APP: {
     ADMIN: 'Administrator',
@@ -35,13 +35,14 @@ export const I18N_EN = {
     PASSWORD: 'Password',
     LOGIN: 'Login',
     GET_CLIENTS: 'Get clients',
-    NO_ID_INPUT: 'This input has no identifier'
+    NO_ID_INPUT: 'This input has no identifier',
   },
   CONFIG: {
     GENERAL: 'General',
     LANGUAGE: 'Language',
     EXPORT_IMPORT: 'Export / Import database data',
     EXPORT_DATA: 'Export database data',
-    IMPORT_DATA: 'Import data'
-  }
+    IMPORT_DATA: 'Import data',
+    ADVANCED_HTTP_CONFIG: 'Advanced Http configuration',
+  },
 };

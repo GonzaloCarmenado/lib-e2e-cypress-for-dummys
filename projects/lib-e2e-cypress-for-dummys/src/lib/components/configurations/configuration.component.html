@@ -1,6 +1,5 @@
 <div class="config-collapsible-section">
-    <div class="collapsible-header"
-        (click)="showGeneralSection = !showGeneralSection">
+    <div class="collapsible-header" (click)="showGeneralSection = !showGeneralSection">
         <span>{{ translation.translate('CONFIG.GENERAL') }}</span>
         <span class="collapsible-icon">{{ showGeneralSection ? '▲' : '▼'
             }}</span>
@@ -11,26 +10,27 @@
             <label for="language-select" class="config-label">
                 {{ translation.translate('CONFIG.LANGUAGE') }}
             </label>
-            <!-- ...existing code... -->
-            <select
-                id="language-select"
-                class="config-select styled-select"
-                [(ngModel)]="selectedLanguage"
+
+            <select id="language-select" class="config-select styled-select" [(ngModel)]="selectedLanguage"
                 (change)="onLanguageChange($event)">
-                <option *ngFor="let lang of supportedLanguages"
-                    [value]="lang.value">
+                <option *ngFor="let lang of supportedLanguages" [value]="lang.value">
                     {{ lang.label }}
                 </option>
             </select>
-            <!-- ...existing code... -->
+            <div class="advanced-http-toggle-row">
+                <input type="checkbox" id="advanced-http-config-toggle" [checked]="advancedHttpConfig"
+                    (change)="onAdvancedHttpConfigChange($event)" class="advanced-http-toggle-checkbox" />
+                <label for="advanced-http-config-toggle" class="config-label advanced-http-toggle-label">
+                    {{ translation.translate('CONFIG.ADVANCED_HTTP_CONFIG') }}
+                </label>
+            </div>
         </div>
     </div>
     }
 </div>
 
 <div class="config-collapsible-section">
-    <div class="collapsible-header"
-        (click)="showExportSection = !showExportSection">
+    <div class="collapsible-header" (click)="showExportSection = !showExportSection">
         <span>{{ translation.translate('CONFIG.EXPORT_IMPORT') }}</span>
         <span class="collapsible-icon">{{ showExportSection ? '▲' : '▼'
             }}</span>
@@ -40,11 +40,9 @@
         <div class="config-export-section">
             <button class="btn btn-primary" (click)="exportAllData()">{{
                 translation.translate('CONFIG.EXPORT_DATA') }}</button>
-            <label class="btn btn-success"
-                style="margin-left: 1rem; cursor:pointer;">
+            <label class="btn btn-success" style="margin-left: 1rem; cursor:pointer;">
                 {{ translation.translate('CONFIG.IMPORT_DATA') }}
-                <input type="file" accept="application/json"
-                    (change)="importAllData($event)" style="display:none;">
+                <input type="file" accept="application/json" (change)="importAllData($event)" style="display:none;">
             </label>
         </div>
     </div>
