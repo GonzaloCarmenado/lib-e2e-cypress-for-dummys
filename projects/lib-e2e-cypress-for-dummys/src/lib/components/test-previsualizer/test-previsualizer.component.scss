@@ -142,10 +142,27 @@
   background: #23272e;
   border-radius: 8px;
   box-shadow: 0 2px 8px #0002;
-  padding: 1rem 1rem 0.5rem 1rem;
+  padding: 0rem 1rem 0.5rem 1rem;
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 120px;
-  /* Eliminar height fija para permitir que el scroll funcione */
+  min-height: 40px;
+  transition: min-height 0.2s, max-height 0.2s;
+}
+
+/* Específico para el bloque de interceptores */
+.previsualizer-block.interceptors-collapsed {
+  min-height: 40px;
+  max-height: 40px;
+  overflow: hidden;
+}
+.previsualizer-block.interceptors-expanded {
+  min-height: 110px;
+  max-height: 110px;
+  overflow: hidden;
+}
+
+.commands {
+  min-height: 178px;
+  max-height: 178px;
 }

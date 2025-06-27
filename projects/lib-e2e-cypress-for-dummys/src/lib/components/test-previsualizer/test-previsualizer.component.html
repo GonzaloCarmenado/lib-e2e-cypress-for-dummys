@@ -1,10 +1,15 @@
 <div class="test-previsualizer-outer">
-  <div class="previsualizer-block">
-    <div class="previsualizer-section-title">Interceptors ({{ interceptors.length }})</div>
-    <button class="btn btn-copy-interceptors" (click)="copyInterceptorsToClipboard()" title="Copiar interceptors">
+  <div class="previsualizer-block" [ngClass]="showInterceptors ? 'interceptors-expanded' : 'interceptors-collapsed'">
+    <div class="previsualizer-section-title previsualizer-collapsible-title"
+      (click)="showInterceptors = !showInterceptors" style="cursor:pointer;">
+      Interceptors ({{ interceptors.length }})
+      <span>{{ showInterceptors ? '▲' : '▼' }}</span>
+    </div>
+    <button class="btn btn-copy-interceptors" *ngIf="showInterceptors" (click)="copyInterceptorsToClipboard()"
+      title="Copiar interceptors">
       📋
     </button>
-    <div class="previsualizer-scroll">
+    <div class="previsualizer-scroll" *ngIf="showInterceptors">
       <ng-container *ngIf="interceptors.length > 0; else noInterceptors">
         <pre *ngFor="let interceptor of interceptors" class="previsualizer-command">{{ interceptor }}</pre>
       </ng-container>
@@ -13,7 +18,7 @@
       </ng-template>
     </div>
   </div>
-  <div class="previsualizer-block">
+  <div class="previsualizer-block commands">
     <div class="previsualizer-section-title">Comandos Cypress</div>
     <button class="btn btn-copy" (click)="copyToClipboard()" title="Copiar comandos">
       📋
