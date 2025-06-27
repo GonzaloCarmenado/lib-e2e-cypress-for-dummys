@@ -23,7 +23,7 @@
     <button class="btn btn-copy" (click)="copyToClipboard()" title="Copiar comandos">
       📋
     </button>
-    <div class="previsualizer-scroll">
+    <div class="previsualizer-scroll special-size-commands">
       <ng-container *ngIf="cypressCommands.length > 0; else noCommands">
         <pre *ngFor="let cmd of cypressCommands" class="previsualizer-command">{{ cmd }}</pre>
       </ng-container>
