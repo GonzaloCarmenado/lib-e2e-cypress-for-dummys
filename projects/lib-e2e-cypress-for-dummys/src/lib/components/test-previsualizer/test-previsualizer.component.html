@@ -1,8 +1,30 @@
 <div class="test-previsualizer-outer">
-  <button class="btn btn-copy" (click)="copyToClipboard()">
-    📋
-  </button>
-  <div #scrollContainer class="test-previsualizer-scroll">
-    <pre *ngFor="let cmd of cypressCommands" class="previsualizer-command">{{ cmd }}</pre>
+  <div class="previsualizer-block">
+    <div class="previsualizer-section-title">Interceptors ({{ interceptors.length }})</div>
+    <button class="btn btn-copy-interceptors" (click)="copyInterceptorsToClipboard()" title="Copiar interceptors">
+      📋
+    </button>
+    <div class="previsualizer-scroll">
+      <ng-container *ngIf="interceptors.length > 0; else noInterceptors">
+        <pre *ngFor="let interceptor of interceptors" class="previsualizer-command">{{ interceptor }}</pre>
+      </ng-container>
+      <ng-template #noInterceptors>
+        <div class="previsualizer-empty">No hay interceptors para este test.</div>
+      </ng-template>
+    </div>
+  </div>
+  <div class="previsualizer-block">
+    <div class="previsualizer-section-title">Comandos Cypress</div>
+    <button class="btn btn-copy" (click)="copyToClipboard()" title="Copiar comandos">
+      📋
+    </button>
+    <div class="previsualizer-scroll">
+      <ng-container *ngIf="cypressCommands.length > 0; else noCommands">
+        <pre *ngFor="let cmd of cypressCommands" class="previsualizer-command">{{ cmd }}</pre>
+      </ng-container>
+      <ng-template #noCommands>
+        <div class="previsualizer-empty">No hay comandos para este test.</div>
+      </ng-template>
+    </div>
   </div>
 </div>

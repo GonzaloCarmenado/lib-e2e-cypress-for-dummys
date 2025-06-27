@@ -22,7 +22,8 @@
 
   <p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_COMMANDS') }}" class="absolute-position"
     [(visible)]="showTestPanel">
-    <test-previsualizer-component [cypressCommands]="cypressCommands"></test-previsualizer-component>
+    <test-previsualizer-component [cypressCommands]="cypressCommands"
+      [interceptors]="interceptors"></test-previsualizer-component>
   </p-dialog>
 
   <p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_SAVED_TESTS') }}" [(visible)]="showSavedTestsPanel"

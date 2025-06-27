@@ -33,6 +33,7 @@ export class LibE2eRecorderComponent {
   public showSavedTestsPanel = false;
   public showConfigurationPanel = false;
   public cypressCommands: string[] = [];
+  public interceptors: string[] = [];
 
   constructor(
     private readonly e2eService: LibE2eCypressForDummysService,
@@ -49,6 +50,9 @@ export class LibE2eRecorderComponent {
     });
     this.e2eService.getCommands$().subscribe((commands) => {
       this.cypressCommands = commands;
+    });
+    this.e2eService.getInterceptors$().subscribe((interceptors) => {
+      this.interceptors = interceptors;
     });
     this.getHttpConfigurations();
     this.changeLanguage();
