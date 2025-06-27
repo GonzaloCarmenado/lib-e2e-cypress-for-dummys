@@ -1,6 +1,8 @@
-<div #scrollContainer class="test-previsualizer-scroll">
+<div class="test-previsualizer-outer">
   <button class="btn btn-copy" (click)="copyToClipboard()">
     📋
   </button>
-  <pre *ngFor="let cmd of cypressCommands">{{ cmd }}</pre>
+  <div #scrollContainer class="test-previsualizer-scroll">
+    <pre *ngFor="let cmd of cypressCommands" class="previsualizer-command">{{ cmd }}</pre>
+  </div>
 </div>
