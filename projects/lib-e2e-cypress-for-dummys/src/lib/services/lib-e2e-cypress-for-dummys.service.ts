@@ -85,6 +85,9 @@ export class LibE2eCypressForDummysService {
       const selector = this.getReliableSelector(container);
       let cyCommand = '';
 
+      // Evita grabar comandos sobre la propia librería
+      if (selector === '[data-cy="lib-e2e-cypress-for-dummys"]') return;
+
       if (selector) {
         cyCommand = `cy.get('${selector}').click()`;
       } else {
@@ -127,6 +130,12 @@ export class LibE2eCypressForDummysService {
           const value = target.value.replace(/'/g, "\\'");
           let cyCommand = '';
 
+          // Evita grabar comandos sobre la propia librería
+          if (selector === '[data-cy="lib-e2e-cypress-for-dummys"]') {
+            this.inputDebounceTimers.delete(target);
+            return;
+          }
+
           if (selector) {
             cyCommand = `cy.get('${selector}').clear().type('${value}')`;
           } else {
@@ -157,6 +166,9 @@ export class LibE2eCypressForDummysService {
       const selector = this.getReliableSelector(container);
       const selectedValue = target.value.replace(/'/g, "\\'");
       let cyCommand = '';
+
+      // Evita grabar comandos sobre la propia librería
+      if (selector === '[data-cy="lib-e2e-cypress-for-dummys"]') return;
 
       if (selector) {
         cyCommand = `cy.get('${selector}').select('${selectedValue}')`;
@@ -267,6 +279,9 @@ export class LibE2eCypressForDummysService {
 
     this.addCommand(`cy.viewport(${viewportWidth}, ${viewportHeight})`);
     this.addCommand(`cy.visit('${pathname}')`);
+    this.addCommand(
+      `cy.get('[data-cy="lib-e2e-cypress-for-dummys"]').invoke('hide');`
+    );
   }
 
   /**

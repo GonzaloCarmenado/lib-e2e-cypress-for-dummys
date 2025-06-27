@@ -1,39 +1,42 @@
-<button class="e2e-recorder-button tooltip" (click)="toggle()" accesskey="r">
-  {{ isRecording ? '⏹️ ' + translation.translate('MAIN_FRAME.STOP') : '▶️ ' + translation.translate('MAIN_FRAME.RECORD')
-  }}
-</button>
+<div data-cy="lib-e2e-cypress-for-dummys">
+  <button class="e2e-recorder-button tooltip" (click)="toggle()" accesskey="r">
+    {{ isRecording ? '⏹️ ' + translation.translate('MAIN_FRAME.STOP') : '▶️ ' +
+    translation.translate('MAIN_FRAME.RECORD')
+    }}
+  </button>
 
-<button #testBtn class="saved-test-icon-button tooltip" (click)="openSavedTestsPanel()">
-  📋
-  <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_SAVED_TESTS') }}</span>
-</button>
+  <button #testBtn class="saved-test-icon-button tooltip" (click)="openSavedTestsPanel()">
+    📋
+    <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_SAVED_TESTS') }}</span>
+  </button>
 
-<button #testBtn class="test-icon-button tooltip right-edge" (click)="openTestpanel()">
-  📝
-  <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_COMMANDS') }}</span>
-</button>
+  <button #testBtn class="test-icon-button tooltip right-edge" (click)="openTestpanel()">
+    📝
+    <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_COMMANDS') }}</span>
+  </button>
 
-<button class="gear-icon-button tooltip right-edge" (click)="openSettings()">
-  ⚙️
-  <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS') }}</span>
-</button>
+  <button class="gear-icon-button tooltip right-edge" (click)="openSettings()">
+    ⚙️
+    <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS') }}</span>
+  </button>
 
-<p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_COMMANDS') }}" class="absolute-position"
-  [(visible)]="showTestPanel">
-  <test-previsualizer-component [cypressCommands]="cypressCommands"></test-previsualizer-component>
-</p-dialog>
+  <p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_COMMANDS') }}" class="absolute-position"
+    [(visible)]="showTestPanel">
+    <test-previsualizer-component [cypressCommands]="cypressCommands"></test-previsualizer-component>
+  </p-dialog>
 
-<p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_SAVED_TESTS') }}" [(visible)]="showSavedTestsPanel"
-  class="absolute-position">
-  <test-editor-component [visible]="showSavedTestsPanel"></test-editor-component>
-</p-dialog>
+  <p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_SAVED_TESTS') }}" [(visible)]="showSavedTestsPanel"
+    class="absolute-position">
+    <test-editor-component [visible]="showSavedTestsPanel"></test-editor-component>
+  </p-dialog>
 
-<p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_SAVE') }}" class="absolute-position"
-  [(visible)]="showSavePanel">
-  <save-test-data-component #saveTestVC (savetest)="onSaveTest($event)"></save-test-data-component>
-</p-dialog>
+  <p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_SAVE') }}" class="absolute-position"
+    [(visible)]="showSavePanel">
+    <save-test-data-component #saveTestVC (savetest)="onSaveTest($event)"></save-test-data-component>
+  </p-dialog>
 
-<p-dialog class="absolute-position" header="{{ translation.translate('MAIN_FRAME.SETTINGS') }}"
-  [(visible)]="showConfigurationPanel">
-  <configuration-component></configuration-component>
-</p-dialog>
+  <p-dialog class="absolute-position" header="{{ translation.translate('MAIN_FRAME.SETTINGS') }}"
+    [(visible)]="showConfigurationPanel">
+    <configuration-component></configuration-component>
+  </p-dialog>
+</div>
