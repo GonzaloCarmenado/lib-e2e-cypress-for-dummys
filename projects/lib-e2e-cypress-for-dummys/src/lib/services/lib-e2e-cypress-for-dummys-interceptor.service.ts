@@ -52,7 +52,10 @@ export const CypressHttpInterceptor = (
                   )});`
               )
               .join('\n');
-            cyWaitCommand = `cy.wait('@${alias}').then((interception) => {\n${validations}\n})`;
+            cyWaitCommand = `cy.wait('@${alias}').then((interception) => {
+             if (interception.response) {
+             \n${validations}\n
+            }})`;
           } else if (
             ((req.method as string) === 'POST' ||
               (req.method as string) === 'PUT') &&
