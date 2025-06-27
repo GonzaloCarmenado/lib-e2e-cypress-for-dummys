@@ -17,6 +17,12 @@ export const I18N_EN = {
     DESC_HINT: '(text for Cypress it())',
     SAVE: 'Save',
     CANCEL: 'Cancel',
+    INTERCEPTORS_LABEL: 'Interceptors',
+    COPY_INTERCEPTORS_LABEL: 'Copy interceptors',
+    NO_INTERCEPTORS_LABEL: 'No interceptors for this test.',
+    CYPRESS_COMMANDS_LABEL: 'Cypress Commands',
+    COPY_COMMANDS_LABEL: 'Copy commands',
+    NO_COMMANDS_LABEL: 'No commands for this test.',
   },
   TEST_EDITOR: {
     EMPTY: 'No tests saved yet.',
@@ -44,5 +50,13 @@ export const I18N_EN = {
     EXPORT_IMPORT: 'Export / Import database data',
     EXPORT_DATA: 'Export database data',
     IMPORT_DATA: 'Import data',
+  },
+  TEST_PREVISUALIZER: {
+    INTERCEPTORS: 'Interceptors',
+    COPY_INTERCEPTORS: 'Copy interceptors',
+    NO_INTERCEPTORS: 'No interceptors for this test.',
+    CYPRESS_COMMANDS: 'Cypress Commands',
+    COPY_COMMANDS: 'Copy commands',
+    NO_COMMANDS: 'No commands for this test.',
   },
 };

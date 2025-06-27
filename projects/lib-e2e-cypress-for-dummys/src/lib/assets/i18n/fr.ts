@@ -45,4 +45,20 @@ export const I18N_FR = {
     EXPORT_DATA: 'Exporter les données de la BDD',
     IMPORT_DATA: 'Importer des données',
   },
+  TEST_PREVISUALIZER: {
+    INTERCEPTORS: 'Intercepteurs',
+    COPY_INTERCEPTORS: 'Copier les intercepteurs',
+    NO_INTERCEPTORS: 'Aucun intercepteur pour ce test.',
+    CYPRESS_COMMANDS: 'Commandes Cypress',
+    COPY_COMMANDS: 'Copier les commandes',
+    NO_COMMANDS: 'Aucune commande pour ce test.',
+  },
+  SAVE_TEST_DATA: {
+    INTERCEPTORS_LABEL: 'Intercepteurs',
+    COPY_INTERCEPTORS_LABEL: 'Copier les intercepteurs',
+    NO_INTERCEPTORS_LABEL: 'Aucun intercepteur pour ce test.',
+    CYPRESS_COMMANDS_LABEL: 'Commandes Cypress',
+    COPY_COMMANDS_LABEL: 'Copier les commandes',
+    NO_COMMANDS_LABEL: 'Aucune commande pour ce test.',
+  },
 };

@@ -45,4 +45,20 @@ export const I18N_IT = {
     EXPORT_DATA: 'Esporta dati del database',
     IMPORT_DATA: 'Importa dati',
   },
+  TEST_PREVISUALIZER: {
+    INTERCEPTORS: 'Interceptor',
+    COPY_INTERCEPTORS: 'Copia interceptor',
+    NO_INTERCEPTORS: 'Nessun interceptor per questo test.',
+    CYPRESS_COMMANDS: 'Comandi Cypress',
+    COPY_COMMANDS: 'Copia comandi',
+    NO_COMMANDS: 'Nessun comando per questo test.',
+  },
+  SAVE_TEST_DATA: {
+    INTERCEPTORS_LABEL: 'Interceptor',
+    COPY_INTERCEPTORS_LABEL: 'Copia interceptor',
+    NO_INTERCEPTORS_LABEL: 'Nessun interceptor per questo test.',
+    CYPRESS_COMMANDS_LABEL: 'Comandi Cypress',
+    COPY_COMMANDS_LABEL: 'Copia comandi',
+    NO_COMMANDS_LABEL: 'Nessun comando per questo test.',
+  },
 };

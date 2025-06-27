@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
 
 @Component({
   selector: 'test-previsualizer-component',
@@ -13,7 +14,7 @@ export class TestPrevisualizerComponent {
   @Input() public cypressCommands: string[] = [];
   @Input() public interceptors: string[] = [];
   public showInterceptors = false;
-  constructor() {}
+  constructor(public translation: TranslationService) {}
 
   public ngAfterViewChecked() {
     this.scrollToBottom();
