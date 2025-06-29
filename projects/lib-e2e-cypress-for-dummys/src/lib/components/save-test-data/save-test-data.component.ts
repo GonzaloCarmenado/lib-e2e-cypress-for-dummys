@@ -18,24 +18,38 @@ export class SaveTestComponent {
    */
   @Output() savetest = new EventEmitter<string | null>();
 
+  /**
+   * Controla el paso de guardado para mostrar la diferentes pantallas
+   * @type {('ask' | 'desc')}
+   * @memberof SaveTestComponent
+   */
   public step: 'ask' | 'desc' = 'ask';
+
+  /**
+   * Guarda la descripción de la prueba para construir el it();
+   * @memberof SaveTestComponent
+   */
   public description = '';
 
   constructor(public translation: TranslationService) {}
 
-  public askSave() {
+  public askSave():void {
     this.step = 'desc';
   }
 
-  public confirmSave() {
+  public confirmSave():void {
     this.savetest.emit(this.description.trim());
   }
 
-  public cancel() {
+  public cancel():void {
     this.savetest.emit(null);
   }
 
-  public restartComponent() {
+  /**
+   * Deja el componente en su estado original para la próxima ves que se abra.
+   * @memberof SaveTestComponent
+   */
+  public restartComponent():void {
     this.step = 'ask';
     this.description = '';
   }

@@ -291,15 +291,7 @@ export class LibE2eCypressForDummysService {
    */
   public stopRecording(): void {
     this.isRecording$.next(false);
-    console.log(
-      'Comandos Cypress generados:\n',
-      this.getCommandsSnapshot().join('\n')
-    );
     const interceptors = this.interceptors$.getValue();
-    console.log(
-      '\n📡 Interceptores Cypress generados:\n',
-      interceptors.join('\n')
-    );
   }
 
   /**

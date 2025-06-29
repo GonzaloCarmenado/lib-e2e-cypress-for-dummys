@@ -22,8 +22,8 @@ import { TranslationService } from './services/lib-e2e-cypress-for-dummys-transl
   ],
 })
 export class LibE2eRecorderComponent {
-  @ViewChild('testBtn', { read: ElementRef })
-  public testBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('testBtnVC', { read: ElementRef })
+  public testBtnCr!: ElementRef<HTMLButtonElement>;
   @ViewChild('saveTestVC') public saveTestCR!: SaveTestComponent;
   public dialogPositionStyle: any = {};
   public isRecording = false;
@@ -78,7 +78,7 @@ export class LibE2eRecorderComponent {
         // modal y obtener su posición. En caso de que exista (control para evitar errores), hacemos los cálculos
         // necesarios para evitar que se salga por los bordes de la pantalla. Finalmente, le decimos
         // el tamaño que debe tener el modal (aunque luego el usuario pueda editarlo).)
-        const btnRect = this.testBtn.nativeElement.getBoundingClientRect();
+        const btnRect = this.testBtnCr.nativeElement.getBoundingClientRect();
         const dialog = document.querySelector('.p-dialog');
         if (dialog) {
           const dialogWidth = 480;
@@ -127,7 +127,6 @@ export class LibE2eRecorderComponent {
       this.persistService
         .insertTest(description, completeTest, interceptors)
         .subscribe((id) => {
-          console.log('Guardado con id', id);
         });
       // 3. Limpiar interceptores tras guardar
       if (this.e2eService.clearInterceptors) {
@@ -142,7 +141,6 @@ export class LibE2eRecorderComponent {
   //#region Accesos rápidos
   @HostListener('window:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
-    console.log(event.key.toLowerCase());
     if (event.ctrlKey && event.key.toLowerCase() === 'r') {
       event.preventDefault();
       this.toggle();
@@ -162,7 +160,6 @@ export class LibE2eRecorderComponent {
   //#region configurciones generales de la aplicación
   private getHttpConfigurations(): void {
     this.persistService.getExtendedHttpCommandsConfig().subscribe((tests) => {
-      console.log(tests);
       if (tests === null) {
         this.persistService
           .setConfig({ extendedHttpCommands: 'true' })

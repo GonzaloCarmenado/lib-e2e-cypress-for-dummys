@@ -3,7 +3,13 @@ import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+/**
+ * Componente de configuración de la aplicación. Permite seleccionar un idioma, utilziar la configuración
+ * avanzada de comandos HTTP y exportar/importar datos. La configuración avanzada de HTTP permite que los get por id,
+ * post y put generen las validaciones del objeto recibido / enviado
+ * @export
+ * @class ConfigurationComponent
+ */
 @Component({
   selector: 'configuration-component',
   templateUrl: './configuration.component.html',
@@ -12,9 +18,30 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
 })
 export class ConfigurationComponent {
+  /**
+   * Controla la visibilidad de la sección de exportación de datos.
+   * @type {boolean}
+   * @memberof ConfigurationComponent
+   */
   public showExportSection = true;
+  /**
+   * Controla la visibilidad de la sección de importación de datos.
+   * @type {boolean}
+   * @memberof ConfigurationComponent
+   */
   public showGeneralSection = true;
+  /**
+   * Idioma seleccionado por el usuario. Por defecto es español.
+   * @type {string}
+   * @memberof ConfigurationComponent
+   */
   public selectedLanguage = 'es';
+  /**
+   * Lista de idiomas soportados por la aplicación.
+   * Cada objeto contiene un valor y una etiqueta para mostrar en el selector de idioma.
+   * @type {Array<{ value: string, label: string }>}
+   * @memberof ConfigurationComponent
+   */
   public supportedLanguages = [
     { value: 'es', label: 'Español' },
     { value: 'en', label: 'English' },
@@ -41,12 +68,17 @@ export class ConfigurationComponent {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // Sincroniza el valor con localStorage al iniciar
     this.advancedHttpConfig =
       localStorage.getItem('extendedHttpCommands') === 'true';
   }
 
+  /**
+   * Actualiza el idioma de la aplicación y lo guarda en la configuración persistente.
+   * @param {Event} event - El evento del cambio de idioma.
+   * @memberof ConfigurationComponent
+   */
   public onLanguageChange(event: Event): void {
     const lang = (event.target as HTMLSelectElement).value;
     this.translation.setLang(
@@ -55,6 +87,11 @@ export class ConfigurationComponent {
     this.persistService.setConfig({ language: lang }).subscribe();
   }
 
+  /**
+   * Maneja el cambio de la configuración avanzada de comandos HTTP.
+   * @param {Event} event - El evento del cambio de configuración avanzada. (true o false)
+   * @memberof ConfigurationComponent
+   */
   public onAdvancedHttpConfigChange(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     this.advancedHttpConfig = checked;
@@ -64,6 +101,12 @@ export class ConfigurationComponent {
       .subscribe();
   }
 
+  /**
+   * Exporta todos los datos de pruebas e interceptores a un archivo JSON.
+   * Utiliza el servicio de persistencia para obtener todos los tests e interceptores, y los exporta para
+   * poder ser importados en otra máquina
+   * @memberof ConfigurationComponent
+   */
   public exportAllData(): void {
     Promise.all([
       this.persistService.getAllTests().toPromise(),
@@ -82,6 +125,14 @@ export class ConfigurationComponent {
     });
   }
 
+  /**
+   * Importa todos los datos de pruebas e interceptores desde un archivo JSON.
+   * Utiliza el servicio de persistencia para limpiar los datos actuales y luego ingesta los datos del archivo importado.
+   * El JSON debe terner el formato con el que se exportan los datos.
+   * @param {Event} event - El evento del cambio de archivo. Fichero txt con el formato JSON
+   * @return {*}  {void}
+   * @memberof ConfigurationComponent
+   */
   public importAllData(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;

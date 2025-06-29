@@ -41,8 +41,12 @@ export class TestEditorComponent implements OnChanges {
       navigator.clipboard.writeText(interceptors.join('\n'));
     }
   }
-
-  public loadTests() {
+  /**
+   * Carga todos los tests desde el servicio de persistencia y los asigna a la propiedad tests.
+   * Se llama al iniciar el componente o cuando se cambia la visibilidad del componente.
+   * @memberof TestEditorComponent
+   */
+  public loadTests():void {
     this.persistService
       .getAllTests()
       .subscribe((tests) => (this.tests = tests));
