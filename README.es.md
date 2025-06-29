@@ -17,14 +17,18 @@
 
 - 🎥 Graba interacciones de usuario (clicks, inputs, selects...) y las convierte en comandos Cypress (`cy.get(...).click()`, `cy.get(...).type()`, etc.).
 - 🌐 Genera automáticamente comandos para interceptar peticiones HTTP y esperarlas con Cypress (`cy.intercept`, `cy.wait`).
-- 🟢 Permite iniciar y parar la grabación desde un botón flotante en la interfaz.
+- 🟢 Permite iniciar y parar la grabación desde un botón flotante o mediante atajos de teclado (`Ctrl+R`, `Ctrl+1`, `Ctrl+2`, `Ctrl+3`).
 - 📋 Exporta los comandos generados para que los pegues directamente en tus tests Cypress.
-- 💾 Permite guardar y gestionar tus pruebas grabadas en una base de datos indexada (IndexedDB) local, accesible desde la propia interfaz.
-- 🗂️ Visualiza, copia, elimina y organiza tus pruebas guardadas desde un editor visual.
-- 📦 Importa y exporta todos tus tests y configuraciones de la BBDD con un solo clic.
-- ⚙️ Panel de configuración para gestionar la base de datos y otras opciones avanzadas.
+- 💾 Guarda y gestiona tus pruebas grabadas en una base de datos indexada (IndexedDB) local, accesible desde la propia interfaz.
+- 🗂️ Visualiza, copia, elimina y organiza tus pruebas guardadas desde un editor visual avanzado.
+- 📦 Importa y exporta todos tus tests e interceptores en formato JSON desde el panel de configuración.
+- ⚙️ Panel de configuración visual: selecciona idioma, gestiona la base de datos, activa opciones avanzadas y realiza migraciones.
 - 🧩 Soporte para interceptores Cypress asociados a cada test.
 - 🧠 Generación de selectores robustos: prioriza `[data-cy]` y filtra ids generados automáticamente por frameworks.
+- 🌍 Soporte multilenguaje: Español, Inglés, Francés, Italiano y Alemán. Seleccionable desde la interfaz.
+- 🔒 Persistencia robusta: tus pruebas y configuraciones se mantienen aunque cierres el navegador.
+- 🛠️ Configuración avanzada de comandos HTTP: activa validaciones automáticas en GET/POST/PUT para objetos recibidos/enviados.
+- 👀 Previsualización y copia rápida de comandos e interceptores desde la interfaz.
 
 ---
 
@@ -38,8 +42,7 @@ npm install lib-e2e-cypress-for-dummys
 
 > **Nota:** Las dependencias necesarias como `ngx-indexed-db` se instalarán automáticamente si no las tienes, ya que están en las `peerDependencies` de la librería.  
 > Solo asegúrate de tener `@angular/core` y `@angular/common` versión **18.0.0 o superior**.
-
-> Es necesario instalar la libreria **primeng"** en la versión que necesites en función de la versión de Angular que utilices.
+> Es necesario instalar la librería **primeng** en la versión que necesites en función de la versión de Angular que utilices.
 
 ---
 
@@ -81,8 +84,7 @@ import { LibE2eRecorderComponent } from 'lib-e2e-cypress-for-dummys';
 <button data-cy="login-button">Login</button>
 ```
 
-### 5. **(Opcional pero recomendado) Si quieres que también se graben las llamadas HTTP/interceptores, añade el interceptor en tu configuración de la app**  
-   En tu `app.config.ts`:
+### 5. **(Opcional) Si quieres grabar las llamadas HTTP/interceptores, añade el interceptor en tu configuración de la app**
 
 ```typescript
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -98,31 +100,23 @@ export const appConfig = {
 
 ### 6. **¡Listo! Usa la interfaz:**
 
-- Haz clic en el botón flotante ▶️ "Grabar" para empezar a grabar. Interactúa con la app y, cuando termines, pulsa ⏹️ "Parar".
-- Pulsa 📋 para ver el listado de pruebas guardadas (se almacenan en IndexedDB y puedes consultarlas, copiarlas o eliminarlas desde la interfaz).
-- Pulsa 📝 para previsualizar los comandos Cypress generados en la sesión actual.
-- Pulsa ⚙️ para abrir el panel de configuración, donde puedes importar/exportar toda la base de datos de tests/interceptores.
-
----
-
-## 🛠️ ¿Cómo funciona?
-
-La librería escucha eventos de usuario (click, input, change) sobre elementos con `data-cy` o `id`, y va generando los comandos Cypress correspondientes.  
-Además, si configuras el interceptor, intercepta las peticiones HTTP realizadas por Angular y añade los comandos `cy.intercept` y `cy.wait` necesarios para que tus tests sean robustos.
-
-Cuando guardas una prueba, se almacena en IndexedDB con su descripción, fecha y el bloque Cypress completo generado.  
-Puedes consultar, copiar o eliminar pruebas guardadas desde la interfaz de la extensión.  
-También puedes importar/exportar toda la base de datos de pruebas e interceptores en formato JSON.
+- Haz clic en el botón flotante ▶️ "Grabar" o usa `Ctrl+R` para empezar a grabar. Interactúa con la app y, cuando termines, pulsa ⏹️ "Parar".
+- Pulsa 📋 o `Ctrl+2` para ver la previsualización de comandos generados.
+- Pulsa 🗂️ o `Ctrl+1` para abrir el editor visual de pruebas guardadas (puedes expandir, copiar, eliminar y ver interceptores asociados).
+- Pulsa ⚙️ o `Ctrl+3` para abrir el panel de configuración (idioma, exportar/importar, opciones avanzadas).
 
 ---
 
 ## 🧩 Funcionalidades avanzadas
 
-- **Editor visual de pruebas:** Visualiza, copia, elimina y organiza tus pruebas guardadas. Cada test puede expandirse para ver los comandos Cypress y los interceptores asociados.
-- **Botón "Copiar":** Copia al portapapeles el bloque completo de comandos Cypress o solo los interceptores asociados.
-- **Botón "Eliminar":** Elimina una prueba guardada de la base de datos.
-- **Panel de configuración:** Permite exportar todos los tests/interceptores a un fichero JSON e importar desde un fichero para restaurar o migrar datos entre proyectos.
-- **Selector inteligente:** Prioriza `[data-cy]` y filtra ids generados automáticamente por frameworks para evitar selectores poco robustos.
+- **Soporte multilenguaje:** Cambia el idioma de la interfaz entre Español, Inglés, Francés, Italiano y Alemán desde el panel de configuración.
+- **Exportación/Importación masiva:** Exporta todos tus tests e interceptores a un archivo JSON e impórtalos en otro proyecto o equipo.
+- **Configuración avanzada de HTTP:** Activa validaciones automáticas para objetos en comandos GET/POST/PUT.
+- **Atajos de teclado:** Controla la grabación y abre paneles rápidamente (`Ctrl+R`, `Ctrl+1`, `Ctrl+2`, `Ctrl+3`).
+- **Editor visual de pruebas:** Visualiza, copia, elimina y organiza tus pruebas guardadas. Expande cada test para ver comandos e interceptores asociados.
+- **Previsualización y copia rápida:** Copia al portapapeles los comandos Cypress o solo los interceptores con un clic.
+- **Persistencia robusta:** Todos los datos se almacenan en IndexedDB y se mantienen aunque cierres el navegador.
+- **Selector inteligente:** Prioriza `[data-cy]` y filtra ids generados automáticamente para selectores robustos.
 - **Migración de BBDD:** La estructura de la base de datos está preparada para migraciones y ampliaciones futuras.
 
 ---
