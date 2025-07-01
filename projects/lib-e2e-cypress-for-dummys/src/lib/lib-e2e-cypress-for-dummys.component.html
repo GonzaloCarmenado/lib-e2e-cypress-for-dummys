@@ -10,7 +10,7 @@
     <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_SAVED_TESTS') }}</span>
   </button>
 
-  <button #testBtnVC class="test-icon-button tooltip right-edge" (click)="openTestpanel()">
+  <button #testBtnVC class="test-icon-button tooltip right-edge" (click)="showCommandsDialog()">
     📝
     <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_COMMANDS') }}</span>
   </button>
@@ -20,24 +20,10 @@
     <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS') }}</span>
   </button>
 
-  <p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_COMMANDS') }}" class="absolute-position"
-    [(visible)]="showTestPanel">
-    <test-previsualizer-component [cypressCommands]="cypressCommands"
-      [interceptors]="interceptors"></test-previsualizer-component>
-  </p-dialog>
-
-  <p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_SAVED_TESTS') }}" [(visible)]="showSavedTestsPanel"
-    class="absolute-position">
-    <test-editor-component [visible]="showSavedTestsPanel"></test-editor-component>
-  </p-dialog>
-
-  <p-dialog header="{{ translation.translate('MAIN_FRAME.DIALOG_SAVE') }}" class="absolute-position"
-    [(visible)]="showSavePanel">
-    <save-test-data-component #saveTestVC (savetest)="onSaveTest($event)"></save-test-data-component>
-  </p-dialog>
-
-  <p-dialog class="absolute-position" header="{{ translation.translate('MAIN_FRAME.SETTINGS') }}"
-    [(visible)]="showConfigurationPanel">
-    <configuration-component></configuration-component>
-  </p-dialog>
+  <!-- Reemplazo de p-dialog por SweetAlert2: los modales se abrirán desde el componente TS -->
+  <div id="commands-modal-container"></div>
+  <div id="saved-tests-modal-container"></div>
+  <div id="save-test-modal-container"></div>
+  <div id="settings-modal-container"></div>
+  <!-- Los diálogos de p-dialog han sido eliminados y migrados a SweetAlert2 -->
 </div>

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild, ViewEncapsulation, ViewContainerRef, ComponentFactoryResolver, Injector } from '@angular/core';
 import { LibE2eCypressForDummysService } from './services/lib-e2e-cypress-for-dummys.service';
 import { DialogModule } from 'primeng/dialog';
 import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
@@ -8,6 +8,7 @@ import { LibE2eCypressForDummysTransformationService } from './lib-e2e-cypress-f
 import { TestEditorComponent } from './components/test-editor/test-editor.component';
 import { ConfigurationComponent } from './components/configurations/configuration.component';
 import { TranslationService } from './services/lib-e2e-cypress-for-dummys-translate.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'lib-e2e-recorder',
   templateUrl: './lib-e2e-cypress-for-dummys.component.html',
@@ -35,11 +36,16 @@ export class LibE2eRecorderComponent {
   public cypressCommands: string[] = [];
   public interceptors: string[] = [];
 
+  private testPrevisualizerCompRef: any = null;
+
   constructor(
     private readonly e2eService: LibE2eCypressForDummysService,
     private readonly persistService: LibE2eCypressForDummysPersistentService,
     private readonly transformationService: LibE2eCypressForDummysTransformationService,
-    public readonly translation: TranslationService
+    public readonly translation: TranslationService,
+    private viewContainerRef: ViewContainerRef,
+    private cfr: ComponentFactoryResolver,
+    private injector: Injector
   ) {
     this.e2eService.isRecordingObservable().subscribe((val: any) => {
       this.isRecording = val;
@@ -50,9 +56,17 @@ export class LibE2eRecorderComponent {
     });
     this.e2eService.getCommands$().subscribe((commands) => {
       this.cypressCommands = commands;
+      if (this.testPrevisualizerCompRef) {
+        this.testPrevisualizerCompRef.instance.cypressCommands = commands;
+        this.testPrevisualizerCompRef.changeDetectorRef.detectChanges();
+      }
     });
     this.e2eService.getInterceptors$().subscribe((interceptors) => {
       this.interceptors = interceptors;
+      if (this.testPrevisualizerCompRef) {
+        this.testPrevisualizerCompRef.instance.interceptors = interceptors;
+        this.testPrevisualizerCompRef.changeDetectorRef.detectChanges();
+      }
     });
     this.getHttpConfigurations();
     this.changeLanguage();
@@ -66,50 +80,133 @@ export class LibE2eRecorderComponent {
   }
 
   public openSettings(): void {
-    this.showConfigurationPanel = !this.showConfigurationPanel;
+    this.showSettingsDialog();
   }
 
   public openTestpanel(): void {
-    this.showTestPanel = !this.showTestPanel;
-    if (this.showTestPanel) {
-      // Se requiere un timeout para que el modal se cargue correctamente en el DOM antes de calcular su posición.
-      setTimeout(() => {
-        // Para que el modal aparezca justo encima del botón, debemos calcular el tamaño inicial del
-        // modal y obtener su posición. En caso de que exista (control para evitar errores), hacemos los cálculos
-        // necesarios para evitar que se salga por los bordes de la pantalla. Finalmente, le decimos
-        // el tamaño que debe tener el modal (aunque luego el usuario pueda editarlo).)
-        const btnRect = this.testBtnCr.nativeElement.getBoundingClientRect();
-        const dialog = document.querySelector('.p-dialog');
-        if (dialog) {
-          const dialogWidth = 480;
-          const dialogHeight = 400;
-          let left =
-            btnRect.left + window.scrollX + btnRect.width / 2 - dialogWidth / 2;
-          let top = btnRect.top + window.scrollY - dialogHeight - 8;
-
-          // Evita que se salga por la izquierda
-          if (left < 8) left = 8;
-          // Evita que se salga por la derecha
-          const maxLeft = window.innerWidth - dialogWidth - 8;
-          if (left > maxLeft) left = maxLeft;
-
-          // Si no cabe arriba, lo pone debajo del botón
-          if (top < 8) top = btnRect.bottom + window.scrollY + 8;
-
-          dialog.setAttribute(
-            'style',
-            `position: absolute; left: ${left}px; top: ${top}px; width: 30rem; height: 25rem;`
-          );
-        }
-      }, 0);
-    }
+    this.showCommandsDialog();
   }
   public openSavedTestsPanel(): void {
-    this.showSavedTestsPanel = !this.showSavedTestsPanel;
+    this.showSavedTestsDialog();
   }
 
   public saveTestDataPanel(): void {
-    this.showSavePanel = true;
+    this.showSaveTestDialog();
+  }
+
+  private clearAndCreateComponent<T>(containerId: string, component: any, inputs: Record<string, any> = {}) {
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = '';
+    const compRef = this.viewContainerRef.createComponent(this.cfr.resolveComponentFactory(component), undefined, this.injector);
+    Object.assign(compRef.instance as any, inputs);
+    if (container) container.appendChild((compRef.hostView as any).rootNodes[0]);
+    Swal.getPopup()?.addEventListener('swalClose', () => compRef.destroy());
+    // Guarda la referencia si es el previsualizador
+    if (component === TestPrevisualizerComponent) {
+      this.testPrevisualizerCompRef = compRef;
+    }
+  }
+
+  public showCommandsDialog(): void {
+    Swal.fire({
+      title: this.translation.translate('MAIN_FRAME.DIALOG_COMMANDS'),
+      html: '<div id="commands-modal-content"></div>',
+      showCloseButton: true,
+      showConfirmButton: false,
+      width: 600,
+      allowOutsideClick: false,
+      backdrop: false,
+      didOpen: () => {
+        this.makeSwalDraggable();
+        this.clearAndCreateComponent('commands-modal-content', TestPrevisualizerComponent, {
+          cypressCommands: this.cypressCommands,
+          interceptors: this.interceptors
+        });
+      },
+    });
+  }
+
+  public showSavedTestsDialog(): void {
+    Swal.fire({
+      title: this.translation.translate('MAIN_FRAME.DIALOG_SAVED_TESTS'),
+      html: '<div id="saved-tests-modal-content"></div>',
+      showCloseButton: true,
+      showConfirmButton: false,
+      width: 600,
+      allowOutsideClick: false,
+      backdrop: false,
+      didOpen: () => {
+        this.makeSwalDraggable();
+        this.clearAndCreateComponent('saved-tests-modal-content', TestEditorComponent, {
+          visible: true
+        });
+      },
+    });
+  }
+
+  public showSaveTestDialog(): void {
+    Swal.fire({
+      title: this.translation.translate('MAIN_FRAME.DIALOG_SAVE'),
+      html: '<div id="save-test-modal-content"></div>',
+      showCloseButton: true,
+      showConfirmButton: false,
+      width: 600,
+      allowOutsideClick: false,
+      backdrop: false,
+      didOpen: () => {
+        this.makeSwalDraggable();
+        this.clearAndCreateComponent('save-test-modal-content', SaveTestComponent, {
+          // Puedes pasar más inputs si es necesario
+        });
+      },
+    });
+  }
+
+  public showSettingsDialog(): void {
+    Swal.fire({
+      title: this.translation.translate('MAIN_FRAME.SETTINGS'),
+      html: '<div id="settings-modal-content"></div>',
+      showCloseButton: true,
+      showConfirmButton: false,
+      width: 600,
+      allowOutsideClick: false,
+      backdrop: false,
+      didOpen: () => {
+        this.makeSwalDraggable();
+        this.clearAndCreateComponent('settings-modal-content', ConfigurationComponent);
+      },
+    });
+  }
+
+  /** Hace draggable el modal de SweetAlert2 */
+  private makeSwalDraggable() {
+    const swal = document.querySelector('.swal2-popup') as HTMLElement;
+    const header = document.querySelector('.swal2-title') as HTMLElement;
+    if (!swal || !header) return;
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    header.style.cursor = 'move';
+    header.onmousedown = (e: MouseEvent) => {
+      isDragging = true;
+      const rect = swal.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      document.onmousemove = (ev: MouseEvent) => {
+        if (isDragging) {
+          swal.style.position = 'fixed';
+          swal.style.margin = '0';
+          swal.style.left = `${ev.clientX - offsetX}px`;
+          swal.style.top = `${ev.clientY - offsetY}px`;
+        }
+      };
+      document.onmouseup = () => {
+        isDragging = false;
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    };
   }
 
   //#region CallBAcks de componentes hijos
@@ -126,8 +223,7 @@ export class LibE2eRecorderComponent {
       // 2. Pasar interceptores a insertTest
       this.persistService
         .insertTest(description, completeTest, interceptors)
-        .subscribe((id) => {
-        });
+        .subscribe((id) => {});
       // 3. Limpiar interceptores tras guardar
       if (this.e2eService.clearInterceptors) {
         this.e2eService.clearInterceptors();

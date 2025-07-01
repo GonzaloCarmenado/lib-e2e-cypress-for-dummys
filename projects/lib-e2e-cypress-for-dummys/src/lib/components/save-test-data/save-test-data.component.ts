@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'save-test-data-component',
@@ -31,25 +32,27 @@ export class SaveTestComponent {
    */
   public description = '';
 
-  constructor(public translation: TranslationService) {}
+  constructor(public translation: TranslationService) { }
 
-  public askSave():void {
+  public askSave(): void {
     this.step = 'desc';
   }
 
-  public confirmSave():void {
+  public confirmSave(): void {
     this.savetest.emit(this.description.trim());
+    try { Swal.close(); } catch { }
   }
 
-  public cancel():void {
+  public cancel(): void {
     this.savetest.emit(null);
+    try { Swal.close(); } catch { }
   }
 
   /**
    * Deja el componente en su estado original para la próxima ves que se abra.
    * @memberof SaveTestComponent
    */
-  public restartComponent():void {
+  public restartComponent(): void {
     this.step = 'ask';
     this.description = '';
   }

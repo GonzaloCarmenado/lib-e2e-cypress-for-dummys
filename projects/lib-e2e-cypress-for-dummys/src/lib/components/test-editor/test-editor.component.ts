@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { DatePipe } from '@angular/common';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'test-editor-component',
