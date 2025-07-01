@@ -10,14 +10,13 @@
             <label for="language-select" class="config-label">
                 {{ translation.translate('CONFIG.LANGUAGE') }}
             </label>
-
             <select id="language-select" class="config-select styled-select" [(ngModel)]="selectedLanguage"
                 (change)="onLanguageChange($event)">
                 <option *ngFor="let lang of supportedLanguages" [value]="lang.value">
                     {{ lang.label }}
                 </option>
             </select>
-            <div class="advanced-http-toggle-row">
+            <div class="advanced-http-toggle-row" style="margin-top: 1.5rem;">
                 <input type="checkbox" id="advanced-http-config-toggle" [checked]="advancedHttpConfig"
                     (change)="onAdvancedHttpConfigChange($event)" class="advanced-http-toggle-checkbox" />
                 <label for="advanced-http-config-toggle" class="config-label advanced-http-toggle-label">
