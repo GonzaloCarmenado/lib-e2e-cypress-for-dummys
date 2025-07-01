@@ -98,7 +98,7 @@ export class LibE2eRecorderComponent {
 
           dialog.setAttribute(
             'style',
-            `position: absolute; left: ${left}px; top: ${top}px; width: 30rem; height: 25rem;`
+            `position: absolute; left: ${left}px; top: ${top}px; width: 480px; height: 400px;`
           );
         }
       }, 0);
@@ -126,8 +126,7 @@ export class LibE2eRecorderComponent {
       // 2. Pasar interceptores a insertTest
       this.persistService
         .insertTest(description, completeTest, interceptors)
-        .subscribe((id) => {
-        });
+        .subscribe((id) => {});
       // 3. Limpiar interceptores tras guardar
       if (this.e2eService.clearInterceptors) {
         this.e2eService.clearInterceptors();
