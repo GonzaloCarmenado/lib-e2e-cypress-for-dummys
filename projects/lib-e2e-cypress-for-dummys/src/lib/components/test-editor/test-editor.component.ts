@@ -1,8 +1,7 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { DatePipe } from '@angular/common';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'test-editor-component',
@@ -11,7 +10,7 @@ import Swal from 'sweetalert2';
   standalone: true,
   imports: [DatePipe],
 })
-export class TestEditorComponent implements OnChanges {
+export class TestEditorComponent implements OnInit {
   /**
    * Permite controlar cuando se deben recargar los tests.
    * Por defecto es false, y se activa cuando se abre el componente.(Quizas esto se merezca una revisión a futuro)
@@ -31,10 +30,8 @@ export class TestEditorComponent implements OnChanges {
     this.translation = translation;
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes['visible']?.currentValue) {
-      this.loadTests();
-    }
+  public ngOnInit() {
+    this.loadTests();
   }
 
   /**
@@ -62,7 +59,7 @@ export class TestEditorComponent implements OnChanges {
    * Se llama al iniciar el componente o cuando se cambia la visibilidad del componente.
    * @memberof TestEditorComponent
    */
-  public loadTests():void {
+  public loadTests(): void {
     this.persistService
       .getAllTests()
       .subscribe((tests) => (this.tests = tests));
@@ -86,9 +83,9 @@ export class TestEditorComponent implements OnChanges {
             const allCommands = records.map((r) => r.commands).join('\n');
             this.interceptorsByTest[test.id] = allCommands
               ? allCommands
-                  .split('\n')
-                  .map((line) => line.trim())
-                  .filter((line) => !!line)
+                .split('\n')
+                .map((line) => line.trim())
+                .filter((line) => !!line)
               : [];
           });
       }
@@ -101,7 +98,7 @@ export class TestEditorComponent implements OnChanges {
    * @param {number} id - ID del test a eliminar.
    * @memberof TestEditorComponent
    */
-  public deleteTest(id: number):void {
+  public deleteTest(id: number): void {
     this.persistService.deleteTest(id).subscribe(() => this.loadTests());
   }
 
