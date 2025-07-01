@@ -16,16 +16,11 @@ import Swal from 'sweetalert2';
   standalone: true,
   imports: [
     DialogModule,
-    TestPrevisualizerComponent,
-    SaveTestComponent,
-    TestEditorComponent,
-    ConfigurationComponent,
   ],
 })
 export class LibE2eRecorderComponent {
   @ViewChild('testBtnVC', { read: ElementRef })
   public testBtnCr!: ElementRef<HTMLButtonElement>;
-  @ViewChild('saveTestVC') public saveTestCR!: SaveTestComponent;
   public dialogPositionStyle: any = {};
   public isRecording = false;
   public controlFirstTimeData = true;
@@ -37,6 +32,7 @@ export class LibE2eRecorderComponent {
   public interceptors: string[] = [];
 
   private testPrevisualizerCompRef: any = null;
+  private static swal2StyleInjected = false;
 
   constructor(
     private readonly e2eService: LibE2eCypressForDummysService,
@@ -47,6 +43,7 @@ export class LibE2eRecorderComponent {
     private cfr: ComponentFactoryResolver,
     private injector: Injector
   ) {
+    this.injectSwal2Styles();
     this.e2eService.isRecordingObservable().subscribe((val: any) => {
       this.isRecording = val;
       if (this.isRecording === false && this.controlFirstTimeData === false) {
@@ -101,6 +98,12 @@ export class LibE2eRecorderComponent {
     Object.assign(compRef.instance as any, inputs);
     if (container) container.appendChild((compRef.hostView as any).rootNodes[0]);
     Swal.getPopup()?.addEventListener('swalClose', () => compRef.destroy());
+    // Suscribirse manualmente al output si es SaveTestComponent
+    if (component === SaveTestComponent && (compRef.instance as any).savetest) {
+      (compRef.instance as any).savetest.subscribe((data: any) => {
+        this.onSaveTest(data);
+      });
+    }
     // Guarda la referencia si es el previsualizador
     if (component === TestPrevisualizerComponent) {
       this.testPrevisualizerCompRef = compRef;
@@ -209,9 +212,68 @@ export class LibE2eRecorderComponent {
     };
   }
 
+  /**
+   * Esto es horrible, pasarlo a un servicio o algo en el futuro
+   * @private
+   * @return {*} 
+   * @memberof LibE2eRecorderComponent
+   */
+  private injectSwal2Styles() {
+    if (LibE2eRecorderComponent.swal2StyleInjected) return;
+    const style = document.createElement('style');
+    style.id = 'lib-e2e-cypress-for-dummys-swal2-styles';
+    style.innerHTML = `
+.swal2-container, .swal2-popup {
+  z-index: 99999 !important;
+}
+.swal2-popup {
+  background: #181c24 !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid #232a3a !important;
+  padding: 0 !important;
+  min-width: 400px;
+  max-width: 90vw;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.swal2-title {
+  color: #2196f3 !important;
+  font-weight: bold;
+  font-size: 1.05rem;
+  background: #181c24;
+  border-radius: 12px 12px 0 0;
+  padding: 10px 18px 6px 18px;
+  margin-bottom: 0 !important;
+  border-bottom: 1px solid #181c24;
+}
+.swal2-close {
+  color: #fff !important;
+  font-size: 1.5rem !important;
+  top: 12px !important;
+  right: 16px !important;
+}
+.swal2-html-container {
+  background: #181c24;
+  border-radius: 0 0 12px 12px;
+  padding: 0 12px 12px 12px !important;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  overflow: auto;
+}
+`;
+    document.head.appendChild(style);
+    LibE2eRecorderComponent.swal2StyleInjected = true;
+  }
+
   //#region CallBAcks de componentes hijos
   public onSaveTest(description: string | null): void {
-    this.saveTestCR.restartComponent();
     if (description) {
       const completeTest: string =
         this.transformationService.generateItDescription(
@@ -223,14 +285,13 @@ export class LibE2eRecorderComponent {
       // 2. Pasar interceptores a insertTest
       this.persistService
         .insertTest(description, completeTest, interceptors)
-        .subscribe((id) => {});
-      // 3. Limpiar interceptores tras guardar
-      if (this.e2eService.clearInterceptors) {
-        this.e2eService.clearInterceptors();
-      }
+        .subscribe((id) => { });
     }
-    this.showSavePanel = false;
+    // Limpiar comandos y notificar al previsualizador
     this.e2eService.clearCommands();
+    this.cypressCommands = [];
+    this.interceptors = [];
+    this.showSavePanel = false;
   }
   //#endregion CallBAcks de componentes hijos
 

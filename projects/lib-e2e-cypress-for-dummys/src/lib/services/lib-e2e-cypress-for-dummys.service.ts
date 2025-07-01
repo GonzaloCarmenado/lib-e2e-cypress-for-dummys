@@ -336,6 +336,7 @@ export class LibE2eCypressForDummysService {
    * @memberof LibE2eCypressForDummysService
    */
   public clearCommands(): void {
+    debugger
     this.commandList$.next([]);
     this.interceptors$.next([]);
   }
