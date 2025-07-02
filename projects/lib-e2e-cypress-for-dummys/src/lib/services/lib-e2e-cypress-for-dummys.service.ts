@@ -118,20 +118,41 @@ export class LibE2eCypressForDummysService {
    */
   private listenToClicks(): void {
     this.document.addEventListener('click', (event: Event) => {
+      if (!this.isRecording$.getValue()) return;
       let target = event.target as HTMLElement;
       if (!target) return;
 
-      // Si el target no es interactivo y es un span, busca si su padre directo es un button con [data-cy] o [id]
+      let isMatOptionClick = false;
+
+      // Si el target no es interactivo y es un span o div, busca si su ancestro más cercano es un button, mat-option o mat-select con [data-cy] o [id]
       if (!this.isInteractiveElement(target)) {
         if (
-          target.tagName.toLowerCase() === 'span' &&
+          (target.tagName.toLowerCase() === 'span' ||
+            target.tagName.toLowerCase() === 'div') &&
           target.parentElement &&
-          target.parentElement.tagName.toLowerCase() === 'button' &&
+          (target.parentElement.tagName.toLowerCase() === 'button' ||
+            target.parentElement.tagName.toLowerCase() === 'mat-option') &&
           (target.parentElement.hasAttribute('data-cy') ||
             target.parentElement.hasAttribute('id'))
         ) {
+          if (target.parentElement.tagName.toLowerCase() === 'mat-option') {
+            isMatOptionClick = true;
+          }
           target = target.parentElement;
-        } else {
+        }
+        // Si el ancestro más cercano es un mat-select, generamos el comando de click para el select
+        const matSelectParent = target.closest('mat-select');
+        if (matSelectParent) {
+          const selectSelector = this.getReliableSelector(
+            matSelectParent as HTMLElement
+          );
+          if (selectSelector) {
+            this.addCommand(`cy.get('${selectSelector}').click()`);
+          } else {
+            this.addCommand(
+              '// No se pudo generar un selector confiable para mat-select'
+            );
+          }
           return;
         }
       }
@@ -142,6 +163,11 @@ export class LibE2eCypressForDummysService {
         return;
       }
 
+      // Si es un mat-option, activar el flag
+      if (tag === 'mat-option') {
+        isMatOptionClick = true;
+      }
+
       const container = target.closest<HTMLElement>('[data-cy], [id]');
       if (!container) return;
 
@@ -150,6 +176,41 @@ export class LibE2eCypressForDummysService {
 
       // Evita grabar comandos sobre la propia librería
       if (selector === '[data-cy="lib-e2e-cypress-for-dummys"]') return;
+
+      if (isMatOptionClick) {
+        // Buscar el mat-select padre (o el contenedor relevante con data-cy)
+        const matSelect = target.closest('mat-select');
+        let selectDataCy = null;
+        if (matSelect) {
+          const selectContainer = matSelect.closest('[data-cy]');
+          if (selectContainer) {
+            selectDataCy = selectContainer.getAttribute('data-cy');
+          }
+        }
+        // Si no se encuentra mat-select, buscar el contenedor con data-cy más cercano
+        if (!selectDataCy) {
+          const selectContainer = target.closest('[data-cy]');
+          if (selectContainer) {
+            selectDataCy = selectContainer.getAttribute('data-cy');
+          }
+        }
+        // Generar el comando para abrir el select
+        if (selectDataCy) {
+          this.addCommand(`cy.get('[data-cy="${selectDataCy}"]').click()`);
+          return;
+        }
+        // Generar el comando para seleccionar la opción
+        if (selector) {
+          // Extraer el valor de la opción (por ejemplo, selectPriority-option-11)
+          // Si el data-cy es del tipo selectPriority-option-11, lo usamos tal cual
+          this.addCommand(`cy.get('${selector}').eq(0).click()`);
+        } else {
+          this.addCommand(
+            '// No se pudo generar un selector confiable para mat-option'
+          );
+        }
+        return;
+      }
 
       if (selector) {
         cyCommand = `cy.get('${selector}').click()`;
