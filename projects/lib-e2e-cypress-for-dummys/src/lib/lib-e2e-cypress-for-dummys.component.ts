@@ -142,7 +142,10 @@ export class LibE2eRecorderComponent {
     inputs: Record<string, any> = {}
   ) {
     const container = document.getElementById(containerId);
-    if (container) container.innerHTML = '';
+    if (container) {
+      container.innerHTML = '';
+      container.setAttribute('data-cy', 'lib-e2e-cypress-for-dummys');
+    }
     const compRef = this.viewContainerRef.createComponent(
       this.cfr.resolveComponentFactory(component),
       undefined,
@@ -164,6 +167,17 @@ export class LibE2eRecorderComponent {
     }
   }
 
+  private setSwal2DataCyAttribute() {
+    const htmlContainer = document.querySelector('.swal2-html-container');
+    if (htmlContainer) {
+      htmlContainer.setAttribute('data-cy', 'lib-e2e-cypress-for-dummys');
+    }
+    const title = document.querySelector('.swal2-title');
+    if (title) {
+      title.setAttribute('data-cy', 'lib-e2e-cypress-for-dummys');
+    }
+  }
+
   public showCommandsDialog(): void {
     if (this.isCommandsDialogOpen) {
       Swal.close();
@@ -180,6 +194,7 @@ export class LibE2eRecorderComponent {
       backdrop: false,
       didOpen: () => {
         this.makeSwalDraggable();
+        this.setSwal2DataCyAttribute();
         this.clearAndCreateComponent(
           'commands-modal-content',
           TestPrevisualizerComponent,
@@ -212,6 +227,7 @@ export class LibE2eRecorderComponent {
       backdrop: false,
       didOpen: () => {
         this.makeSwalDraggable();
+        this.setSwal2DataCyAttribute();
         this.clearAndCreateComponent(
           'saved-tests-modal-content',
           TestEditorComponent,
@@ -243,6 +259,7 @@ export class LibE2eRecorderComponent {
       backdrop: false,
       didOpen: () => {
         this.makeSwalDraggable();
+        this.setSwal2DataCyAttribute();
         this.clearAndCreateComponent(
           'save-test-modal-content',
           SaveTestComponent,
@@ -274,6 +291,7 @@ export class LibE2eRecorderComponent {
       backdrop: false,
       didOpen: () => {
         this.makeSwalDraggable();
+        this.setSwal2DataCyAttribute();
         this.clearAndCreateComponent(
           'settings-modal-content',
           ConfigurationComponent
