@@ -81,7 +81,43 @@ export class LibE2eRecorderComponent {
   }
 
   public openTestpanel(): void {
+<<<<<<< HEAD
     this.showCommandsDialog();
+=======
+    this.showTestPanel = !this.showTestPanel;
+    if (this.showTestPanel) {
+      // Se requiere un timeout para que el modal se cargue correctamente en el DOM antes de calcular su posición.
+      setTimeout(() => {
+        // Para que el modal aparezca justo encima del botón, debemos calcular el tamaño inicial del
+        // modal y obtener su posición. En caso de que exista (control para evitar errores), hacemos los cálculos
+        // necesarios para evitar que se salga por los bordes de la pantalla. Finalmente, le decimos
+        // el tamaño que debe tener el modal (aunque luego el usuario pueda editarlo).)
+        const btnRect = this.testBtnCr.nativeElement.getBoundingClientRect();
+        const dialog = document.querySelector('.p-dialog');
+        if (dialog) {
+          const dialogWidth = 480;
+          const dialogHeight = 400;
+          let left =
+            btnRect.left + window.scrollX + btnRect.width / 2 - dialogWidth / 2;
+          let top = btnRect.top + window.scrollY - dialogHeight - 8;
+
+          // Evita que se salga por la izquierda
+          if (left < 8) left = 8;
+          // Evita que se salga por la derecha
+          const maxLeft = window.innerWidth - dialogWidth - 8;
+          if (left > maxLeft) left = maxLeft;
+
+          // Si no cabe arriba, lo pone debajo del botón
+          if (top < 8) top = btnRect.bottom + window.scrollY + 8;
+
+          dialog.setAttribute(
+            'style',
+            `position: absolute; left: ${left}px; top: ${top}px; width: 480px; height: 400px;`
+          );
+        }
+      }, 0);
+    }
+>>>>>>> 501a7469b604403cc6b62faecc419f7bc652519c
   }
   public openSavedTestsPanel(): void {
     this.showSavedTestsDialog();
@@ -285,7 +321,15 @@ export class LibE2eRecorderComponent {
       // 2. Pasar interceptores a insertTest
       this.persistService
         .insertTest(description, completeTest, interceptors)
+<<<<<<< HEAD
         .subscribe((id) => { });
+=======
+        .subscribe((id) => {});
+      // 3. Limpiar interceptores tras guardar
+      if (this.e2eService.clearInterceptors) {
+        this.e2eService.clearInterceptors();
+      }
+>>>>>>> 501a7469b604403cc6b62faecc419f7bc652519c
     }
     // Limpiar comandos y notificar al previsualizador
     this.e2eService.clearCommands();
