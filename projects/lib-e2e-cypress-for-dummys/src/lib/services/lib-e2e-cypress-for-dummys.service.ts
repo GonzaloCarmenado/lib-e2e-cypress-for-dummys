@@ -79,6 +79,12 @@ export class LibE2eCypressForDummysService {
         }
       }
 
+      // Si el elemento es un input, textarea o select, NO grabar el click (solo grabar el type/select en esos casos)
+      const tag = target.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+        return;
+      }
+
       const container = target.closest<HTMLElement>('[data-cy], [id]');
       if (!container) return;
 

@@ -11,6 +11,8 @@ import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-tr
 })
 export class TestPrevisualizerComponent {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  @ViewChild('scrollCommands', { static: false }) private scrollCommands!: ElementRef;
+  @ViewChild('scrollInterceptors', { static: false }) private scrollInterceptors!: ElementRef;
   @Input() public cypressCommands: string[] = [];
   @Input() public interceptors: string[] = [];
   /**
@@ -24,6 +26,7 @@ export class TestPrevisualizerComponent {
 
   public ngAfterViewChecked() {
     this.scrollToBottom();
+    this.scrollToBottomInterceptors();
   }
 
   /**
@@ -34,8 +37,17 @@ export class TestPrevisualizerComponent {
    */
   private scrollToBottom(): void {
     try {
-      this.scrollContainer.nativeElement.scrollTop =
-        this.scrollContainer.nativeElement.scrollHeight;
+      if (this.scrollCommands && this.scrollCommands.nativeElement) {
+        this.scrollCommands.nativeElement.scrollTop = this.scrollCommands.nativeElement.scrollHeight;
+      }
+    } catch (err) {}
+  }
+
+  private scrollToBottomInterceptors(): void {
+    try {
+      if (this.scrollInterceptors && this.scrollInterceptors.nativeElement && this.showInterceptors) {
+        this.scrollInterceptors.nativeElement.scrollTop = this.scrollInterceptors.nativeElement.scrollHeight;
+      }
     } catch (err) {}
   }
 

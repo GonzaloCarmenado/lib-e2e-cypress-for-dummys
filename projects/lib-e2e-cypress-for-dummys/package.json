@@ -1,6 +1,6 @@
 {
   "name": "lib-e2e-cypress-for-dummys",
-  "version": "0.0.25",
+  "version": "0.0.27",
   "repository": {
     "type": "git",
     "url": "https://github.com/GonzaloCarmenado/lib-e2e-cypress-for-dummys"
@@ -9,7 +9,8 @@
   "peerDependencies": {
     "@angular/common": ">=18.0.0",
     "@angular/core": ">=18.0.0",
-    "ngx-indexed-db": "20.0.0"
+    "ngx-indexed-db": "20.0.0",
+    "sweetalert2": "^11.22.2"
   },
   "dependencies": {
     "tslib": "^2.3.0"

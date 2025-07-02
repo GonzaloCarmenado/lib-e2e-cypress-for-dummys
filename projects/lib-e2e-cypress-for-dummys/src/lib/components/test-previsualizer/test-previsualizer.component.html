@@ -9,7 +9,7 @@
       [title]="translation.translate('SAVE_TEST_DATA.COPY_INTERCEPTORS_LABEL')">
       📋
     </button>
-    <div class="previsualizer-scroll" *ngIf="showInterceptors">
+    <div class="previsualizer-scroll" *ngIf="showInterceptors" #scrollInterceptors>
       <ng-container *ngIf="interceptors.length > 0; else noInterceptors">
         <pre *ngFor="let interceptor of interceptors" class="previsualizer-command">{{ interceptor }}</pre>
       </ng-container>
@@ -23,7 +23,7 @@
     <button class="btn btn-copy" (click)="copyToClipboard()" [title]="translation.translate('SAVE_TEST_DATA.COPY_COMMANDS_LABEL')">
       📋
     </button>
-    <div class="previsualizer-scroll special-size-commands">
+    <div class="previsualizer-scroll special-size-commands" #scrollCommands>
       <ng-container *ngIf="cypressCommands.length > 0; else noCommands">
         <pre *ngFor="let cmd of cypressCommands" class="previsualizer-command">{{ cmd }}</pre>
       </ng-container>

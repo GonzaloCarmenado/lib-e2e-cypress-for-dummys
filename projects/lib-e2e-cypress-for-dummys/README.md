@@ -31,7 +31,6 @@ npm install lib-e2e-cypress-for-dummys
 
 > **Note:** Required dependencies like `ngx-indexed-db` will be installed automatically if you don’t already have them, as they are listed in the library’s `peerDependencies`.  
 > Just make sure you have `@angular/core` and `@angular/common` version **18.0.0 or higher**.
-> You also need to install the **primeng** library in the version suitable for your Angular version.
 
 ---
 
