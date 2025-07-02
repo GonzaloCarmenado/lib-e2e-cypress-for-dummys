@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LibE2eCypressForDummysService } from '../../projects/lib-e2e-cypress-for-dummys/src/public-api';
+import { Router, RouterOutlet } from '@angular/router';
 import {
   ClientModel,
   CommonConnectorClientsService,
@@ -10,17 +10,23 @@ import { LibE2eRecorderComponent } from '../../projects/lib-e2e-cypress-for-dumm
 import { AppTranslationService } from './services/translations.service';
 @Component({
   selector: 'app-root',
-  imports: [LibE2eRecorderComponent],
+  imports: [LibE2eRecorderComponent, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  standalone: true,
 })
 export class AppComponent {
   public translation: AppTranslationService;
   constructor(
     private readonly clientService: CommonConnectorClientsService,
-    translation: AppTranslationService
+    translation: AppTranslationService,
+    private readonly router: Router
   ) {
     this.translation = translation;
+  }
+
+  public goToNavigationWindow(): void {
+    this.router.navigate(['/navigation-window']);
   }
 
   public getClientList(): Promise<ClientModel[]> {

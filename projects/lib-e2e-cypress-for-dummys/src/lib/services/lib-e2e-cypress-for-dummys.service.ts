@@ -50,6 +50,63 @@ export class LibE2eCypressForDummysService {
     this.listenToClicks();
     this.listenToInput();
     this.listenToSelect();
+    this.listenToRouteChanges();
+  }
+
+  /**
+   * Detecta cambios de ruta usando JS nativo (pushState, replaceState, popstate) y añade un comando Cypress para esperar la nueva URL.
+   */
+  private listenToRouteChanges(): void {
+    let lastUrl =
+      window.location.pathname + window.location.search + window.location.hash;
+    const addUrlCommand = (newUrl: string) => {
+      if (!this.isRecording$.getValue()) return;
+      // Solo añade si la URL realmente cambió
+      if (newUrl !== lastUrl) {
+        this.addCommand(`cy.url().should('include', '${newUrl}')`);
+        lastUrl = newUrl;
+      }
+    };
+
+    // Intercepta pushState y replaceState
+    const wrapHistoryMethod = (type: 'pushState' | 'replaceState') => {
+      const orig = history[type];
+      history[type] = function (
+        this: History,
+        data: any,
+        unused: string,
+        url?: string | URL | null
+      ) {
+        // Llama al método original con los argumentos correctos
+        const result = orig.apply(this, [data, unused, url]);
+        // Usa la URL proporcionada si existe, si no, la actual
+        let newUrl =
+          window.location.pathname +
+          window.location.search +
+          window.location.hash;
+        if (typeof url === 'string' && url.length > 0) {
+          // Si la url es relativa, conviértela a absoluta para extraer el path
+          const a = document.createElement('a');
+          a.href = url;
+          newUrl = a.pathname + a.search + a.hash;
+        } else if (url instanceof URL) {
+          newUrl = url.pathname + url.search + url.hash;
+        }
+        addUrlCommand(newUrl);
+        return result;
+      } as (typeof history)[typeof type];
+    };
+    wrapHistoryMethod('pushState');
+    wrapHistoryMethod('replaceState');
+
+    // popstate para navegación con el historial
+    window.addEventListener('popstate', () => {
+      const newUrl =
+        window.location.pathname +
+        window.location.search +
+        window.location.hash;
+      addUrlCommand(newUrl);
+    });
   }
 
   //#region Listener para los diferentes eventos del DOM

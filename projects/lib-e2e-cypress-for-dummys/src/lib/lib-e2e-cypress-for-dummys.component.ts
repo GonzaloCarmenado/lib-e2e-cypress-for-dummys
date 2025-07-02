@@ -1,4 +1,13 @@
-import { Component, ElementRef, HostListener, ViewChild, ViewEncapsulation, ViewContainerRef, ComponentFactoryResolver, Injector } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild,
+  ViewEncapsulation,
+  ViewContainerRef,
+  ComponentFactoryResolver,
+  Injector,
+} from '@angular/core';
 import { LibE2eCypressForDummysService } from './services/lib-e2e-cypress-for-dummys.service';
 import { DialogModule } from 'primeng/dialog';
 import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
@@ -14,9 +23,7 @@ import Swal from 'sweetalert2';
   templateUrl: './lib-e2e-cypress-for-dummys.component.html',
   styleUrls: ['./lib-e2e-cypress-for-dummys.component.scss'],
   standalone: true,
-  imports: [
-    DialogModule,
-  ],
+  imports: [DialogModule],
 })
 export class LibE2eRecorderComponent {
   @ViewChild('testBtnVC', { read: ElementRef })
@@ -30,6 +37,12 @@ export class LibE2eRecorderComponent {
   public showConfigurationPanel = false;
   public cypressCommands: string[] = [];
   public interceptors: string[] = [];
+
+  // Estado de los modales
+  public isCommandsDialogOpen = false;
+  public isSavedTestsDialogOpen = false;
+  public isSaveTestDialogOpen = false;
+  public isSettingsDialogOpen = false;
 
   private testPrevisualizerCompRef: any = null;
   private static swal2StyleInjected = false;
@@ -81,9 +94,6 @@ export class LibE2eRecorderComponent {
   }
 
   public openTestpanel(): void {
-<<<<<<< HEAD
-    this.showCommandsDialog();
-=======
     this.showTestPanel = !this.showTestPanel;
     if (this.showTestPanel) {
       // Se requiere un timeout para que el modal se cargue correctamente en el DOM antes de calcular su posición.
@@ -117,7 +127,6 @@ export class LibE2eRecorderComponent {
         }
       }, 0);
     }
->>>>>>> 501a7469b604403cc6b62faecc419f7bc652519c
   }
   public openSavedTestsPanel(): void {
     this.showSavedTestsDialog();
@@ -127,12 +136,21 @@ export class LibE2eRecorderComponent {
     this.showSaveTestDialog();
   }
 
-  private clearAndCreateComponent<T>(containerId: string, component: any, inputs: Record<string, any> = {}) {
+  private clearAndCreateComponent<T>(
+    containerId: string,
+    component: any,
+    inputs: Record<string, any> = {}
+  ) {
     const container = document.getElementById(containerId);
     if (container) container.innerHTML = '';
-    const compRef = this.viewContainerRef.createComponent(this.cfr.resolveComponentFactory(component), undefined, this.injector);
+    const compRef = this.viewContainerRef.createComponent(
+      this.cfr.resolveComponentFactory(component),
+      undefined,
+      this.injector
+    );
     Object.assign(compRef.instance as any, inputs);
-    if (container) container.appendChild((compRef.hostView as any).rootNodes[0]);
+    if (container)
+      container.appendChild((compRef.hostView as any).rootNodes[0]);
     Swal.getPopup()?.addEventListener('swalClose', () => compRef.destroy());
     // Suscribirse manualmente al output si es SaveTestComponent
     if (component === SaveTestComponent && (compRef.instance as any).savetest) {
@@ -147,6 +165,11 @@ export class LibE2eRecorderComponent {
   }
 
   public showCommandsDialog(): void {
+    if (this.isCommandsDialogOpen) {
+      Swal.close();
+      this.isCommandsDialogOpen = false;
+      return;
+    }
     Swal.fire({
       title: this.translation.translate('MAIN_FRAME.DIALOG_COMMANDS'),
       html: '<div id="commands-modal-content"></div>',
@@ -157,15 +180,28 @@ export class LibE2eRecorderComponent {
       backdrop: false,
       didOpen: () => {
         this.makeSwalDraggable();
-        this.clearAndCreateComponent('commands-modal-content', TestPrevisualizerComponent, {
-          cypressCommands: this.cypressCommands,
-          interceptors: this.interceptors
-        });
+        this.clearAndCreateComponent(
+          'commands-modal-content',
+          TestPrevisualizerComponent,
+          {
+            cypressCommands: this.cypressCommands,
+            interceptors: this.interceptors,
+          }
+        );
+        this.isCommandsDialogOpen = true;
+      },
+      willClose: () => {
+        this.isCommandsDialogOpen = false;
       },
     });
   }
 
   public showSavedTestsDialog(): void {
+    if (this.isSavedTestsDialogOpen) {
+      Swal.close();
+      this.isSavedTestsDialogOpen = false;
+      return;
+    }
     Swal.fire({
       title: this.translation.translate('MAIN_FRAME.DIALOG_SAVED_TESTS'),
       html: '<div id="saved-tests-modal-content"></div>',
@@ -176,14 +212,27 @@ export class LibE2eRecorderComponent {
       backdrop: false,
       didOpen: () => {
         this.makeSwalDraggable();
-        this.clearAndCreateComponent('saved-tests-modal-content', TestEditorComponent, {
-          visible: true
-        });
+        this.clearAndCreateComponent(
+          'saved-tests-modal-content',
+          TestEditorComponent,
+          {
+            visible: true,
+          }
+        );
+        this.isSavedTestsDialogOpen = true;
+      },
+      willClose: () => {
+        this.isSavedTestsDialogOpen = false;
       },
     });
   }
 
   public showSaveTestDialog(): void {
+    if (this.isSaveTestDialogOpen) {
+      Swal.close();
+      this.isSaveTestDialogOpen = false;
+      return;
+    }
     Swal.fire({
       title: this.translation.translate('MAIN_FRAME.DIALOG_SAVE'),
       html: '<div id="save-test-modal-content"></div>',
@@ -194,14 +243,27 @@ export class LibE2eRecorderComponent {
       backdrop: false,
       didOpen: () => {
         this.makeSwalDraggable();
-        this.clearAndCreateComponent('save-test-modal-content', SaveTestComponent, {
-          // Puedes pasar más inputs si es necesario
-        });
+        this.clearAndCreateComponent(
+          'save-test-modal-content',
+          SaveTestComponent,
+          {
+            // Puedes pasar más inputs si es necesario
+          }
+        );
+        this.isSaveTestDialogOpen = true;
+      },
+      willClose: () => {
+        this.isSaveTestDialogOpen = false;
       },
     });
   }
 
   public showSettingsDialog(): void {
+    if (this.isSettingsDialogOpen) {
+      Swal.close();
+      this.isSettingsDialogOpen = false;
+      return;
+    }
     Swal.fire({
       title: this.translation.translate('MAIN_FRAME.SETTINGS'),
       html: '<div id="settings-modal-content"></div>',
@@ -212,7 +274,14 @@ export class LibE2eRecorderComponent {
       backdrop: false,
       didOpen: () => {
         this.makeSwalDraggable();
-        this.clearAndCreateComponent('settings-modal-content', ConfigurationComponent);
+        this.clearAndCreateComponent(
+          'settings-modal-content',
+          ConfigurationComponent
+        );
+        this.isSettingsDialogOpen = true;
+      },
+      willClose: () => {
+        this.isSettingsDialogOpen = false;
       },
     });
   }
@@ -251,7 +320,7 @@ export class LibE2eRecorderComponent {
   /**
    * Esto es horrible, pasarlo a un servicio o algo en el futuro
    * @private
-   * @return {*} 
+   * @return {*}
    * @memberof LibE2eRecorderComponent
    */
   private injectSwal2Styles() {
@@ -321,15 +390,11 @@ export class LibE2eRecorderComponent {
       // 2. Pasar interceptores a insertTest
       this.persistService
         .insertTest(description, completeTest, interceptors)
-<<<<<<< HEAD
-        .subscribe((id) => { });
-=======
         .subscribe((id) => {});
       // 3. Limpiar interceptores tras guardar
       if (this.e2eService.clearInterceptors) {
         this.e2eService.clearInterceptors();
       }
->>>>>>> 501a7469b604403cc6b62faecc419f7bc652519c
     }
     // Limpiar comandos y notificar al previsualizador
     this.e2eService.clearCommands();
