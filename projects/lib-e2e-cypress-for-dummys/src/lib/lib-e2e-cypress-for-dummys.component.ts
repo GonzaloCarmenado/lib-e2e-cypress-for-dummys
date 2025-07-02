@@ -3,7 +3,6 @@ import {
   ElementRef,
   HostListener,
   ViewChild,
-  ViewEncapsulation,
   ViewContainerRef,
   ComponentFactoryResolver,
   Injector,
@@ -16,7 +15,7 @@ import { LibE2eCypressForDummysPersistentService } from './services/lib-e2e-cypr
 import { LibE2eCypressForDummysTransformationService } from './lib-e2e-cypress-for-dummys.transformation.service';
 import { TestEditorComponent } from './components/test-editor/test-editor.component';
 import { ConfigurationComponent } from './components/configurations/configuration.component';
-import { TranslationService } from './services/lib-e2e-cypress-for-dummys-translate.service';
+import { TranslationService, Lang } from './services/lib-e2e-cypress-for-dummys-translate.service';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'lib-e2e-recorder',
@@ -47,6 +46,12 @@ export class LibE2eRecorderComponent {
   private testPrevisualizerCompRef: any = null;
   private static swal2StyleInjected = false;
 
+  // Utility to validate/cast a string to Lang
+  defaultLangs: Lang[] = ['es', 'en', 'fr', 'it', 'de'];
+  private toLang(lang: string): Lang {
+    return (this.defaultLangs.includes(lang as Lang) ? lang : 'en') as Lang;
+  }
+
   constructor(
     private readonly e2eService: LibE2eCypressForDummysService,
     private readonly persistService: LibE2eCypressForDummysPersistentService,
@@ -57,6 +62,15 @@ export class LibE2eRecorderComponent {
     private injector: Injector
   ) {
     this.injectSwal2Styles();
+    this.initSubscriptions();
+    this.getHttpConfigurations();
+    this.initializeLanguage();
+  }
+    /**
+   * Inicializa todas las suscripciones a observables del servicio E2E.
+   * Centraliza la lógica reactiva del componente.
+   */
+  private initSubscriptions(): void {
     this.e2eService.isRecordingObservable().subscribe((val: any) => {
       this.isRecording = val;
       if (this.isRecording === false && this.controlFirstTimeData === false) {
@@ -78,63 +92,28 @@ export class LibE2eRecorderComponent {
         this.testPrevisualizerCompRef.changeDetectorRef.detectChanges();
       }
     });
-    this.getHttpConfigurations();
-    this.changeLanguage();
   }
 
-  private changeLanguage(): void {
-    this.translation.setLang(this.translation.detectLang());
+  /**
+   * Cambia el idioma de la aplicación y actualiza la traducción.
+   * Si no se pasa idioma, detecta automáticamente.
+   */
+  public setLanguage(lang?: string): void {
+    const language = lang ? this.toLang(lang) : this.translation.detectLang();
+    this.translation.setLang(language);
   }
+
+  /**
+   * Inicializa el idioma al cargar el componente.
+   */
+  private initializeLanguage(): void {
+    this.setLanguage();
+  }
+
   public toggle(): void {
     this.e2eService.toggleRecording();
   }
 
-  public openSettings(): void {
-    this.showSettingsDialog();
-  }
-
-  public openTestpanel(): void {
-    this.showTestPanel = !this.showTestPanel;
-    if (this.showTestPanel) {
-      // Se requiere un timeout para que el modal se cargue correctamente en el DOM antes de calcular su posición.
-      setTimeout(() => {
-        // Para que el modal aparezca justo encima del botón, debemos calcular el tamaño inicial del
-        // modal y obtener su posición. En caso de que exista (control para evitar errores), hacemos los cálculos
-        // necesarios para evitar que se salga por los bordes de la pantalla. Finalmente, le decimos
-        // el tamaño que debe tener el modal (aunque luego el usuario pueda editarlo).)
-        const btnRect = this.testBtnCr.nativeElement.getBoundingClientRect();
-        const dialog = document.querySelector('.p-dialog');
-        if (dialog) {
-          const dialogWidth = 480;
-          const dialogHeight = 400;
-          let left =
-            btnRect.left + window.scrollX + btnRect.width / 2 - dialogWidth / 2;
-          let top = btnRect.top + window.scrollY - dialogHeight - 8;
-
-          // Evita que se salga por la izquierda
-          if (left < 8) left = 8;
-          // Evita que se salga por la derecha
-          const maxLeft = window.innerWidth - dialogWidth - 8;
-          if (left > maxLeft) left = maxLeft;
-
-          // Si no cabe arriba, lo pone debajo del botón
-          if (top < 8) top = btnRect.bottom + window.scrollY + 8;
-
-          dialog.setAttribute(
-            'style',
-            `position: absolute; left: ${left}px; top: ${top}px; width: 480px; height: 400px;`
-          );
-        }
-      }, 0);
-    }
-  }
-  public openSavedTestsPanel(): void {
-    this.showSavedTestsDialog();
-  }
-
-  public saveTestDataPanel(): void {
-    this.showSaveTestDialog();
-  }
 
   private clearAndCreateComponent<T>(
     containerId: string,
@@ -178,15 +157,50 @@ export class LibE2eRecorderComponent {
     }
   }
 
-  public showCommandsDialog(): void {
-    if (this.isCommandsDialogOpen) {
+  /**
+   * Setea el flag de estado de modal de forma segura (solo para los booleanos de modal).
+   */
+  private setModalFlag(flag: keyof LibE2eRecorderComponent, value: boolean) {
+    // Solo permite modificar los flags de modales definidos
+    const allowedFlags = [
+      'isCommandsDialogOpen',
+      'isSavedTestsDialogOpen',
+      'isSaveTestDialogOpen',
+      'isSettingsDialogOpen',
+    ];
+    if (allowedFlags.includes(flag as string)) {
+      (this as any)[flag] = value;
+    }
+  }
+
+  /**
+   * Abre un modal SweetAlert2 reutilizable para todos los diálogos del componente.
+   * Centraliza la gestión de apertura, cierre, drag y atributos data-cy.
+   * @param options Opciones del modal (título, id de contenedor, componente, inputs, estado, callback opcional)
+   */
+  private openSwalModal({
+    title,
+    containerId,
+    component,
+    inputs = {},
+    stateFlag,
+    onClose
+  }: {
+    title: string;
+    containerId: string;
+    component: any;
+    inputs?: Record<string, any>;
+    stateFlag: keyof LibE2eRecorderComponent;
+    onClose?: () => void;
+  }) {
+    if ((this as any)[stateFlag]) {
       Swal.close();
-      this.isCommandsDialogOpen = false;
+      this.setModalFlag(stateFlag, false);
       return;
     }
     Swal.fire({
-      title: this.translation.translate('MAIN_FRAME.DIALOG_COMMANDS'),
-      html: '<div id="commands-modal-content"></div>',
+      title,
+      html: `<div id="${containerId}"></div>`,
       showCloseButton: true,
       showConfirmButton: false,
       width: 600,
@@ -195,112 +209,55 @@ export class LibE2eRecorderComponent {
       didOpen: () => {
         this.makeSwalDraggable();
         this.setSwal2DataCyAttribute();
-        this.clearAndCreateComponent(
-          'commands-modal-content',
-          TestPrevisualizerComponent,
-          {
-            cypressCommands: this.cypressCommands,
-            interceptors: this.interceptors,
-          }
-        );
-        this.isCommandsDialogOpen = true;
+        this.clearAndCreateComponent(containerId, component, inputs);
+        this.setModalFlag(stateFlag, true);
       },
       willClose: () => {
-        this.isCommandsDialogOpen = false;
+        this.setModalFlag(stateFlag, false);
+        if (onClose) onClose();
       },
+    });
+  }
+
+  // Refactoriza los métodos públicos de apertura de modales para usar el método centralizado
+  public showCommandsDialog(): void {
+    this.openSwalModal({
+      title: this.translation.translate('MAIN_FRAME.DIALOG_COMMANDS'),
+      containerId: 'commands-modal-content',
+      component: TestPrevisualizerComponent,
+      inputs: {
+        cypressCommands: this.cypressCommands,
+        interceptors: this.interceptors,
+      },
+      stateFlag: 'isCommandsDialogOpen',
     });
   }
 
   public showSavedTestsDialog(): void {
-    if (this.isSavedTestsDialogOpen) {
-      Swal.close();
-      this.isSavedTestsDialogOpen = false;
-      return;
-    }
-    Swal.fire({
+    this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.DIALOG_SAVED_TESTS'),
-      html: '<div id="saved-tests-modal-content"></div>',
-      showCloseButton: true,
-      showConfirmButton: false,
-      width: 600,
-      allowOutsideClick: false,
-      backdrop: false,
-      didOpen: () => {
-        this.makeSwalDraggable();
-        this.setSwal2DataCyAttribute();
-        this.clearAndCreateComponent(
-          'saved-tests-modal-content',
-          TestEditorComponent,
-          {
-            visible: true,
-          }
-        );
-        this.isSavedTestsDialogOpen = true;
-      },
-      willClose: () => {
-        this.isSavedTestsDialogOpen = false;
-      },
+      containerId: 'saved-tests-modal-content',
+      component: TestEditorComponent,
+      inputs: { visible: true },
+      stateFlag: 'isSavedTestsDialogOpen',
     });
   }
 
   public showSaveTestDialog(): void {
-    if (this.isSaveTestDialogOpen) {
-      Swal.close();
-      this.isSaveTestDialogOpen = false;
-      return;
-    }
-    Swal.fire({
+    this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.DIALOG_SAVE'),
-      html: '<div id="save-test-modal-content"></div>',
-      showCloseButton: true,
-      showConfirmButton: false,
-      width: 600,
-      allowOutsideClick: false,
-      backdrop: false,
-      didOpen: () => {
-        this.makeSwalDraggable();
-        this.setSwal2DataCyAttribute();
-        this.clearAndCreateComponent(
-          'save-test-modal-content',
-          SaveTestComponent,
-          {
-            // Puedes pasar más inputs si es necesario
-          }
-        );
-        this.isSaveTestDialogOpen = true;
-      },
-      willClose: () => {
-        this.isSaveTestDialogOpen = false;
-      },
+      containerId: 'save-test-modal-content',
+      component: SaveTestComponent,
+      stateFlag: 'isSaveTestDialogOpen',
     });
   }
 
   public showSettingsDialog(): void {
-    if (this.isSettingsDialogOpen) {
-      Swal.close();
-      this.isSettingsDialogOpen = false;
-      return;
-    }
-    Swal.fire({
+    this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.SETTINGS'),
-      html: '<div id="settings-modal-content"></div>',
-      showCloseButton: true,
-      showConfirmButton: false,
-      width: 600,
-      allowOutsideClick: false,
-      backdrop: false,
-      didOpen: () => {
-        this.makeSwalDraggable();
-        this.setSwal2DataCyAttribute();
-        this.clearAndCreateComponent(
-          'settings-modal-content',
-          ConfigurationComponent
-        );
-        this.isSettingsDialogOpen = true;
-      },
-      willClose: () => {
-        this.isSettingsDialogOpen = false;
-      },
+      containerId: 'settings-modal-content',
+      component: ConfigurationComponent,
+      stateFlag: 'isSettingsDialogOpen',
     });
   }
 
@@ -395,6 +352,32 @@ export class LibE2eRecorderComponent {
     LibE2eRecorderComponent.swal2StyleInjected = true;
   }
 
+  /**
+   * Callback centralizado para acciones de componentes hijos.
+   * Permite extender fácilmente la gestión de eventos de hijos.
+   */
+  public handleChildEvent(event: { type: string; payload?: any }): void {
+    switch (event.type) {
+      case 'saveTest':
+        this.onSaveTest(event.payload);
+        break;
+      // Aquí se pueden añadir más casos para otros eventos de hijos
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Limpia comandos e interceptores tras guardar un test y notifica al previsualizador.
+   * Centraliza la lógica de limpieza post-guardado.
+   */
+  private clearTestData(): void {
+    this.e2eService.clearCommands();
+    this.cypressCommands = [];
+    this.interceptors = [];
+    this.showSavePanel = false;
+  }
+
   //#region CallBAcks de componentes hijos
   public onSaveTest(description: string | null): void {
     if (description) {
@@ -414,11 +397,7 @@ export class LibE2eRecorderComponent {
         this.e2eService.clearInterceptors();
       }
     }
-    // Limpiar comandos y notificar al previsualizador
-    this.e2eService.clearCommands();
-    this.cypressCommands = [];
-    this.interceptors = [];
-    this.showSavePanel = false;
+    this.clearTestData();
   }
   //#endregion CallBAcks de componentes hijos
 
@@ -453,4 +432,103 @@ export class LibE2eRecorderComponent {
     });
   }
   //#endregion configurciones generales de la aplicación
+
+  //#region Paneles de la aplicación
+  /**
+   * Abre cualquier panel/modal del sistema de forma unificada.
+   * Si requiere posicionamiento flotante, lo aplica tras abrir el modal.
+   * @param options Opciones del panel/modal
+   */
+  private openPanel({
+    type,
+    anchorRef,
+    panelClass,
+    width = 480,
+    height = 400,
+    showFlag,
+    showDialogFn
+  }: {
+    type: 'floating' | 'modal',
+    anchorRef?: ElementRef,
+    panelClass?: string,
+    width?: number,
+    height?: number,
+    showFlag: keyof LibE2eRecorderComponent,
+    showDialogFn: () => void
+  }) {
+    (this as any)[showFlag] = !(this as any)[showFlag];
+    if ((this as any)[showFlag]) {
+      showDialogFn();
+      if (type === 'floating' && anchorRef && panelClass) {
+        this.openFloatingPanel(anchorRef, panelClass, width, height);
+      }
+    }
+  }
+
+  public openTestpanel(): void {
+    this.openPanel({
+      type: 'floating',
+      anchorRef: this.testBtnCr,
+      panelClass: '.p-dialog',
+      showFlag: 'showTestPanel',
+      showDialogFn: () => {}, // El panel se muestra por *ngIf, no SweetAlert2
+    });
+  }
+
+  public openSavedTestsPanel(): void {
+    this.openPanel({
+      type: 'modal',
+      showFlag: 'showSavedTestsPanel',
+      showDialogFn: () => this.showSavedTestsDialog(),
+    });
+  }
+
+  public saveTestDataPanel(): void {
+    this.openPanel({
+      type: 'modal',
+      showFlag: 'showSavePanel',
+      showDialogFn: () => this.showSaveTestDialog(),
+    });
+  }
+
+  public openSettings(): void {
+    this.openPanel({
+      type: 'modal',
+      showFlag: 'showConfigurationPanel',
+      showDialogFn: () => this.showSettingsDialog(),
+    });
+  }
+
+    /**
+   * Abre un modal de tipo panel flotante (como el de comandos) con posicionamiento relativo a un elemento.
+   * Centraliza la lógica de posicionamiento y apertura.
+   * @param anchorRef ElementRef del elemento al que anclar el modal
+   * @param panelClass Clase CSS del panel/modal
+   * @param width Ancho del modal
+   * @param height Alto del modal
+   */
+  private openFloatingPanel(
+    anchorRef: ElementRef,
+    panelClass: string,
+    width = 480,
+    height = 400
+  ) {
+    setTimeout(() => {
+      const btnRect = anchorRef.nativeElement.getBoundingClientRect();
+      const dialog = document.querySelector(panelClass) as HTMLElement;
+      if (dialog) {
+        let left = btnRect.left + window.scrollX + btnRect.width / 2 - width / 2;
+        let top = btnRect.top + window.scrollY - height - 8;
+        if (left < 8) left = 8;
+        const maxLeft = window.innerWidth - width - 8;
+        if (left > maxLeft) left = maxLeft;
+        if (top < 8) top = btnRect.bottom + window.scrollY + 8;
+        dialog.setAttribute(
+          'style',
+          `position: absolute; left: ${left}px; top: ${top}px; width: ${width}px; height: ${height}px;`
+        );
+      }
+    }, 0);
+  }
+  //#endregion Paneles de la aplicación
 }
