@@ -10,9 +10,10 @@ import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-tr
   imports: [CommonModule],
 })
 export class TestPrevisualizerComponent {
-  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
-  @ViewChild('scrollCommands', { static: false }) private scrollCommands!: ElementRef;
-  @ViewChild('scrollInterceptors', { static: false }) private scrollInterceptors!: ElementRef;
+  @ViewChild('scrollCommands', { static: false })
+  private readonly scrollCommands!: ElementRef;
+  @ViewChild('scrollInterceptors', { static: false })
+  private readonly scrollInterceptors!: ElementRef;
   @Input() public cypressCommands: string[] = [];
   @Input() public interceptors: string[] = [];
   /**
@@ -37,18 +38,24 @@ export class TestPrevisualizerComponent {
    */
   private scrollToBottom(): void {
     try {
-      if (this.scrollCommands && this.scrollCommands.nativeElement) {
-        this.scrollCommands.nativeElement.scrollTop = this.scrollCommands.nativeElement.scrollHeight;
+      if (this.scrollCommands?.nativeElement) {
+        this.scrollCommands.nativeElement.scrollTop =
+          this.scrollCommands.nativeElement.scrollHeight;
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error('Error scrolling to bottom:', err);
+    }
   }
 
   private scrollToBottomInterceptors(): void {
     try {
-      if (this.scrollInterceptors && this.scrollInterceptors.nativeElement && this.showInterceptors) {
-        this.scrollInterceptors.nativeElement.scrollTop = this.scrollInterceptors.nativeElement.scrollHeight;
+      if (this.showInterceptors && this.scrollInterceptors?.nativeElement) {
+        this.scrollInterceptors.nativeElement.scrollTop =
+          this.scrollInterceptors.nativeElement.scrollHeight;
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error('Error scrolling to bottom interceptors:', err);
+    }
   }
 
   public toggleInterceptors(): void {
@@ -62,7 +69,7 @@ export class TestPrevisualizerComponent {
   private copyArrayToClipboard(items: string[]): void {
     const text = (items || []).join('\n');
     if (!text) return;
-    if (navigator && navigator.clipboard) {
+    if (navigator?.clipboard) {
       navigator.clipboard.writeText(text);
     } else {
       // Fallback para navegadores antiguos
@@ -75,7 +82,7 @@ export class TestPrevisualizerComponent {
     }
   }
 
-  /** 
+  /**
    * Copia los comandos de cypress
    * @memberof TestPrevisualizerComponent
    */

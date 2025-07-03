@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { map, Observable, of, switchMap, firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LibE2eCypressForDummysPersistentService {
-  constructor(private dbService: NgxIndexedDBService) {}
+  constructor(private readonly dbService: NgxIndexedDBService) {}
 
   //#region Persistencia de los Test
   // Insertar un test
@@ -40,12 +40,10 @@ export class LibE2eCypressForDummysPersistentService {
 
   // Eliminar un test por id
   public deleteTest(id: number): Observable<void> {
-    return this.dbService.delete('tests', id).pipe(
-      map(() => {
-        this.deleteInterceptorsByTestId(id).subscribe();
-        return void 0;
-      })
-    );
+    // Elimina el test y luego todos sus interceptores, devolviendo un único flujo
+    return this.dbService
+      .delete('tests', id)
+      .pipe(switchMap(() => this.deleteInterceptorsByTestId(id)));
   }
 
   //#endregion Persistencia de los Test
@@ -78,14 +76,35 @@ export class LibE2eCypressForDummysPersistentService {
 
   // Eliminar interceptores por testId
   public deleteInterceptorsByTestId(testId: number): Observable<void> {
+    // Elimina todos los interceptores de un test de forma reactiva y sin suscripciones internas
     return this.getInterceptorsByTestId(testId).pipe(
-      map((interceptors) => {
-        interceptors.forEach((i) =>
-          this.dbService.delete('interceptors', i.id).subscribe()
+      switchMap((interceptors) => {
+        if (!interceptors.length) return of(void 0);
+        // Devuelve un observable que espera a que todos los deletes terminen
+        return this.deleteMany(
+          'interceptors',
+          interceptors.map((i) => i.id)
         );
-        return void 0;
       })
     );
+  }
+
+  /**
+   * Elimina en masa registros de una store por id, devolviendo un observable que finaliza cuando todos han sido eliminados.
+   */
+  private deleteMany(store: string, ids: number[]): Observable<void> {
+    if (!ids.length) return of(void 0);
+    // Ejecuta todos los deletes y espera a que terminen
+    return new Observable<void>((observer) => {
+      Promise.all(
+        ids.map((id) => firstValueFrom(this.dbService.delete(store, id)))
+      )
+        .then(() => {
+          observer.next();
+          observer.complete();
+        })
+        .catch((e) => observer.error(e));
+    });
   }
   //#endregion Persistencia de los interceptores
 
@@ -148,27 +167,45 @@ export class LibE2eCypressForDummysPersistentService {
     });
   }
 
+  /**
+   * Ingresa datos de tests e interceptores en la base de datos, eliminando el id si existe.
+   * Refactor: más legible, sin lógica duplicada, y usando utilidades privadas.
+   */
   public ingestFileData(tests: any[], interceptors: any[]): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (Array.isArray(tests)) {
-          for (const test of tests) {
-            const { id, ...testWithoutId } = test;
-            await this.dbService.add('tests', testWithoutId).toPromise();
+    return new Promise((resolve, reject) => {
+      (async () => {
+        try {
+          await Promise.all([
+            this.bulkInsertWithoutId('tests', tests),
+            this.bulkInsertWithoutId('interceptors', interceptors),
+          ]);
+          resolve();
+        } catch (e) {
+          let errorToReject;
+          if (e instanceof Error) {
+            errorToReject = e;
+          } else if (typeof e === 'string') {
+            errorToReject = new Error(e);
+          } else {
+            errorToReject = new Error(JSON.stringify(e));
           }
+          reject(errorToReject);
         }
-        if (Array.isArray(interceptors)) {
-          for (const interceptor of interceptors) {
-            const { id, ...interceptorWithoutId } = interceptor;
-            await this.dbService
-              .add('interceptors', interceptorWithoutId)
-              .toPromise();
-          }
-        }
-        resolve();
-      } catch (e) {
-        reject(e);
-      }
+      })();
     });
+  }
+
+  /**
+   * Inserta en masa registros en una store, eliminando el id si existe.
+   */
+  private async bulkInsertWithoutId(
+    store: string,
+    items: any[]
+  ): Promise<void> {
+    if (!Array.isArray(items)) return;
+    for (const item of items) {
+      const { id, ...itemWithoutId } = item;
+      await firstValueFrom(this.dbService.add(store, itemWithoutId));
+    }
   }
 }

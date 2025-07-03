@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
 import { CommonModule } from '@angular/common';
@@ -108,10 +109,16 @@ export class ConfigurationComponent {
    * @memberof ConfigurationComponent
    */
   public exportAllData(): void {
-    Promise.all([
-      this.persistService.getAllTests().toPromise(),
-      this.persistService.getAllInterceptors().toPromise(),
-    ]).then(([tests, interceptors]) => {
+    // Refactor: completamente reactivo y con control de errores
+    this.exportAllDataAsync();
+  }
+
+  private async exportAllDataAsync(): Promise<void> {
+    try {
+      const [tests, interceptors] = await Promise.all([
+        firstValueFrom(this.persistService.getAllTests()),
+        firstValueFrom(this.persistService.getAllInterceptors()),
+      ]);
       const exportModel = { tests, interceptors };
       const blob = new Blob([JSON.stringify(exportModel, null, 2)], {
         type: 'application/json',
@@ -122,7 +129,9 @@ export class ConfigurationComponent {
       a.download = 'e2e-cypress-export.json';
       a.click();
       URL.revokeObjectURL(url);
-    });
+    } catch (e) {
+      alert('Error al exportar los datos.');
+    }
   }
 
   /**
@@ -137,18 +146,30 @@ export class ConfigurationComponent {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = async () => {
-      try {
-        const data = JSON.parse(reader.result as string);
-        await this.persistService.clearAllData().toPromise();
-        await this.persistService.ingestFileData(data.tests, data.interceptors);
-        alert('Datos importados correctamente.');
-      } catch (e) {
-        alert('Error al importar el fichero. ¿Es un JSON válido?');
-      }
-    };
-    reader.readAsText(file);
+    this.importAllDataFromFile(file)
+      .then(() => alert('Datos importados correctamente.'))
+      .catch((e) =>
+        alert(e.message || 'Error al importar el fichero. ¿Es un JSON válido?')
+      );
     input.value = '';
+  }
+
+  private async importAllDataFromFile(file: File): Promise<void> {
+    const text = await file.text();
+    let data: any;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error('El archivo no es un JSON válido.');
+    }
+    if (
+      !data ||
+      !Array.isArray(data.tests) ||
+      !Array.isArray(data.interceptors)
+    ) {
+      throw new Error('El archivo no tiene el formato esperado.');
+    }
+    await firstValueFrom(this.persistService.clearAllData());
+    await this.persistService.ingestFileData(data.tests, data.interceptors);
   }
 }
