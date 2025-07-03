@@ -5,7 +5,7 @@
     }}
   </button>
 
-  <button #testBtnVC class="saved-test-icon-button tooltip" (click)="openSavedTestsPanel()">
+  <button #testBtnVC class="saved-test-icon-button tooltip" (click)="showSavedTestsDialog()">
     📋
     <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_SAVED_TESTS') }}</span>
   </button>
@@ -15,7 +15,7 @@
     <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_COMMANDS') }}</span>
   </button>
 
-  <button class="gear-icon-button tooltip right-edge" (click)="openSettings()">
+  <button class="gear-icon-button tooltip right-edge" (click)="showSettingsDialog()">
     ⚙️
     <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS') }}</span>
   </button>
