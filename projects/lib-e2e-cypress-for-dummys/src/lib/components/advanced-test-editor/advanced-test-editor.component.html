@@ -12,9 +12,9 @@
 
   <ng-template #renderNode let-node>
     <ng-container *ngIf="node">
-      <li *ngIf="node.kind === 'directory'" class="folder-node">
+      <li *ngIf="node.kind === 'directory'" class="folder-node" style="padding-left: 0;">
         <details open>
-          <summary>📁 {{ node.name }}</summary>
+          <summary style="padding-left: 0;">📁 {{ node.name }}</summary>
           <ul>
             <ng-container *ngFor="let child of node.children">
               <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: child }"></ng-template>
@@ -22,7 +22,7 @@
           </ul>
         </details>
       </li>
-      <li *ngIf="node.kind === 'file'" class="file-node" (click)="onFileClick(node)">
+      <li *ngIf="node.kind === 'file'" class="file-node" (click)="onFileClick(node)" style="padding-left: 2em;">
         <span>📄 {{ node.name }}</span>
       </li>
     </ng-container>

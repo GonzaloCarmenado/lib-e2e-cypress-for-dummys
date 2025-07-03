@@ -27,3 +27,21 @@
   font-style: italic;
   margin: 1em 0;
 }
+
+.e2e-tree {
+  padding-left: 0;
+  margin-left: 0;
+  list-style: none;
+}
+.folder-node {
+  padding-left: 0 !important;
+  text-align: left !important;
+}
+.folder-node > details > summary {
+  padding-left: 0 !important;
+  text-align: left !important;
+}
+.file-node {
+  padding-left: 0em !important;
+  text-align: left !important;
+}
