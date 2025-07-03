@@ -42,6 +42,7 @@ import { LibE2eCypressForDummysConstructorService } from './lib-e2e-cypress-for-
     LibE2eRecorderComponent,
     SaveTestComponent,
     TestEditorComponent,
+    AdvancedTestEditorComponent
   ],
 })
 export class LibE2eRecorderComponent {
@@ -227,7 +228,7 @@ export class LibE2eRecorderComponent {
   public showAdvancedEditorDialog(): void {
     this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR'),
-      containerId: 'advanced-editor-modal-content',
+      containerId: 'commands-advanced-editor-modal-content',
       component: AdvancedTestEditorComponent,
       stateFlag: 'isAdvancedEditorDialogOpen',
     });
@@ -274,7 +275,7 @@ export class LibE2eRecorderComponent {
     });
   }
 
-  private clearAndCreateComponent<T>(
+  public clearAndCreateComponent<T>(
     containerId: string,
     component: any,
     inputs: Record<string, any> = {}
@@ -321,6 +322,7 @@ export class LibE2eRecorderComponent {
   }
   //#endregion Paneles de la aplicación
 
+  //#region Acceso a archivos locales
   /**
    * Solicita al usuario acceso a un archivo local para leerlo y editarlo.
    * Devuelve el contenido y el handle para futuras escrituras.
@@ -398,4 +400,5 @@ export class LibE2eRecorderComponent {
       // await this.requestDirectoryAccess();
     }
   }
+  //#endregion Acceso a archivos locales
 }

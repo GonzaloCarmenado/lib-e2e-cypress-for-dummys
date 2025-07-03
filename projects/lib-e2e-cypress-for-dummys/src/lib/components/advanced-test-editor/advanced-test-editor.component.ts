@@ -4,6 +4,7 @@ import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-
 
 @Component({
   selector: 'app-advanced-test-editor',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './advanced-test-editor.component.html',
   styleUrl: './advanced-test-editor.component.scss'
@@ -11,10 +12,14 @@ import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-
 export class AdvancedTestEditorComponent implements OnInit {
   public e2eTree: any[] = [];
 
-  constructor(private readonly persistService: LibE2eCypressForDummysPersistentService) {}
+  constructor(private readonly persistService: LibE2eCypressForDummysPersistentService) { }
 
-  async ngOnInit() {
-    // Comprueba si hay permiso
+  public ngOnInit() {
+   this.getFoldersData();
+  }
+
+  public async getFoldersData():Promise<void> {
+     // Comprueba si hay permiso
     const config = await this.persistService.getConfig('allowReadWriteFiles').toPromise();
     if (config?.allowReadWriteFiles === 'true') {
       // Recupera el handle de la carpeta
@@ -25,7 +30,7 @@ export class AdvancedTestEditorComponent implements OnInit {
         for await (const entry of dirHandle.values()) {
           if (entry.kind === 'directory' && entry.name === 'e2e') {
             console.log('Carpeta e2e encontrada:', entry);
-            
+
             const tree = await this.scanDirectory(entry);
 
             this.e2eTree = tree.children; // Solo hijos de e2e
@@ -40,10 +45,10 @@ export class AdvancedTestEditorComponent implements OnInit {
     }
   }
 
-    /**
-   * Recorre recursivamente las carpetas y archivos a partir de un handle de directorio.
-   * Devuelve una estructura con el nombre, tipo y su contenido (solo nombres).
-   */
+  /**
+ * Recorre recursivamente las carpetas y archivos a partir de un handle de directorio.
+ * Devuelve una estructura con el nombre, tipo y su contenido (solo nombres).
+ */
   private async scanDirectory(dirHandle: FileSystemDirectoryHandle): Promise<any> {
     const result: any = {
       name: dirHandle.name,

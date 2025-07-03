@@ -40,17 +40,6 @@ export class LibE2eCypressForDummysConstructorService {
       },
     };
   }
-  /**
-   * Abre un modal SweetAlert2 reutilizable para todos los diálogos del componente.
-   * Centraliza la gestión de apertura, cierre, drag y atributos data-cy.
-   * @param options Opciones del modal (título, id de contenedor, componente, inputs, estado, callback opcional)
-   * @param componentContext Contexto del componente que llama (para flags y métodos auxiliares)
-   */
-  // Método openSwalModal eliminado (deshecho el último cambio)
-  // Duplicate class and import removed
-  /**
-   * Inyecta los estilos personalizados de SweetAlert2 si no están ya en el DOM.
-   */
   public injectSwal2Styles(
     styles: string,
     styleId = 'lib-e2e-cypress-for-dummys-swal2-styles'

@@ -1,8 +1,8 @@
 <div class="e2e-tree-container">
-  <ng-container *ngIf="e2eTree.length; else noContent">
+  <ng-container *ngIf="e2eTree && e2eTree.length > 0; else noContent">
     <ul class="e2e-tree">
       <ng-container *ngFor="let node of e2eTree">
-        <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ node: node }"></ng-template>
+        <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: node }"></ng-template>
       </ng-container>
     </ul>
   </ng-container>
@@ -17,7 +17,7 @@
           <summary>📁 {{ node.name }}</summary>
           <ul>
             <ng-container *ngFor="let child of node.children">
-              <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ node: child }"></ng-template>
+              <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: child }"></ng-template>
             </ng-container>
           </ul>
         </details>
