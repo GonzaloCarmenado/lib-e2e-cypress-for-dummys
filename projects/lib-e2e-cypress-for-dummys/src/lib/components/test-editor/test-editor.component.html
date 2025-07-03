@@ -8,7 +8,7 @@
   <div class="test-card">
     <div class="test-card-header" (click)="toggleExpand(i)">
       <div>
-        <span class="test-card-desc">{{ test.description }}</span>
+        <span class="test-card-desc">{{ test.name }}</span>
         <span class="test-card-date">{{ test.createdAt | date:'short' }}</span>
       </div>
       <button class="btn btn-secondary btn-expand">
@@ -20,12 +20,12 @@
       <div class="test-card-section">
         <div class="test-card-section-header">
           <span>{{ translation.translate('TEST_EDITOR.COMMANDS') }}</span>
-          <button class="btn btn-copy" (click)="copyToClipboard(test.commandsAndItBlock); $event.stopPropagation();"
+          <button class="btn btn-copy" (click)="copyToClipboard(test.commands?.join('\n')); $event.stopPropagation();"
             [title]="translation.translate('TEST_EDITOR.COPY_COMMANDS')">
             📋 {{ translation.translate('TEST_EDITOR.COPY') }}
           </button>
         </div>
-        <pre class="test-card-commands">{{ test.commandsAndItBlock }}</pre>
+        <pre class="test-card-commands">{{ test.commands?.join('\n') }}</pre>
       </div>
       @if(hasInterceptors(test.id)){
       <ng-container>
@@ -44,7 +44,8 @@
       </ng-container>
       }
       <div class="test-card-actions">
-        <button class="btn btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();" [title]="translation.translate('TEST_EDITOR.DELETE')">
+        <button class="btn btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();"
+          [title]="translation.translate('TEST_EDITOR.DELETE')">
           🗑️ {{ translation.translate('TEST_EDITOR.DELETE_SHORT') }}
         </button>
       </div>

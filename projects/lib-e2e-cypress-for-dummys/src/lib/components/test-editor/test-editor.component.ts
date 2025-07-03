@@ -76,18 +76,11 @@ export class TestEditorComponent implements OnInit {
     this.expandedIndex = this.expandedIndex === index ? null : index;
     if (this.expandedIndex !== null) {
       const test = this.tests[this.expandedIndex];
+      // Los interceptores ya vienen en test.interceptors (nuevo modelo)
       if (test?.id && !this.interceptorsByTest[test.id]) {
-        this.persistService
-          .getInterceptorsByTestId(test.id)
-          .subscribe((records) => {
-            const allCommands = records.map((r) => r.commands).join('\n');
-            this.interceptorsByTest[test.id] = allCommands
-              ? allCommands
-                .split('\n')
-                .map((line) => line.trim())
-                .filter((line) => !!line)
-              : [];
-          });
+        this.interceptorsByTest[test.id] = Array.isArray(test.interceptors)
+          ? test.interceptors
+          : [];
       }
     }
   }

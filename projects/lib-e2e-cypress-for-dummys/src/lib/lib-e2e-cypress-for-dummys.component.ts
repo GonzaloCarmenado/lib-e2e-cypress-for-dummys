@@ -132,18 +132,12 @@ export class LibE2eRecorderComponent {
   //#region CallBAcks de componentes hijos
   public onSaveTest(description: string | null): void {
     if (description) {
-      const completeTest: string =
-        this.transformationService.generateItDescription(
-          description,
-          this.cypressCommands
-        );
-      // 1. Obtener interceptores actuales
-      const interceptors = this.e2eService.getInterceptorsSnapshot();
-      // 2. Pasar interceptores a insertTest
+      // Nuevo modelo: nombre, comandos, interceptores
+      const commands = this.cypressCommands;
+      const interceptors = this.interceptors;
       this.persistService
-        .insertTest(description, completeTest, interceptors)
+        .insertTest(description, commands, interceptors)
         .subscribe((id) => {});
-      // 3. Limpiar interceptores tras guardar
       if (this.e2eService.clearInterceptors) {
         this.e2eService.clearInterceptors();
       }

@@ -10,32 +10,82 @@ export class LibE2eCypressForDummysPersistentService {
 
   //#region Persistencia de los Test
   // Insertar un test
+  /**
+   * Inserta un test, comandos e interceptores asociados.
+   * @param name Nombre de la prueba
+   * @param commands Array de comandos individuales
+   * @param interceptors Array de interceptores individuales
+   * @returns Observable con el id del test creado
+   */
   public insertTest(
-    description: string,
-    commandsAndItBlock: string,
+    name: string,
+    commands: string[] = [],
     interceptors: string[] = []
   ): Observable<number> {
     const test = {
-      description,
-      commandsAndItBlock,
+      name,
       createdAt: Date.now(),
     };
     return this.dbService.add('tests', test).pipe(
       switchMap((result: any) => {
         const testId = result.id;
-        if (interceptors.length > 0) {
-          return this.insertInterceptors(interceptors, testId).pipe(
-            map(() => testId)
-          );
-        }
-        return of(testId);
+        // Insertar comandos
+        const commandsInsert$ =
+          commands.length > 0
+            ? this.insertCommands(commands, testId)
+            : of(null);
+        // Insertar interceptores
+        const interceptorsInsert$ =
+          interceptors.length > 0
+            ? this.insertInterceptors(interceptors, testId)
+            : of(null);
+        return commandsInsert$.pipe(
+          switchMap(() => interceptorsInsert$),
+          map(() => testId)
+        );
       })
     );
   }
 
-  // Obtener todos los tests
+  /**
+   * Obtiene todos los tests con sus comandos e interceptores asociados
+   */
   public getAllTests(): Observable<any[]> {
-    return this.dbService.getAll('tests');
+    return this.dbService.getAll('tests').pipe(
+      switchMap((tests: any[]) => {
+        if (!tests.length) return of([]);
+        // Para cada test, obtener comandos e interceptores (solo los strings)
+        const testWithDetails$ = tests.map(async (test) => {
+          const commandsRaw = await firstValueFrom(this.getCommandsByTestId(test.id));
+          const interceptorsRaw = await firstValueFrom(this.getInterceptorsByTestId(test.id));
+          const commands = Array.isArray(commandsRaw)
+            ? commandsRaw.map((c) => typeof c === 'string' ? c : c.command).filter(Boolean)
+            : [];
+          const interceptors = Array.isArray(interceptorsRaw)
+            ? interceptorsRaw.map((i) => typeof i === 'string' ? i : i.interceptor).filter(Boolean)
+            : [];
+          return { ...test, commands, interceptors };
+        });
+        return Promise.all(testWithDetails$);
+      })
+    );
+  }
+  /**
+   * Obtiene todos los comandos
+   */
+  public getAllCommands(): Observable<any[]> {
+    return this.dbService.getAll('commands');
+  }
+
+  /**
+   * Obtiene los comandos asociados a un test
+   */
+  public getCommandsByTestId(testId: number): Observable<any[]> {
+    return this.dbService.getAllByIndex(
+      'commands',
+      'testId',
+      IDBKeyRange.only(testId)
+    );
   }
 
   // Eliminar un test por id
@@ -49,17 +99,57 @@ export class LibE2eCypressForDummysPersistentService {
   //#endregion Persistencia de los Test
 
   //#region Persistencia de los interceptores
+  /**
+   * Inserta comandos individuales asociados a un test
+   */
+  public insertCommands(commands: string[], testId: number): Observable<any> {
+    if (!commands.length) return of(null);
+    const records = commands.map((command) => ({
+      command,
+      testId,
+      createdAt: Date.now(),
+    }));
+    // Inserta todos los comandos de forma paralela
+    return new Observable((observer) => {
+      Promise.all(
+        records.map((rec) =>
+          firstValueFrom(this.dbService.add('commands', rec))
+        )
+      )
+        .then((results) => {
+          observer.next(results);
+          observer.complete();
+        })
+        .catch((e) => observer.error(e));
+    });
+  }
+
+  /**
+   * Inserta interceptores individuales asociados a un test
+   */
   public insertInterceptors(
     interceptors: string[],
     testId: number
   ): Observable<any> {
-    const commandsString = interceptors.join('\n');
-    const record = {
-      commands: commandsString,
+    if (!interceptors.length) return of(null);
+    const records = interceptors.map((interceptor) => ({
+      interceptor,
       testId,
       createdAt: Date.now(),
-    };
-    return this.dbService.add('interceptors', record);
+    }));
+    // Inserta todos los interceptores de forma paralela
+    return new Observable((observer) => {
+      Promise.all(
+        records.map((rec) =>
+          firstValueFrom(this.dbService.add('interceptors', rec))
+        )
+      )
+        .then((results) => {
+          observer.next(results);
+          observer.complete();
+        })
+        .catch((e) => observer.error(e));
+    });
   }
 
   // Obtener todos los interceptores
