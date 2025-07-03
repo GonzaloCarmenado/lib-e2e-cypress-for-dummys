@@ -56,13 +56,21 @@ export class LibE2eCypressForDummysPersistentService {
         if (!tests.length) return of([]);
         // Para cada test, obtener comandos e interceptores (solo los strings)
         const testWithDetails$ = tests.map(async (test) => {
-          const commandsRaw = await firstValueFrom(this.getCommandsByTestId(test.id));
-          const interceptorsRaw = await firstValueFrom(this.getInterceptorsByTestId(test.id));
+          const commandsRaw = await firstValueFrom(
+            this.getCommandsByTestId(test.id)
+          );
+          const interceptorsRaw = await firstValueFrom(
+            this.getInterceptorsByTestId(test.id)
+          );
           const commands = Array.isArray(commandsRaw)
-            ? commandsRaw.map((c) => typeof c === 'string' ? c : c.command).filter(Boolean)
+            ? commandsRaw
+                .map((c) => (typeof c === 'string' ? c : c.command))
+                .filter(Boolean)
             : [];
           const interceptors = Array.isArray(interceptorsRaw)
-            ? interceptorsRaw.map((i) => typeof i === 'string' ? i : i.interceptor).filter(Boolean)
+            ? interceptorsRaw
+                .map((i) => (typeof i === 'string' ? i : i.interceptor))
+                .filter(Boolean)
             : [];
           return { ...test, commands, interceptors };
         });

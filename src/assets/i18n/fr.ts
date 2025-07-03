@@ -5,6 +5,7 @@ export const I18N_FR = {
     SETTINGS: 'Paramètres',
     SHOW_SAVED_TESTS: 'Voir les tests enregistrés',
     SHOW_COMMANDS: 'Aperçu des commandes Cypress',
+    SHOW_ADVANCED_EDITOR: 'Éditeur avancé',
     DIALOG_SAVED_TESTS: 'Tests enregistrés',
     DIALOG_COMMANDS: 'Aperçu des commandes Cypress',
     DIALOG_SAVE: 'Enregistrer l’enregistrement ?',

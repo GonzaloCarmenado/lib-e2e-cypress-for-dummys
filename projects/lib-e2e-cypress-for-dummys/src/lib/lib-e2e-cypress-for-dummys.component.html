@@ -1,4 +1,10 @@
 <div data-cy="lib-e2e-cypress-for-dummys">
+
+  <button class="advanced-editor-icon-button tooltip" (click)="showAdvancedEditorDialog()">
+    🛠️
+    <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR') }}</span>
+  </button>
+
   <button class="e2e-recorder-button tooltip" (click)="toggle()" accesskey="r">
     {{ isRecording ? '⏹️ ' + translation.translate('MAIN_FRAME.STOP') : '▶️ ' +
     translation.translate('MAIN_FRAME.RECORD')
@@ -20,10 +26,9 @@
     <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS') }}</span>
   </button>
 
-  <!-- Reemplazo de p-dialog por SweetAlert2: los modales se abrirán desde el componente TS -->
   <div id="commands-modal-container"></div>
   <div id="saved-tests-modal-container"></div>
   <div id="save-test-modal-container"></div>
   <div id="settings-modal-container"></div>
-  <!-- Los diálogos de p-dialog han sido eliminados y migrados a SweetAlert2 -->
+  <div id="advanced-editor-modal-content"></div>
 </div>

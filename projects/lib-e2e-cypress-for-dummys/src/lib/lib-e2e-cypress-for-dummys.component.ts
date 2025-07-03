@@ -13,6 +13,7 @@ import { SaveTestComponent } from './components/save-test-data/save-test-data.co
 import { LibE2eCypressForDummysPersistentService } from './services/lib-e2e-cypress-for-dummys-persist.service';
 import { LibE2eCypressForDummysTransformationService } from './lib-e2e-cypress-for-dummys.transformation.service';
 import { TestEditorComponent } from './components/test-editor/test-editor.component';
+import { AdvancedTestEditorComponent } from './components/advanced-test-editor/advanced-test-editor.component';
 import { ConfigurationComponent } from './components/configurations/configuration.component';
 import {
   TranslationService,
@@ -61,6 +62,7 @@ export class LibE2eRecorderComponent {
   public isSavedTestsDialogOpen = false;
   public isSaveTestDialogOpen = false;
   public isSettingsDialogOpen = false;
+  public isAdvancedEditorDialogOpen = false;
   private testPrevisualizerCompRef: any = null;
 
   constructor(
@@ -221,6 +223,15 @@ export class LibE2eRecorderComponent {
     Swal.fire(config);
   }
 
+  public showAdvancedEditorDialog(): void {
+    this.openSwalModal({
+      title: this.translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR'),
+      containerId: 'advanced-editor-modal-content',
+      component: AdvancedTestEditorComponent,
+      stateFlag: 'isAdvancedEditorDialogOpen',
+    });
+  }
+
   public showCommandsDialog(): void {
     this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.DIALOG_COMMANDS'),
@@ -301,6 +312,7 @@ export class LibE2eRecorderComponent {
       'isSavedTestsDialogOpen',
       'isSaveTestDialogOpen',
       'isSettingsDialogOpen',
+      'isAdvancedEditorDialogOpen',
     ];
     if (allowedFlags.includes(flag as string)) {
       (this as any)[flag] = value;

@@ -5,6 +5,7 @@ export const I18N_EN = {
     SETTINGS: 'Settings',
     SHOW_SAVED_TESTS: 'View saved tests',
     SHOW_COMMANDS: 'Preview Cypress commands',
+    SHOW_ADVANCED_EDITOR: 'Advanced editor',
     DIALOG_SAVED_TESTS: 'Saved tests',
     DIALOG_COMMANDS: 'Cypress commands previewer',
     DIALOG_SAVE: 'Save recording?',

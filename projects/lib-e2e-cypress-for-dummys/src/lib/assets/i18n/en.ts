@@ -8,6 +8,7 @@ export const I18N_EN = {
     DIALOG_SAVED_TESTS: 'Saved tests',
     DIALOG_COMMANDS: 'Cypress commands previewer',
     DIALOG_SAVE: 'Save recording?',
+    SHOW_ADVANCED_EDITOR: 'Advanced editor',
   },
   SAVE_TEST: {
     TITLE: 'Do you want to save the test?',
