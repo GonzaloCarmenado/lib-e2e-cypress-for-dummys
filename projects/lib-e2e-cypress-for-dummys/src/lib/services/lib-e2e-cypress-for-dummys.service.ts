@@ -21,7 +21,7 @@ export class LibE2eCypressForDummysService {
    * @private
    * @memberof LibE2eCypressForDummysService
    */
-  private commandList$ = new BehaviorSubject<string[]>([]);
+  private readonly commandList$ = new BehaviorSubject<string[]>([]);
   /**
    * Almacena y emite los interceptores registrados. Se inicializa como un BehaviorSubject con un array vacío.
    * Los interceptores se registran con un método, una URL y un alias. Automáticamente se genera el comando cy.wait('@${alias}').then((interception) => { })
@@ -29,7 +29,7 @@ export class LibE2eCypressForDummysService {
    * @private
    * @memberof LibE2eCypressForDummysService
    */
-  private interceptors$ = new BehaviorSubject<string[]>([]);
+  private readonly interceptors$ = new BehaviorSubject<string[]>([]);
   /**
    * Indica si se está grabando o no. Se inicializa como false.
    * Este valor se utiliza para determinar si se deben capturar los eventos del DOM y generar comandos Cypress solo cuando el usuario
@@ -37,14 +37,14 @@ export class LibE2eCypressForDummysService {
    * @private
    * @memberof LibE2eCypressForDummysService
    */
-  private isRecording$ = new BehaviorSubject<boolean>(false);
+  private readonly isRecording$ = new BehaviorSubject<boolean>(false);
   /**
    * Mapa para almacenar los temporizadores de debounce de los inputs. Se utiliza para evitar que se generen múltiples comandos
    * Cypress al escribir en un input (uno por cada letra), aplicando un debounce de 1s.
    * @private
    * @memberof LibE2eCypressForDummysService
    */
-  private inputDebounceTimers = new Map<HTMLElement, any>();
+  private readonly inputDebounceTimers = new Map<HTMLElement, any>();
 
   constructor(@Inject(DOCUMENT) private document: Document) {
     this.listenToClicks();
@@ -122,102 +122,117 @@ export class LibE2eCypressForDummysService {
       let target = event.target as HTMLElement;
       if (!target) return;
 
-      let isMatOptionClick = false;
+      // Modularización: Procesa el click y delega en helpers
+      this.handleClickEvent(target);
+    });
+  }
 
-      // Si el target no es interactivo y es un span o div, busca si su ancestro más cercano es un button, mat-option o mat-select con [data-cy] o [id]
-      if (!this.isInteractiveElement(target)) {
-        if (
-          (target.tagName.toLowerCase() === 'span' ||
-            target.tagName.toLowerCase() === 'div') &&
-          target.parentElement &&
-          (target.parentElement.tagName.toLowerCase() === 'button' ||
-            target.parentElement.tagName.toLowerCase() === 'mat-option') &&
-          (target.parentElement.hasAttribute('data-cy') ||
-            target.parentElement.hasAttribute('id'))
-        ) {
-          if (target.parentElement.tagName.toLowerCase() === 'mat-option') {
-            isMatOptionClick = true;
-          }
-          target = target.parentElement;
+  // --- Helpers para modularizar la lógica de clicks ---
+  private handleClickEvent(target: HTMLElement): void {
+    let isMatOptionClick = false;
+
+    // Si el target no es interactivo y es un span o div, busca si su ancestro más cercano es un button, mat-option o mat-select con [data-cy] o [id]
+    if (!this.isInteractiveElement(target)) {
+      if (
+        (target.tagName.toLowerCase() === 'span' ||
+          target.tagName.toLowerCase() === 'div') &&
+        target.parentElement &&
+        (target.parentElement.tagName.toLowerCase() === 'button' ||
+          target.parentElement.tagName.toLowerCase() === 'mat-option') &&
+        (target.parentElement.hasAttribute('data-cy') ||
+          target.parentElement.hasAttribute('id'))
+      ) {
+        if (target.parentElement.tagName.toLowerCase() === 'mat-option') {
+          isMatOptionClick = true;
         }
-        // Si el ancestro más cercano es un mat-select, generamos el comando de click para el select
-        const matSelectParent = target.closest('mat-select');
-        if (matSelectParent) {
-          const selectSelector = this.getReliableSelector(
-            matSelectParent as HTMLElement
-          );
-          if (selectSelector) {
-            this.addCommand(`cy.get('${selectSelector}').click()`);
-          } else {
-            this.addCommand(
-              '// No se pudo generar un selector confiable para mat-select'
-            );
-          }
-          return;
-        }
+        target = target.parentElement;
       }
-
-      // Si el elemento es un input, textarea o select, NO grabar el click (solo grabar el type/select en esos casos)
-      const tag = target.tagName.toLowerCase();
-      if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+      // Si el ancestro más cercano es un mat-select, generamos el comando de click para el select
+      const matSelectParent = target.closest('mat-select');
+      if (matSelectParent) {
+        this.addMatSelectClickCommand(matSelectParent as HTMLElement);
         return;
       }
+    }
 
-      // Si es un mat-option, activar el flag
-      if (tag === 'mat-option') {
-        isMatOptionClick = true;
+    // Si el elemento es un input, textarea o select, NO grabar el click (solo grabar el type/select en esos casos)
+    const tag = target.tagName.toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+      return;
+    }
+
+    // Si es un mat-option, activar el flag
+    if (tag === 'mat-option') {
+      isMatOptionClick = true;
+    }
+
+    const container = target.closest<HTMLElement>('[data-cy], [id]');
+    if (!container) return;
+
+    const selector = this.getReliableSelector(container);
+
+    // Evita grabar comandos sobre la propia librería
+    if (selector === '[data-cy="lib-e2e-cypress-for-dummys"]') return;
+
+    if (isMatOptionClick) {
+      this.handleMatOptionClick(target, selector);
+      return;
+    }
+
+    this.addClickCommand(selector);
+  }
+
+  private addMatSelectClickCommand(matSelect: HTMLElement): void {
+    const selectSelector = this.getReliableSelector(matSelect);
+    if (selectSelector) {
+      this.addCommand(`cy.get('${selectSelector}').click()`);
+    } else {
+      this.addCommand(
+        '// No se pudo generar un selector confiable para mat-select'
+      );
+    }
+  }
+
+  private handleMatOptionClick(
+    target: HTMLElement,
+    selector: string | null
+  ): void {
+    // Buscar el mat-select padre (o el contenedor relevante con data-cy)
+    const matSelect = target.closest('mat-select');
+    let selectDataCy = null;
+    if (matSelect) {
+      const selectContainer = matSelect.closest('[data-cy]');
+      if (selectContainer) {
+        selectDataCy = selectContainer.getAttribute('data-cy');
       }
-
-      const container = target.closest<HTMLElement>('[data-cy], [id]');
-      if (!container) return;
-
-      const selector = this.getReliableSelector(container);
-      let cyCommand = '';
-
-      // Evita grabar comandos sobre la propia librería
-      if (selector === '[data-cy="lib-e2e-cypress-for-dummys"]') return;
-
-      if (isMatOptionClick) {
-        // Buscar el mat-select padre (o el contenedor relevante con data-cy)
-        const matSelect = target.closest('mat-select');
-        let selectDataCy = null;
-        if (matSelect) {
-          const selectContainer = matSelect.closest('[data-cy]');
-          if (selectContainer) {
-            selectDataCy = selectContainer.getAttribute('data-cy');
-          }
-        }
-        // Si no se encuentra mat-select, buscar el contenedor con data-cy más cercano
-        if (!selectDataCy) {
-          const selectContainer = target.closest('[data-cy]');
-          if (selectContainer) {
-            selectDataCy = selectContainer.getAttribute('data-cy');
-          }
-        }
-        // Generar el comando para abrir el select
-        if (selectDataCy) {
-          this.addCommand(`cy.get('[data-cy="${selectDataCy}"]').click()`);
-          return;
-        }
-        // Generar el comando para seleccionar la opción
-        if (selector) {
-          // Extraer el valor de la opción (por ejemplo, selectPriority-option-11)
-          // Si el data-cy es del tipo selectPriority-option-11, lo usamos tal cual
-          this.addCommand(`cy.get('${selector}').eq(0).click()`);
-        } else {
-          this.addCommand(
-            '// No se pudo generar un selector confiable para mat-option'
-          );
-        }
-        return;
+    }
+    // Si no se encuentra mat-select, buscar el contenedor con data-cy más cercano
+    if (!selectDataCy) {
+      const selectContainer = target.closest('[data-cy]');
+      if (selectContainer) {
+        selectDataCy = selectContainer.getAttribute('data-cy');
       }
+    }
+    // Generar el comando para abrir el select
+    if (selectDataCy) {
+      this.addCommand(`cy.get('[data-cy="${selectDataCy}"]').click()`);
+      return;
+    }
+    // Generar el comando para seleccionar la opción
+    if (selector) {
+      this.addCommand(`cy.get('${selector}').eq(0).click()`);
+    } else {
+      this.addCommand(
+        '// No se pudo generar un selector confiable para mat-option'
+      );
+    }
+  }
 
-      if (selector) {
-        cyCommand = `cy.get('${selector}').click()`;
-      } else {
-        cyCommand = '// No se pudo generar un selector confiable para click';
-      }
-      this.addCommand(cyCommand);
+  private addClickCommand(selector: string | null): void {
+    this.addGenericCommand({
+      selector,
+      action: (sel) => `cy.get('${sel}').click()`,
+      errorMsg: '// No se pudo generar un selector confiable para click',
     });
   }
 
@@ -232,44 +247,46 @@ export class LibE2eCypressForDummysService {
       if (!this.isRecording$.getValue()) return;
       const target = event.target as HTMLInputElement | HTMLTextAreaElement;
       if (!target) return;
+      this.handleInputEvent(target);
+    });
+  }
 
-      const isTextInput =
-        target.tagName.toLowerCase() === 'textarea' ||
-        (target.tagName.toLowerCase() === 'input' &&
-          INPUT_TYPES.includes(target.type));
+  // --- Helpers para modularizar la lógica de inputs ---
+  private handleInputEvent(
+    target: HTMLInputElement | HTMLTextAreaElement
+  ): void {
+    const isTextInput =
+      target.tagName.toLowerCase() === 'textarea' ||
+      (target.tagName.toLowerCase() === 'input' &&
+        INPUT_TYPES.includes(target.type));
+    if (!isTextInput) return;
 
-      if (!isTextInput) return;
+    const clickable = target.closest<HTMLElement>('[data-cy], [id]');
+    if (!clickable) return;
 
-      const clickable = target.closest<HTMLElement>('[data-cy], [id]');
-      if (!clickable) return;
+    if (this.inputDebounceTimers.has(target)) {
+      clearTimeout(this.inputDebounceTimers.get(target));
+    }
 
-      if (this.inputDebounceTimers.has(target)) {
-        clearTimeout(this.inputDebounceTimers.get(target));
-      }
+    this.inputDebounceTimers.set(
+      target,
+      setTimeout(() => {
+        this.addInputCommand(clickable, target);
+        this.inputDebounceTimers.delete(target);
+      }, 1000)
+    );
+  }
 
-      this.inputDebounceTimers.set(
-        target,
-        setTimeout(() => {
-          const selector = this.getReliableSelector(clickable);
-          const value = target.value.replace(/'/g, "\\'");
-          let cyCommand = '';
-
-          // Evita grabar comandos sobre la propia librería
-          if (selector === '[data-cy="lib-e2e-cypress-for-dummys"]') {
-            this.inputDebounceTimers.delete(target);
-            return;
-          }
-
-          if (selector) {
-            cyCommand = `cy.get('${selector}').clear().type('${value}')`;
-          } else {
-            cyCommand = '// No se pudo generar un selector confiable para type';
-          }
-
-          this.addCommand(cyCommand);
-          this.inputDebounceTimers.delete(target);
-        }, 1000)
-      );
+  private addInputCommand(
+    clickable: HTMLElement,
+    target: HTMLInputElement | HTMLTextAreaElement
+  ): void {
+    const selector = this.getReliableSelector(clickable);
+    const value = target.value.replace(/'/g, "\\'");
+    this.addGenericCommand({
+      selector,
+      action: (sel) => `cy.get('${sel}').clear().type('${value}')`,
+      errorMsg: '// No se pudo generar un selector confiable para type',
     });
   }
 
@@ -283,24 +300,52 @@ export class LibE2eCypressForDummysService {
     this.document.addEventListener('change', (event: Event) => {
       const target = event.target as HTMLSelectElement;
       if (!target || target.tagName.toLowerCase() !== 'select') return;
-
-      const container = target.closest<HTMLElement>('[data-cy], [id]');
-      if (!container) return;
-
-      const selector = this.getReliableSelector(container);
-      const selectedValue = target.value.replace(/'/g, "\\'");
-      let cyCommand = '';
-
-      // Evita grabar comandos sobre la propia librería
-      if (selector === '[data-cy="lib-e2e-cypress-for-dummys"]') return;
-
-      if (selector) {
-        cyCommand = `cy.get('${selector}').select('${selectedValue}')`;
-      } else {
-        cyCommand = '// No se pudo generar un selector confiable para select';
-      }
-      this.addCommand(cyCommand);
+      this.handleSelectEvent(target);
     });
+  }
+
+  // --- Helpers para modularizar la lógica de selects ---
+  private handleSelectEvent(target: HTMLSelectElement): void {
+    const container = target.closest<HTMLElement>('[data-cy], [id]');
+    if (!container) return;
+    this.addSelectCommand(container, target);
+  }
+
+  private addSelectCommand(
+    container: HTMLElement,
+    target: HTMLSelectElement
+  ): void {
+    const selector = this.getReliableSelector(container);
+    const selectedValue = target.value.replace(/'/g, "\\'");
+    this.addGenericCommand({
+      selector,
+      action: (sel) => `cy.get('${sel}').select('${selectedValue}')`,
+      errorMsg: '// No se pudo generar un selector confiable para select',
+    });
+  }
+
+  /**
+   * Helper genérico para añadir comandos Cypress, evitando duplicidad y centralizando la comprobación de selector propio.
+   */
+  private addGenericCommand({
+    selector,
+    action,
+    errorMsg,
+  }: {
+    selector: string | null;
+    action: (selector: string) => string;
+    errorMsg: string;
+  }): void {
+    if (this.isOwnSelector(selector)) return;
+    const cyCommand = selector ? action(selector) : errorMsg;
+    this.addCommand(cyCommand);
+  }
+
+  /**
+   * Devuelve true si el selector es el de la propia librería (para evitar grabar comandos sobre sí misma)
+   */
+  private isOwnSelector(selector: string | null): boolean {
+    return selector === '[data-cy="lib-e2e-cypress-for-dummys"]';
   }
 
   /**
@@ -415,7 +460,6 @@ export class LibE2eCypressForDummysService {
    */
   public stopRecording(): void {
     this.isRecording$.next(false);
-    const interceptors = this.interceptors$.getValue();
   }
 
   /**
