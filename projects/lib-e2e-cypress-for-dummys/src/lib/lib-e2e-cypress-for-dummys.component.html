@@ -1,8 +1,10 @@
 <div data-cy="lib-e2e-cypress-for-dummys">
 
-  <button class="advanced-editor-icon-button tooltip" (click)="showAdvancedEditorDialog()">
+  <button class="advanced-editor-icon-button tooltip"
+    (click)="showAdvancedEditorDialog()">
     🛠️
-    <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR') }}</span>
+    <span class="tooltip-text">{{
+      translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR') }}</span>
   </button>
 
   <button class="e2e-recorder-button tooltip" (click)="toggle()" accesskey="r">
@@ -11,19 +13,25 @@
     }}
   </button>
 
-  <button #testBtnVC class="saved-test-icon-button tooltip" (click)="showSavedTestsDialog()">
+  <button #testBtnVC class="saved-test-icon-button tooltip"
+    (click)="showSavedTestsDialog()">
     📋
-    <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_SAVED_TESTS') }}</span>
+    <span class="tooltip-text">{{
+      translation.translate('MAIN_FRAME.SHOW_SAVED_TESTS') }}</span>
   </button>
 
-  <button #testBtnVC class="test-icon-button tooltip right-edge" (click)="showCommandsDialog()">
+  <button #testBtnVC class="test-icon-button tooltip right-edge"
+    (click)="showCommandsDialog()">
     📝
-    <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SHOW_COMMANDS') }}</span>
+    <span class="tooltip-text">{{
+      translation.translate('MAIN_FRAME.SHOW_COMMANDS') }}</span>
   </button>
 
-  <button class="gear-icon-button tooltip right-edge" (click)="showSettingsDialog()">
+  <button class="gear-icon-button tooltip right-edge"
+    (click)="showSettingsDialog()">
     ⚙️
-    <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS') }}</span>
+    <span class="tooltip-text">{{ translation.translate('MAIN_FRAME.SETTINGS')
+      }}</span>
   </button>
 
   <div id="commands-modal-container"></div>

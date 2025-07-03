@@ -80,6 +80,7 @@ export class LibE2eRecorderComponent {
     this.initSubscriptions();
     this.getHttpConfigurations();
     this.initializeLanguage();
+    this.checkAndRequestFilePermission();
   }
   /**
    * Inicializa todas las suscripciones a observables del servicio E2E.
@@ -319,4 +320,82 @@ export class LibE2eRecorderComponent {
     }
   }
   //#endregion Paneles de la aplicación
+
+  /**
+   * Solicita al usuario acceso a un archivo local para leerlo y editarlo.
+   * Devuelve el contenido y el handle para futuras escrituras.
+   * Solo funciona en navegadores compatibles (Chrome, Edge, etc).
+   */
+  public async requestFileAccess(): Promise<{ content: string; fileHandle: FileSystemFileHandle } | null> {
+    if (!('showOpenFilePicker' in window)) {
+      alert('Tu navegador no soporta el acceso directo a archivos locales. Prueba con Chrome o Edge.');
+      return null;
+    }
+    try {
+      // Puedes filtrar por extensión si lo deseas
+      const [fileHandle] = await (window as any).showOpenFilePicker({
+        /*types: [
+          {
+            description: 'Archivos de texto',
+            accept: { 'text/plain': ['.txt', '.js', '.ts', '.json'] },
+          },
+        ],*/
+        multiple: false,
+      });
+      const file = await fileHandle.getFile();
+      const content = await file.text();
+      // Puedes guardar el handle en IndexedDB para futuros accesos
+      return { content, fileHandle };
+    } catch (err) {
+      // El usuario puede cancelar el diálogo
+      return null;
+    }
+  }
+
+  /**
+   * Solicita al usuario acceso a una carpeta local (por ejemplo, la carpeta cypress) para leer y escribir archivos.
+   * Guarda el handle serializado en la BBDD para futuras operaciones.
+   * Solo funciona en navegadores compatibles (Chrome, Edge, etc).
+   */
+  public async requestDirectoryAccess(): Promise<FileSystemDirectoryHandle | null> {
+    if (!('showDirectoryPicker' in window)) {
+      alert('Tu navegador no soporta el acceso directo a carpetas locales. Prueba con Chrome o Edge.');
+      return null;
+    }
+    try {
+      const dirHandle = await (window as any).showDirectoryPicker();
+      // Serializa el handle usando structuredClone y lo guarda en IndexedDB/configuración
+      if ('showDirectoryPicker' in window && window.indexedDB) {
+        // El handle es serializable con structuredClone y puede guardarse en IndexedDB
+        await this.persistService.setConfigKey('cypressDirectoryHandle', dirHandle).toPromise();
+      }
+      return dirHandle;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  private async checkAndRequestFilePermission(): Promise<void> {
+    // Consulta la configuración
+    const config = await this.persistService.getConfig('allowReadWriteFiles').toPromise();
+    if (config === null || config === undefined) {
+      const result = await Swal.fire({
+        title: '¿Permitir acceso de lectura/escritura a archivos locales?',
+        text: 'La librería puede leer y editar archivos de tu proyecto local solo si das permiso. Se solicitará acceso a la carpeta donde se guardarán los tests automáticamente.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, permitir',
+        cancelButtonText: 'No, nunca',
+      });
+      if (result.isConfirmed) {
+        await this.persistService.setConfigKey('allowReadWriteFiles', 'true').toPromise();
+        await this.requestDirectoryAccess();
+      } else {
+        await this.persistService.setConfigKey('allowReadWriteFiles', 'false').toPromise();
+      }
+    } else if (config.allowReadWriteFiles === 'true') {
+      // Si ya está permitido, puedes pedir acceso aquí si lo deseas
+      // await this.requestDirectoryAccess();
+    }
+  }
 }

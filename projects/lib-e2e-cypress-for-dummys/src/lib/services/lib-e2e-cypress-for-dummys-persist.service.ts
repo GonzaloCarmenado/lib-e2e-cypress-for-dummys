@@ -251,6 +251,39 @@ export class LibE2eCypressForDummysPersistentService {
       })
     );
   }
+
+  /**
+   * Obtiene el valor de una clave de configuración general
+   */
+  public getConfig(key: string): Observable<any> {
+    return this.dbService.getAll('configuration').pipe(
+      map((records: any[]) => {
+        if (!records.length) return null;
+        const config = records[0];
+        return config.hasOwnProperty(key) ? { [key]: config[key] } : null;
+      })
+    );
+  }
+
+  /**
+   * Guarda una clave concreta en la configuración general
+   */
+  public setConfigKey(key: string, value: any): Observable<any> {
+    return this.dbService.getAll('configuration').pipe(
+      switchMap((records: any[]) => {
+        const current = records.length > 0 ? records[0] : {};
+        const merged = { ...current, [key]: value };
+        if (current.id) {
+          return this.dbService.update('configuration', {
+            ...merged,
+            id: current.id,
+          });
+        } else {
+          return this.dbService.add('configuration', merged);
+        }
+      })
+    );
+  }
   //#endregion
 
   public clearAllData(): Observable<void> {

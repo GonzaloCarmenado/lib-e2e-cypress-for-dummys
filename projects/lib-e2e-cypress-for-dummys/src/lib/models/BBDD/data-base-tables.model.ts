@@ -51,6 +51,11 @@ export const bbddDataModel = [
         keypath: 'extendedHttpCommands',
         options: { unique: false },
       },
+      {
+        name: 'allowReadWriteFiles',
+        keypath: 'extendedHttpCommands',
+        options: { unique: false },
+      },
     ],
   },
 ];

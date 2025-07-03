@@ -1,0 +1,30 @@
+<div class="e2e-tree-container">
+  <ng-container *ngIf="e2eTree.length; else noContent">
+    <ul class="e2e-tree">
+      <ng-container *ngFor="let node of e2eTree">
+        <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ node: node }"></ng-template>
+      </ng-container>
+    </ul>
+  </ng-container>
+  <ng-template #noContent>
+    <div class="empty-tree">No se ha encontrado contenido en la carpeta e2e.</div>
+  </ng-template>
+
+  <ng-template #renderNode let-node>
+    <ng-container *ngIf="node">
+      <li *ngIf="node.kind === 'directory'" class="folder-node">
+        <details open>
+          <summary>📁 {{ node.name }}</summary>
+          <ul>
+            <ng-container *ngFor="let child of node.children">
+              <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ node: child }"></ng-template>
+            </ng-container>
+          </ul>
+        </details>
+      </li>
+      <li *ngIf="node.kind === 'file'" class="file-node" (click)="onFileClick(node)">
+        <span>📄 {{ node.name }}</span>
+      </li>
+    </ng-container>
+  </ng-template>
+</div>

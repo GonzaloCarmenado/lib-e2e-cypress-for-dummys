@@ -1,0 +1,29 @@
+.e2e-tree-container {
+  padding: 1rem;
+}
+.e2e-tree {
+  list-style: none;
+  padding-left: 1.2em;
+}
+.folder-node > details > summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+.file-node {
+  cursor: pointer;
+  color: #1976d2;
+  margin-left: 1.2em;
+  padding: 2px 0;
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+.file-node:hover {
+  background: #e3f2fd;
+  text-decoration: underline;
+}
+.empty-tree {
+  color: #888;
+  font-style: italic;
+  margin: 1em 0;
+}
