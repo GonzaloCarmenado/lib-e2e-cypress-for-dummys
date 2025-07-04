@@ -46,4 +46,18 @@ export const I18N_DE = {
     IMPORT_DATA: 'Daten importieren',
     ADVANCED_HTTP_CONFIG: 'Erweiterte Http-Konfiguration',
   },
+  ADVANCED_EDITOR: {
+    EMPTY_TREE: 'Kein Inhalt im e2e-Ordner gefunden.',
+    SELECT_FILE_TOOLTIP:
+      'Wählen Sie eine Datei aus, um das Speichern zu aktivieren.',
+    SAVE_COMMANDS: 'Befehle speichern.',
+    NO_DESCRIBE: 'Kein Describe-Block in der Datei gefunden.',
+    NO_END: 'Funktionsende in der Datei nicht gefunden.',
+    SUCCESS: 'Cypress-Test und Interceptors erfolgreich eingefügt.',
+    NO_DIR_HANDLE: 'Kein Verzeichnis-Handle gespeichert.',
+    NO_PERMISSION: 'Keine Berechtigung für den Zugriff auf Dateien/Ordner.',
+    NOT_A_FILE: 'Keine Datei.',
+    FILE_HANDLE_NOT_FOUND: 'Datei-Handle nicht gefunden',
+    FILE_CONTENT: 'Dateiinhalt',
+  },
 };

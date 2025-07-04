@@ -18,6 +18,7 @@ export const I18N_IT = {
     DESC_HINT: '(testo per it() di Cypress)',
     SAVE: 'Salva',
     CANCEL: 'Annulla',
+    SAVEANDEXPORT: 'Salva e esporta',
   },
   TEST_EDITOR: {
     EMPTY: 'Nessun test salvato.',
@@ -61,5 +62,18 @@ export const I18N_IT = {
     CYPRESS_COMMANDS_LABEL: 'Comandi Cypress',
     COPY_COMMANDS_LABEL: 'Copia comandi',
     NO_COMMANDS_LABEL: 'Nessun comando per questo test.',
+  },
+  ADVANCED_EDITOR: {
+    EMPTY_TREE: 'Nessun contenuto trovato nella cartella e2e.',
+    SELECT_FILE_TOOLTIP: 'Seleziona un file per abilitare il salvataggio.',
+    SAVE_COMMANDS: 'Salva comandi.',
+    NO_DESCRIBE: 'Nessun blocco describe trovato nel file.',
+    NO_END: 'Fine funzione non trovata nel file.',
+    SUCCESS: 'Test Cypress e interceptor inseriti con successo.',
+    NO_DIR_HANDLE: 'Nessun handle di cartella salvato.',
+    NO_PERMISSION: 'Nessun permesso per accedere a file/cartelle.',
+    NOT_A_FILE: 'Non è un file.',
+    FILE_HANDLE_NOT_FOUND: 'Handle del file non trovato',
+    FILE_CONTENT: 'Contenuto del file',
   },
 };

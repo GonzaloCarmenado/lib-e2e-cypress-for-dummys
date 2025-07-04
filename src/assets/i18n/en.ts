@@ -46,4 +46,17 @@ export const I18N_EN = {
     IMPORT_DATA: 'Import data',
     ADVANCED_HTTP_CONFIG: 'Advanced Http configuration',
   },
+  ADVANCED_EDITOR: {
+    EMPTY_TREE: 'No e2e folder content found.',
+    SELECT_FILE_TOOLTIP: 'Select a file to enable saving.',
+    SAVE_COMMANDS: 'Save commands.',
+    NO_DESCRIBE: 'No describe block found in the file.',
+    NO_END: 'No function end found in the file.',
+    SUCCESS: 'Cypress test and interceptors inserted successfully.',
+    NO_DIR_HANDLE: 'No directory handle saved.',
+    NO_PERMISSION: 'No permission to access files/folders.',
+    NOT_A_FILE: 'Not a file.',
+    FILE_HANDLE_NOT_FOUND: 'File handle not found',
+    FILE_CONTENT: 'File content',
+  },
 };

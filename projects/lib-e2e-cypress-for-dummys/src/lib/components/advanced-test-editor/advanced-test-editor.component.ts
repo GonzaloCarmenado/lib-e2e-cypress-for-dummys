@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
+import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
 
 @Component({
   selector: 'app-advanced-test-editor',
@@ -21,7 +22,8 @@ export class AdvancedTestEditorComponent implements OnInit {
   public interceptorsBlock: string = '';
 
   constructor(
-    private readonly persistService: LibE2eCypressForDummysPersistentService
+    private readonly persistService: LibE2eCypressForDummysPersistentService,
+    public translationService: TranslationService
   ) {}
 
   public ngOnInit() {
@@ -74,10 +76,14 @@ export class AdvancedTestEditorComponent implements OnInit {
           }
         }
       } else {
-        console.warn('No hay handle de carpeta guardado.');
+        console.warn(
+          this.translationService.translate('ADVANCED_EDITOR.NO_DIR_HANDLE')
+        );
       }
     } else {
-      console.warn('No hay permiso para acceder a archivos/carpetas.');
+      console.warn(
+        this.translationService.translate('ADVANCED_EDITOR.NO_PERMISSION')
+      );
     }
   }
 
@@ -111,7 +117,9 @@ export class AdvancedTestEditorComponent implements OnInit {
   // Obtiene el contenido de un fichero y lo muestra por consola
   public async onFileClick(file: any) {
     if (file.kind !== 'file') {
-      console.warn('No es un fichero.');
+      console.warn(
+        this.translationService.translate('ADVANCED_EDITOR.NOT_A_FILE')
+      );
       return;
     }
     this.selectedFile = file;
@@ -122,18 +130,32 @@ export class AdvancedTestEditorComponent implements OnInit {
       .toPromise();
     const dirHandle = dirConfig?.cypressDirectoryHandle;
     if (!dirHandle) {
-      console.warn('No hay handle de carpeta guardado.');
+      console.warn(
+        this.translationService.translate('ADVANCED_EDITOR.NO_DIR_HANDLE')
+      );
       return;
     }
     // Busca recursivamente el handle del fichero a partir del root
     const fileHandle = await this.findFileHandleRecursive(dirHandle, file.name);
     if (!fileHandle) {
-      console.warn('No se encontró el handle del fichero:', file.name);
+      console.warn(
+        this.translationService.translate(
+          'ADVANCED_EDITOR.FILE_HANDLE_NOT_FOUND'
+        ) +
+          ': ' +
+          file.name
+      );
       return;
     }
     const fileObj = await fileHandle.getFile();
     const content = await fileObj.text();
-    console.log('Contenido del fichero', file.name, ':', content);
+    console.log(
+      this.translationService.translate('ADVANCED_EDITOR.FILE_CONTENT') +
+        ' ' +
+        file.name +
+        ':',
+      content
+    );
     // Guarda el handle y contenido para el guardado posterior
     this.selectedFileHandle = fileHandle;
     this.selectedFileContent = content;
@@ -146,7 +168,6 @@ export class AdvancedTestEditorComponent implements OnInit {
     let newContent = this.selectedFileContent;
     // --- Insertar bloque beforeEach tras el primer describe ---
     if (this.interceptorsBlock) {
-      // Buscar el primer describe( y su apertura de llave
       const describeRegex = /(describe\s*\(.*?{)/s;
       const match = newContent.match(describeRegex);
       if (match) {
@@ -157,14 +178,14 @@ export class AdvancedTestEditorComponent implements OnInit {
           beforeEachBlock +
           newContent.slice(insertPos);
       } else {
-        alert('No se encontró un bloque describe en el fichero.');
+        alert(this.translationService.translate('ADVANCED_EDITOR.NO_DESCRIBE'));
         return;
       }
     }
     // --- Insertar bloque it() antes del último '});' ---
     const idx = newContent.lastIndexOf('});');
     if (idx === -1) {
-      alert('No se encontró el final de la función en el fichero.');
+      alert(this.translationService.translate('ADVANCED_EDITOR.NO_END'));
       return;
     }
     newContent =
@@ -177,7 +198,10 @@ export class AdvancedTestEditorComponent implements OnInit {
     const writable = await this.selectedFileHandle.createWritable();
     await writable.write(newContent);
     await writable.close();
-    alert('Prueba Cypress e interceptores insertados correctamente.');
+    alert(this.translationService.translate('ADVANCED_EDITOR.SUCCESS'));
+    try {
+      (window as any).Swal?.close();
+    } catch {}
   }
 
   // Busca recursivamente un fileHandle por nombre a partir de un directorio

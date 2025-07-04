@@ -17,7 +17,7 @@
       {{ translation.translate('SAVE_TEST.SAVE') }}
     </button>
     <button class="btn btn-warning" (click)="confirmSaveAndExport()" [disabled]="!description.trim()">
-      Guardar y exportar
+      {{ translation.translate('SAVE_TEST.SAVEANDEXPORT') }}
     </button>
     <button class="btn btn-secondary" (click)="cancel()">{{ translation.translate('SAVE_TEST.CANCEL') }}</button>
   </div>

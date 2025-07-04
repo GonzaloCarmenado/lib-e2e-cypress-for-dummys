@@ -46,4 +46,17 @@ export const I18N_IT = {
     IMPORT_DATA: 'Importa dati',
     ADVANCED_HTTP_CONFIG: 'Configurazione Http avanzata',
   },
+  ADVANCED_EDITOR: {
+    EMPTY_TREE: 'Nessun contenuto trovato nella cartella e2e.',
+    SELECT_FILE_TOOLTIP: 'Seleziona un file per abilitare il salvataggio.',
+    SAVE_COMMANDS: 'Salva comandi.',
+    NO_DESCRIBE: 'Nessun blocco describe trovato nel file.',
+    NO_END: 'Fine funzione non trovata nel file.',
+    SUCCESS: 'Test Cypress e interceptor inseriti con successo.',
+    NO_DIR_HANDLE: 'Nessun handle di cartella salvato.',
+    NO_PERMISSION: 'Nessun permesso per accedere a file/cartelle.',
+    NOT_A_FILE: 'Non è un file.',
+    FILE_HANDLE_NOT_FOUND: 'Handle del file non trovato',
+    FILE_CONTENT: 'Contenuto del file',
+  },
 };

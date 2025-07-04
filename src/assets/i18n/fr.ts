@@ -46,4 +46,17 @@ export const I18N_FR = {
     IMPORT_DATA: 'Importer des données',
     ADVANCED_HTTP_CONFIG: 'Configuration Http avancée',
   },
+  ADVANCED_EDITOR: {
+    EMPTY_TREE: 'Aucun contenu trouvé dans le dossier e2e.',
+    SELECT_FILE_TOOLTIP: 'Sélectionnez un fichier pour activer la sauvegarde.',
+    SAVE_COMMANDS: 'Enregistrer les commandes.',
+    NO_DESCRIBE: 'Aucun bloc describe trouvé dans le fichier.',
+    NO_END: 'Fin de fonction non trouvée dans le fichier.',
+    SUCCESS: 'Test Cypress et intercepteurs insérés avec succès.',
+    NO_DIR_HANDLE: 'Aucun handle de dossier enregistré.',
+    NO_PERMISSION: 'Pas d’autorisation pour accéder aux fichiers/dossiers.',
+    NOT_A_FILE: 'Ce n’est pas un fichier.',
+    FILE_HANDLE_NOT_FOUND: 'Handle de fichier introuvable',
+    FILE_CONTENT: 'Contenu du fichier',
+  },
 };

@@ -46,4 +46,17 @@ export const I18N_ES = {
     IMPORT_DATA: 'Importar datos',
     ADVANCED_HTTP_CONFIG: 'Configuración Http avanzado',
   },
+  ADVANCED_EDITOR: {
+    EMPTY_TREE: 'No se ha encontrado contenido en la carpeta e2e.',
+    SELECT_FILE_TOOLTIP: 'Selecciona un fichero para habilitar el guardado.',
+    SAVE_COMMANDS: 'Guardar comandos.',
+    NO_DESCRIBE: 'No se encontró un bloque describe en el fichero.',
+    NO_END: 'No se encontró el final de la función en el fichero.',
+    SUCCESS: 'Prueba Cypress e interceptores insertados correctamente.',
+    NO_DIR_HANDLE: 'No hay handle de carpeta guardado.',
+    NO_PERMISSION: 'No hay permiso para acceder a archivos/carpetas.',
+    NOT_A_FILE: 'No es un fichero.',
+    FILE_HANDLE_NOT_FOUND: 'No se encontró el handle del fichero',
+    FILE_CONTENT: 'Contenido del fichero',
+  },
 };

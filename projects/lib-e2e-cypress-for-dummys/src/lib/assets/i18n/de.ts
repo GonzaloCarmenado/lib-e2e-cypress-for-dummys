@@ -18,6 +18,7 @@ export const I18N_DE = {
     DESC_HINT: '(Text für Cypress it())',
     SAVE: 'Speichern',
     CANCEL: 'Abbrechen',
+    SAVEANDEXPORT: 'Speichern und exportieren',
   },
   TEST_EDITOR: {
     EMPTY: 'Noch keine Tests gespeichert.',
@@ -61,5 +62,19 @@ export const I18N_DE = {
     CYPRESS_COMMANDS_LABEL: 'Cypress-Befehle',
     COPY_COMMANDS_LABEL: 'Befehle kopieren',
     NO_COMMANDS_LABEL: 'Keine Befehle für diesen Test.',
+  },
+  ADVANCED_EDITOR: {
+    EMPTY_TREE: 'Kein Inhalt im e2e-Ordner gefunden.',
+    SELECT_FILE_TOOLTIP:
+      'Wählen Sie eine Datei aus, um das Speichern zu aktivieren.',
+    SAVE_COMMANDS: 'Befehle speichern.',
+    NO_DESCRIBE: 'Kein Describe-Block in der Datei gefunden.',
+    NO_END: 'Funktionsende in der Datei nicht gefunden.',
+    SUCCESS: 'Cypress-Test und Interceptors erfolgreich eingefügt.',
+    NO_DIR_HANDLE: 'Kein Verzeichnis-Handle gespeichert.',
+    NO_PERMISSION: 'Keine Berechtigung für den Zugriff auf Dateien/Ordner.',
+    NOT_A_FILE: 'Keine Datei.',
+    FILE_HANDLE_NOT_FOUND: 'Datei-Handle nicht gefunden',
+    FILE_CONTENT: 'Dateiinhalt',
   },
 };
