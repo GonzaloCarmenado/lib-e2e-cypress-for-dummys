@@ -42,7 +42,7 @@ import { LibE2eCypressForDummysConstructorService } from './lib-e2e-cypress-for-
     LibE2eRecorderComponent,
     SaveTestComponent,
     TestEditorComponent,
-    AdvancedTestEditorComponent
+    AdvancedTestEditorComponent,
   ],
 })
 export class LibE2eRecorderComponent {
@@ -328,9 +328,14 @@ export class LibE2eRecorderComponent {
    * Devuelve el contenido y el handle para futuras escrituras.
    * Solo funciona en navegadores compatibles (Chrome, Edge, etc).
    */
-  public async requestFileAccess(): Promise<{ content: string; fileHandle: FileSystemFileHandle } | null> {
+  public async requestFileAccess(): Promise<{
+    content: string;
+    fileHandle: FileSystemFileHandle;
+  } | null> {
     if (!('showOpenFilePicker' in window)) {
-      alert('Tu navegador no soporta el acceso directo a archivos locales. Prueba con Chrome o Edge.');
+      alert(
+        'Tu navegador no soporta el acceso directo a archivos locales. Prueba con Chrome o Edge.'
+      );
       return null;
     }
     try {
@@ -361,7 +366,9 @@ export class LibE2eRecorderComponent {
    */
   public async requestDirectoryAccess(): Promise<FileSystemDirectoryHandle | null> {
     if (!('showDirectoryPicker' in window)) {
-      alert('Tu navegador no soporta el acceso directo a carpetas locales. Prueba con Chrome o Edge.');
+      alert(
+        'Tu navegador no soporta el acceso directo a carpetas locales. Prueba con Chrome o Edge.'
+      );
       return null;
     }
     try {
@@ -369,7 +376,9 @@ export class LibE2eRecorderComponent {
       // Serializa el handle usando structuredClone y lo guarda en IndexedDB/configuración
       if ('showDirectoryPicker' in window && window.indexedDB) {
         // El handle es serializable con structuredClone y puede guardarse en IndexedDB
-        await this.persistService.setConfigKey('cypressDirectoryHandle', dirHandle).toPromise();
+        await this.persistService
+          .setConfigKey('cypressDirectoryHandle', dirHandle)
+          .toPromise();
       }
       return dirHandle;
     } catch (err) {
@@ -378,9 +387,22 @@ export class LibE2eRecorderComponent {
   }
 
   private async checkAndRequestFilePermission(): Promise<void> {
+    // Lee el nombre del proyecto desde la variable global JS
+    const currentProjectName = (window as any).PROJECT_NAME || '';
     // Consulta la configuración
-    const config = await this.persistService.getConfig('allowReadWriteFiles').toPromise();
-    if (config === null || config === undefined) {
+    const config = await this.persistService
+      .getConfig('allowReadWriteFiles')
+      .toPromise();
+    const savedProjectName = await this.persistService
+      .getConfig('projectName')
+      .toPromise();
+
+    // Si no hay config previa o el nombre de proyecto ha cambiado, solicita acceso
+    if (
+      config === null ||
+      config === undefined ||
+      savedProjectName !== currentProjectName
+    ) {
       const result = await Swal.fire({
         title: '¿Permitir acceso de lectura/escritura a archivos locales?',
         text: 'La librería puede leer y editar archivos de tu proyecto local solo si das permiso. Se solicitará acceso a la carpeta donde se guardarán los tests automáticamente.',
@@ -390,15 +412,20 @@ export class LibE2eRecorderComponent {
         cancelButtonText: 'No, nunca',
       });
       if (result.isConfirmed) {
-        await this.persistService.setConfigKey('allowReadWriteFiles', 'true').toPromise();
+        await this.persistService
+          .setConfigKey('allowReadWriteFiles', 'true')
+          .toPromise();
+        await this.persistService
+          .setConfigKey('projectName', currentProjectName)
+          .toPromise();
         await this.requestDirectoryAccess();
       } else {
-        await this.persistService.setConfigKey('allowReadWriteFiles', 'false').toPromise();
+        await this.persistService
+          .setConfigKey('allowReadWriteFiles', 'false')
+          .toPromise();
       }
-    } else if (config.allowReadWriteFiles === 'true') {
-      // Si ya está permitido, puedes pedir acceso aquí si lo deseas
-      // await this.requestDirectoryAccess();
     }
+    // Si ya está permitido y el nombre coincide, no hace nada
   }
   //#endregion Acceso a archivos locales
 }
