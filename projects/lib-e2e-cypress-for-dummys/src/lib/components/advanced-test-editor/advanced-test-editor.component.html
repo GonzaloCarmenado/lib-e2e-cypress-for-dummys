@@ -1,44 +1,42 @@
-<div class="e2e-tree-container">
-  @if(e2eTree && e2eTree.length > 0){
-  <ul class="e2e-tree">
-    <ng-container *ngFor="let node of e2eTree">
-      <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: node }"></ng-template>
-    </ng-container>
-  </ul>
-  }
-  @else {
-  <div class="empty-tree">{{ translationService.translate('ADVANCED_EDITOR.EMPTY_TREE') }}</div>
-  }
-
-  <ng-template #renderNode let-node>
-    <ng-container *ngIf="node">
-      @if(node.kind === 'directory'){
-      <li class="folder-node folder-padding">
-        <details open>
-          <summary class="folder-summary">📁 {{ node.name }}</summary>
-          <ul>
-            <ng-container *ngFor="let child of node.children">
-              <ng-template [ngTemplateOutlet]="renderNode"
-                [ngTemplateOutletContext]="{ $implicit: child }"></ng-template>
-            </ng-container>
-          </ul>
-        </details>
-      </li>
-      }
-      @if(node.kind === 'file'){
-      <li class="file-node " (click)="onFileClick(node)"
-        [ngClass]="{'selected-file': selectedFile && selectedFile.name === node.name}">
-        <span>📄 {{ node.name }}</span>
-      </li>
-      }
-    </ng-container>
-  </ng-template>
-</div>
-@if(testId){
-<div class="save-btn-container">
-  <button class="btn btn-success" [disabled]="!saveButtonEnabled" (click)="saveCommandsToFile()"
-    [attr.title]="!saveButtonEnabled ? translationService.translate('ADVANCED_EDITOR.SELECT_FILE_TOOLTIP') : null">
-    {{ translationService.translate('ADVANCED_EDITOR.SAVE_COMMANDS') }}
-  </button>
-</div>
-}
+<file-preview-component
+  *ngIf="isPreviewMode; else normalView"
+  [fileName]="previewFileName"
+  [fileContent]="previewFileContent"
+  (close)="closePreview()"
+></file-preview-component>
+<ng-template #normalView>
+  <div class="e2e-tree-container">
+    <ul class="e2e-tree" *ngIf="e2eTree && e2eTree.length > 0; else emptyTree">
+      <ng-container *ngFor="let node of e2eTree">
+        <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: node }"></ng-template>
+      </ng-container>
+    </ul>
+    <ng-template #emptyTree>
+      <div class="empty-tree">{{ translationService.translate('ADVANCED_EDITOR.EMPTY_TREE') }}</div>
+    </ng-template>
+    <ng-template #renderNode let-node>
+      <ng-container *ngIf="node">
+        <li *ngIf="node.kind === 'directory'" class="folder-node folder-padding">
+          <details open>
+            <summary class="folder-summary">📁 {{ node.name }}</summary>
+            <ul>
+              <ng-container *ngFor="let child of node.children">
+                <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: child }"></ng-template>
+              </ng-container>
+            </ul>
+          </details>
+        </li>
+        <li *ngIf="node.kind === 'file'" class="file-node" [ngClass]="{'selected-file': selectedFile && selectedFile.name === node.name}">
+          <span>📄 {{ node.name }}</span>
+          <span class="open-file-icon" (click)="openFilePreview(node); $event.stopPropagation();" title="{{ translationService.translate('ADVANCED_EDITOR.PREVIEW_FILE') }}" style="cursor:pointer; margin-left:8px;">👁️</span>
+        </li>
+      </ng-container>
+    </ng-template>
+  </div>
+  <div class="save-btn-container" *ngIf="testId">
+    <button class="btn btn-success" [disabled]="!saveButtonEnabled" (click)="saveCommandsToFile()"
+      [attr.title]="!saveButtonEnabled ? translationService.translate('ADVANCED_EDITOR.SELECT_FILE_TOOLTIP') : null">
+      {{ translationService.translate('ADVANCED_EDITOR.SAVE_COMMANDS') }}
+    </button>
+  </div>
+</ng-template>

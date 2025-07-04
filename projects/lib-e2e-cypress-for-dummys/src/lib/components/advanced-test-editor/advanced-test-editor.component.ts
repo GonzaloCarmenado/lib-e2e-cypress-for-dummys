@@ -2,11 +2,12 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
+import { FilePreviewComponent } from './file-preview/file-preview.component';
 
 @Component({
   selector: 'app-advanced-test-editor',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FilePreviewComponent],
   templateUrl: './advanced-test-editor.component.html',
   styleUrl: './advanced-test-editor.component.scss',
 })
@@ -20,6 +21,9 @@ export class AdvancedTestEditorComponent implements OnInit {
   public selectedFileContent: string | null = null;
   public testItBlock: string = '';
   public interceptorsBlock: string = '';
+  public isPreviewMode = false; // Controla si estamos en modo previsualización
+  public previewFileName: string | null = null;
+  public previewFileContent: string | null = null;
 
   constructor(
     private readonly persistService: LibE2eCypressForDummysPersistentService,
@@ -159,6 +163,25 @@ export class AdvancedTestEditorComponent implements OnInit {
     // Guarda el handle y contenido para el guardado posterior
     this.selectedFileHandle = fileHandle;
     this.selectedFileContent = content;
+  }
+
+  /**
+   * Abre la previsualización del fichero seleccionado
+   */
+  public async openFilePreview(file: any) {
+    await this.onFileClick(file);
+    this.previewFileName = file.name;
+    this.previewFileContent = this.selectedFileContent;
+    this.isPreviewMode = true;
+  }
+
+  /**
+   * Cierra la previsualización y vuelve al modo normal
+   */
+  public closePreview() {
+    this.isPreviewMode = false;
+    this.previewFileName = null;
+    this.previewFileContent = null;
   }
 
   // Botón guardar: inserta el bloque it() y los interceptores en el fichero

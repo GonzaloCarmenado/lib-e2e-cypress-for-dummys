@@ -32,6 +32,7 @@ export const LIB_E2E_CYPRESS_FOR_DUMMYS_SWAL2_STYLES = `
   font-size: 1.5rem !important;
   top: 12px !important;
   right: 16px !important;
+  z-index: 1!important;
 }
 .swal2-html-container {
   background: #181c24;

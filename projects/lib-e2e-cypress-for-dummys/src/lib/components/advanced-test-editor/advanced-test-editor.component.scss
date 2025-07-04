@@ -87,3 +87,74 @@
 .file-padding {
   padding-left: 2em !important;
 }
+.preview-modal {
+  position: fixed;
+  top: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;
+  max-width: 1200px;
+  min-width: 600px;
+  height: 85vh;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  z-index: 2000; // Aumenta el z-index para estar por encima de otros elementos
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  overflow: hidden;
+}
+
+.close-preview-btn {
+  align-self: flex-end;
+  background: transparent;
+  color: #d4d4d4;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: color 0.2s;
+  z-index: 2100;
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+}
+.close-preview-btn:hover {
+  color: #ff5252;
+}
+
+.file-content-preview {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'monospace';
+  font-size: 1.05rem;
+  border-radius: 6px;
+  border: 1px solid #333;
+  padding: 1.5rem;
+  overflow: auto;
+  flex: 1 1 auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  margin-top: 0.5rem;
+  white-space: pre;
+}
+
+.open-file-icon {
+  font-size: 1.2em;
+  vertical-align: middle;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.open-file-icon:hover {
+  color: #43a047;
+}
+
+.preview-modal h3 {
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}

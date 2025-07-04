@@ -1,0 +1,244 @@
+.config-export-section {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+.btn-primary {
+  background: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px #0001;
+}
+.btn-primary:hover {
+  background: #1565c0;
+}
+.btn-success {
+  background: #232a3a;
+  color: #2196f3;
+  border: 1px solid #2196f3;
+  border-radius: 6px;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px #0001;
+}
+.btn-success:hover {
+  background: #2196f3;
+  color: #fff;
+}
+.config-collapsible-section {
+  width: 555px;
+  margin: 2rem auto;
+  border-radius: 10px;
+  background: #232a3a;
+  box-shadow: 0 2px 8px #0002;
+  overflow: hidden;
+  border: 1px solid #232a3a;
+  color: #fff;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 1.5rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  background: #181c24;
+  color: #2196f3;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+  border-bottom: 1px solid #232a3a;
+}
+
+.collapsible-header:hover {
+  background: #232a3a;
+}
+
+.collapsible-icon {
+  font-size: 1.2rem;
+  margin-left: 1rem;
+  color: #2196f3;
+}
+
+.collapsible-content {
+  padding: 1.5rem;
+  background: #23272e;
+  border-top: 1px solid #232a3a;
+  color: #fff;
+}
+
+.config-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.7rem;
+  color: #2196f3;
+  font-size: 1.05rem;
+}
+
+.styled-select {
+  width: 100%;
+  max-width: 260px;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid #232a3a;
+  background: #181c24;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 500;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 6px #0001;
+  outline: none;
+  margin-bottom: 1.2rem;
+
+  &:focus {
+    border-color: #2196f3;
+    box-shadow: 0 0 0 2px #2196f333;
+  }
+}
+
+.config-general-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.config-general-section .styled-select {
+  margin-bottom: 0.8rem;
+  min-width: 180px;
+  max-width: 220px;
+}
+
+.advanced-http-toggle-row {
+  margin-top: 0.8rem;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.advanced-http-toggle-checkbox {
+  margin-right: 0.3rem;
+  width: 18px;
+  height: 18px;
+  accent-color: #2196f3;
+}
+
+.advanced-http-toggle-label {
+  margin: 0;
+  font-weight: 400;
+  color: #fff;
+  display: inline-block;
+}
+
+// Scrollbar coherente
+.config-collapsible-section,
+.collapsible-content {
+  scrollbar-width: thin;
+  scrollbar-color: #2196f3 #23272e;
+}
+.config-collapsible-section::-webkit-scrollbar,
+.collapsible-content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: #23272e;
+  border-radius: 6px;
+}
+.config-collapsible-section::-webkit-scrollbar-thumb,
+.collapsible-content::-webkit-scrollbar-thumb {
+  background: #2196f3;
+  border-radius: 6px;
+  min-height: 24px;
+  min-width: 24px;
+}
+.config-collapsible-section::-webkit-scrollbar-thumb:hover,
+.collapsible-content::-webkit-scrollbar-thumb:hover {
+  background: #1565c0;
+}
+.preview-modal {
+  position: fixed;
+  top: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80vw;
+  max-width: 1200px;
+  min-width: 600px;
+  height: 85vh;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  overflow: hidden;
+}
+
+.close-preview-btn {
+  align-self: flex-end;
+  background: transparent;
+  color: #d4d4d4;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: color 0.2s;
+  z-index: 2100;
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+}
+
+.file-content-preview {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'monospace';
+  font-size: 1.05rem;
+  border-radius: 6px;
+  border: 1px solid #333;
+  padding: 1.5rem;
+  overflow: auto;
+  flex: 1 1 auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  margin-top: 0.5rem;
+  white-space: pre;
+  scrollbar-width: thin;
+  scrollbar-color: #2196f3 #23272e;
+}
+.file-content-preview::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: #23272e;
+  border-radius: 6px;
+}
+.file-content-preview::-webkit-scrollbar-thumb {
+  background: #2196f3;
+  border-radius: 6px;
+  min-height: 24px;
+  min-width: 24px;
+}
+.file-content-preview::-webkit-scrollbar-thumb:hover {
+  background: #1565c0;
+}
+
+.preview-modal h3 {
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
