@@ -270,3 +270,21 @@
   font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'monospace';
   font-size: 1.05rem;
 }
+
+.cm-cursor {
+  border-left: 2px solid #fff !important;
+  /* Opcional: para que el cursor sea más visible */
+}
+.cm-activeLineGutter, .cm-activeLine {
+  background: #333 !important;
+}
+.cm-selectionBackground {
+  background: #444 !important;
+}
+.cm-tooltip-autocomplete {
+  background: #222 !important;
+  color: #fff !important;
+}
+.cm-line {
+  caret-color: white !important;
+}

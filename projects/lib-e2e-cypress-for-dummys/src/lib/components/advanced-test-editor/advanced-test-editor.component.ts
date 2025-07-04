@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
 import { FilePreviewComponent } from './file-preview/file-preview.component';
+import { AdvancedtestTransformationService } from './advanced-test-editor.transformation.service';
 
 @Component({
   selector: 'app-advanced-test-editor',
@@ -27,8 +28,9 @@ export class AdvancedTestEditorComponent implements OnInit {
 
   constructor(
     private readonly persistService: LibE2eCypressForDummysPersistentService,
-    public translationService: TranslationService
-  ) {}
+    public translationService: TranslationService,
+    private readonly transformationService: AdvancedtestTransformationService
+  ) { }
 
   public ngOnInit() {
     this.getFoldersData();
@@ -37,7 +39,125 @@ export class AdvancedTestEditorComponent implements OnInit {
     }
   }
 
-  // Carga los comandos Cypress asociados al testId
+  // --- Helpers de validación y mensajes ---
+  private warn(msgKey: string, extra?: string) {
+    console.warn(
+      this.translationService.translate(msgKey) +
+      (extra ? ': ' + extra : '')
+    );
+  }
+  private alert(msgKey: string) {
+    alert(this.translationService.translate(msgKey));
+  }
+
+  // --- Métodos de obtención de handles ---
+  private async getConfigHandle(key: string) {
+    const config = await this.persistService.getConfig(key).toPromise();
+    return config ? config[key] : null;
+  }
+  private async getRootDirHandle() {
+    return this.getConfigHandle('cypressDirectoryHandle');
+  }
+
+  // --- Árbol de carpetas ---
+  public async getFoldersData(): Promise<void> {
+    if (!(await this.hasPermission())) return;
+    const dirHandle = await this.getRootDirHandle();
+    if (!dirHandle) return this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
+    for await (const entry of dirHandle.values()) {
+      if (entry.kind === 'directory' && entry.name === 'e2e') {
+        const tree = await this.transformationService.scanDirectory(entry as FileSystemDirectoryHandle);
+        this.e2eTree = tree.children;
+        return;
+      }
+    }
+    this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
+  }
+  private async hasPermission(): Promise<boolean> {
+    const config = await this.persistService
+      .getConfig('allowReadWriteFiles')
+      .toPromise();
+    if (config?.allowReadWriteFiles === 'true') return true;
+    this.warn('ADVANCED_EDITOR.NO_PERMISSION');
+    return false;
+  }
+
+  // --- Selección de archivo ---
+  public markFileAsSelected(file: any) {
+    this.selectedFile = file;
+    this.saveButtonEnabled = !this.saveButtonEnabled;
+  }
+
+  // --- Lectura de archivos ---
+  public async onFileClick(file: any) {
+    if (!this.transformationService.isFile(file)) return this.warn('ADVANCED_EDITOR.NOT_A_FILE');
+    this.selectedFile = file;
+    this.saveButtonEnabled = true;
+    const dirHandle = await this.getRootDirHandle();
+    if (!dirHandle) return this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
+    const fileHandle = await this.findFileHandleRecursive(dirHandle, file.name);
+    if (!fileHandle) return this.warn('ADVANCED_EDITOR.FILE_HANDLE_NOT_FOUND', file.name);
+    const content = await this.readFileContent(fileHandle);
+    this.selectedFileHandle = fileHandle;
+    this.selectedFileContent = content;
+    this.logFileContent(file.name, content);
+  }
+  private async readFileContent(fileHandle: FileSystemFileHandle): Promise<string> {
+    const fileObj = await fileHandle.getFile();
+    return fileObj.text();
+  }
+  private logFileContent(name: string, content: string) {
+    console.log(this.translationService.translate('ADVANCED_EDITOR.FILE_CONTENT') + ' ' + name + ':', content);
+  }
+
+  // --- Previsualización ---
+  public async openFilePreview(file: any) {
+    await this.onFileClick(file);
+    this.previewFileName = file.name;
+    this.previewFileContent = this.selectedFileContent;
+    this.isPreviewMode = true;
+  }
+  public closePreview() {
+    this.isPreviewMode = false;
+    this.previewFileName = null;
+    this.previewFileContent = null;
+  }
+
+  // --- Guardado de comandos ---
+  public async saveCommandsToFile() {
+    if (!this.selectedFileHandle || !this.selectedFileContent) return;
+    if (!this.testItBlock) return;
+    let newContent = this.selectedFileContent;
+    if (this.interceptorsBlock) newContent = this.transformationService.insertBeforeEach(newContent, this.interceptorsBlock, this.alert.bind(this));
+    newContent = this.transformationService.insertItBlock(newContent, this.testItBlock, this.alert.bind(this));
+    if (!newContent) return;
+    await this.writeFileContent(this.selectedFileHandle, newContent);
+    this.alert('ADVANCED_EDITOR.SUCCESS');
+    try { (window as any).Swal?.close(); } catch { }
+  }
+
+  private async writeFileContent(fileHandle: FileSystemFileHandle, content: string) {
+    const writable = await fileHandle.createWritable();
+    await writable.write(content);
+    await writable.close();
+  }
+
+  // --- Búsqueda recursiva de handles ---
+  private async findFileHandleRecursive(
+    dirHandle: FileSystemDirectoryHandle,
+    fileName: string
+  ): Promise<FileSystemFileHandle | null> {
+    for await (const entry of dirHandle.values()) {
+      if (entry.kind === 'file' && entry.name === fileName) return entry as FileSystemFileHandle;
+      else if (entry.kind === 'directory') {
+        const found = await this.findFileHandleRecursive(entry as FileSystemDirectoryHandle, fileName);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  // --- Carga de comandos Cypress ---
   private async loadCypressCommandsForTest(testId: any) {
     if (typeof this.persistService.getTestById === 'function') {
       const test = await this.persistService.getTestById(testId)?.toPromise?.();
@@ -51,203 +171,5 @@ export class AdvancedTestEditorComponent implements OnInit {
         this.interceptorsBlock = '';
       }
     }
-  }
-
-  public async getFoldersData(): Promise<void> {
-    // Comprueba si hay permiso
-    const config = await this.persistService
-      .getConfig('allowReadWriteFiles')
-      .toPromise();
-    if (config?.allowReadWriteFiles === 'true') {
-      // Recupera el handle de la carpeta
-      const dirConfig = await this.persistService
-        .getConfig('cypressDirectoryHandle')
-        .toPromise();
-      const dirHandle = dirConfig?.cypressDirectoryHandle;
-      if (dirHandle) {
-        // Busca la carpeta 'e2e' dentro de la carpeta seleccionada
-        for await (const entry of dirHandle.values()) {
-          if (entry.kind === 'directory' && entry.name === 'e2e') {
-            console.log('Carpeta e2e encontrada:', entry);
-
-            const tree = await this.scanDirectory(entry);
-
-            this.e2eTree = tree.children; // Solo hijos de e2e
-            console.log(
-              'Árbol de carpetas/archivos dentro de e2e:',
-              this.e2eTree
-            );
-          }
-        }
-      } else {
-        console.warn(
-          this.translationService.translate('ADVANCED_EDITOR.NO_DIR_HANDLE')
-        );
-      }
-    } else {
-      console.warn(
-        this.translationService.translate('ADVANCED_EDITOR.NO_PERMISSION')
-      );
-    }
-  }
-
-  /**
-   * Recorre recursivamente las carpetas y archivos a partir de un handle de directorio.
-   * Devuelve una estructura con el nombre, tipo y su contenido (solo nombres).
-   */
-  private async scanDirectory(
-    dirHandle: FileSystemDirectoryHandle
-  ): Promise<any> {
-    const result: any = {
-      name: dirHandle.name,
-      kind: 'directory',
-      children: [] as any[],
-    };
-    for await (const entry of dirHandle.values()) {
-      if (entry && entry.kind === 'directory') {
-        const child = await this.scanDirectory(
-          entry as FileSystemDirectoryHandle
-        );
-        if (child) result.children.push(child);
-      } else if (entry && entry.kind === 'file') {
-        result.children.push({ name: entry.name, kind: 'file' });
-      }
-    }
-    // Filtra posibles valores nulos/undefined
-    result.children = result.children.filter(Boolean);
-    return result;
-  }
-
-  public markFileAsSelected(file: any) {
-   this.selectedFile = file;
-    this.saveButtonEnabled = !this.saveButtonEnabled;
-  }
-
-  // Obtiene el contenido de un fichero y lo muestra por consola
-  public async onFileClick(file: any) {
-    if (file.kind !== 'file') {
-      console.warn(
-        this.translationService.translate('ADVANCED_EDITOR.NOT_A_FILE')
-      );
-      return;
-    }
-    this.selectedFile = file;
-    this.saveButtonEnabled = true;
-    // Recupera el handle de la carpeta raíz
-    const dirConfig = await this.persistService
-      .getConfig('cypressDirectoryHandle')
-      .toPromise();
-    const dirHandle = dirConfig?.cypressDirectoryHandle;
-    if (!dirHandle) {
-      console.warn(
-        this.translationService.translate('ADVANCED_EDITOR.NO_DIR_HANDLE')
-      );
-      return;
-    }
-    // Busca recursivamente el handle del fichero a partir del root
-    const fileHandle = await this.findFileHandleRecursive(dirHandle, file.name);
-    if (!fileHandle) {
-      console.warn(
-        this.translationService.translate(
-          'ADVANCED_EDITOR.FILE_HANDLE_NOT_FOUND'
-        ) +
-          ': ' +
-          file.name
-      );
-      return;
-    }
-    const fileObj = await fileHandle.getFile();
-    const content = await fileObj.text();
-    console.log(
-      this.translationService.translate('ADVANCED_EDITOR.FILE_CONTENT') +
-        ' ' +
-        file.name +
-        ':',
-      content
-    );
-    // Guarda el handle y contenido para el guardado posterior
-    this.selectedFileHandle = fileHandle;
-    this.selectedFileContent = content;
-  }
-
-  /**
-   * Abre la previsualización del fichero seleccionado
-   */
-  public async openFilePreview(file: any) {
-    await this.onFileClick(file);
-    this.previewFileName = file.name;
-    this.previewFileContent = this.selectedFileContent;
-    this.isPreviewMode = true;
-  }
-
-  /**
-   * Cierra la previsualización y vuelve al modo normal
-   */
-  public closePreview() {
-    this.isPreviewMode = false;
-    this.previewFileName = null;
-    this.previewFileContent = null;
-  }
-
-  // Botón guardar: inserta el bloque it() y los interceptores en el fichero
-  public async saveCommandsToFile() {
-    if (!this.selectedFileHandle || !this.selectedFileContent) return;
-    if (!this.testItBlock) return;
-    let newContent = this.selectedFileContent;
-    // --- Insertar bloque beforeEach tras el primer describe ---
-    if (this.interceptorsBlock) {
-      const describeRegex = /(describe\s*\(.*?{)/s;
-      const match = newContent.match(describeRegex);
-      if (match) {
-        const insertPos = match.index! + match[0].length;
-        const beforeEachBlock = `\n  beforeEach(() => {\n${this.interceptorsBlock}  });\n`;
-        newContent =
-          newContent.slice(0, insertPos) +
-          beforeEachBlock +
-          newContent.slice(insertPos);
-      } else {
-        alert(this.translationService.translate('ADVANCED_EDITOR.NO_DESCRIBE'));
-        return;
-      }
-    }
-    // --- Insertar bloque it() antes del último '});' ---
-    const idx = newContent.lastIndexOf('});');
-    if (idx === -1) {
-      alert(this.translationService.translate('ADVANCED_EDITOR.NO_END'));
-      return;
-    }
-    newContent =
-      newContent.slice(0, idx) +
-      '\n' +
-      this.testItBlock +
-      '\n' +
-      newContent.slice(idx);
-    // Guarda el nuevo contenido en el fichero
-    const writable = await this.selectedFileHandle.createWritable();
-    await writable.write(newContent);
-    await writable.close();
-    alert(this.translationService.translate('ADVANCED_EDITOR.SUCCESS'));
-    try {
-      (window as any).Swal?.close();
-    } catch {}
-  }
-
-  // Busca recursivamente un fileHandle por nombre a partir de un directorio
-  private async findFileHandleRecursive(
-    dirHandle: FileSystemDirectoryHandle,
-    fileName: string
-  ): Promise<FileSystemFileHandle | null> {
-    for await (const entry of dirHandle.values()) {
-      if (entry.kind === 'file' && entry.name === fileName) {
-        return entry as FileSystemFileHandle;
-      } else if (entry.kind === 'directory') {
-        const found = await this.findFileHandleRecursive(
-          entry as FileSystemDirectoryHandle,
-          fileName
-        );
-        if (found) return found;
-      }
-    }
-    return null;
   }
 }

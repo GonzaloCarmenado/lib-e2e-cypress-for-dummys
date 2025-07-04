@@ -47,6 +47,12 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     } else {
       langExtension = javascript();
     }
+    const whiteCaretTheme = EditorView.theme({
+      "& .cm-line": { caretColor: "#000" },
+      "& .cm-content": { background: "#fff", color: "#222" },
+      "& .cm-editor": { background: "#fff", color: "#222" },
+      "& .cm-cursor": { borderLeft: "2px solid #000" }
+    });
     const state = EditorState.create({
       doc: this.fileContent || '',
       extensions: [
@@ -59,7 +65,8 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
         foldGutter(),
         autocompletion(),
         langExtension,
-        EditorView.editable.of(true)
+        EditorView.editable.of(true),
+        whiteCaretTheme
       ]
     });
     this.editorView = new EditorView({
