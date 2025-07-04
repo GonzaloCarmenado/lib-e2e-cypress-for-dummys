@@ -339,4 +339,29 @@ export class LibE2eCypressForDummysPersistentService {
       await firstValueFrom(this.dbService.add(store, itemWithoutId));
     }
   }
+
+  /**
+   * Obtiene un test por su id, junto a su declaración it() y comandos Cypress
+   */
+  public getTestById(testId: number): Observable<any> {
+    return this.dbService.getByKey('tests', testId).pipe(
+      switchMap((test: any) => {
+        if (!test) return of(null);
+        return this.getCommandsByTestId(testId).pipe(
+          map((commandsRaw: any[]) => {
+            const commands = Array.isArray(commandsRaw)
+              ? commandsRaw
+                  .map((c) => (typeof c === 'string' ? c : c.command))
+                  .filter(Boolean)
+              : [];
+            // Construye el bloque it()
+            const itBlock = `it('${test.name}', () => {\n  ${commands.join(
+              '\n  '
+            )}\n});`;
+            return { ...test, cypressCommands: commands, itBlock };
+          })
+        );
+      })
+    );
+  }
 }

@@ -18,6 +18,7 @@ export class SaveTestComponent {
    * @memberof SaveTestComponent
    */
   @Output() savetest = new EventEmitter<string | null>();
+  @Output() saveAndExport = new EventEmitter<string | null>();
 
   /**
    * Controla el paso de guardado para mostrar la diferentes pantallas
@@ -32,7 +33,7 @@ export class SaveTestComponent {
    */
   public description = '';
 
-  constructor(public translation: TranslationService) { }
+  constructor(public translation: TranslationService) {}
 
   public askSave(): void {
     this.step = 'desc';
@@ -40,12 +41,23 @@ export class SaveTestComponent {
 
   public confirmSave(): void {
     this.savetest.emit(this.description.trim());
-    try { Swal.close(); } catch { }
+    try {
+      Swal.close();
+    } catch {}
+  }
+
+  public confirmSaveAndExport(): void {
+    this.saveAndExport.emit(this.description.trim());
+    try {
+      Swal.close();
+    } catch {}
   }
 
   public cancel(): void {
     this.savetest.emit(null);
-    try { Swal.close(); } catch { }
+    try {
+      Swal.close();
+    } catch {}
   }
 
   /**

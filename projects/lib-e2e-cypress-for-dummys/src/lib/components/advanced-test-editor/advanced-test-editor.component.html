@@ -17,7 +17,8 @@
           <summary style="padding-left: 0;">📁 {{ node.name }}</summary>
           <ul>
             <ng-container *ngFor="let child of node.children">
-              <ng-template [ngTemplateOutlet]="renderNode" [ngTemplateOutletContext]="{ $implicit: child }"></ng-template>
+              <ng-template [ngTemplateOutlet]="renderNode"
+                [ngTemplateOutletContext]="{ $implicit: child }"></ng-template>
             </ng-container>
           </ul>
         </details>
@@ -27,4 +28,11 @@
       </li>
     </ng-container>
   </ng-template>
+</div>
+<div *ngIf="testId">
+  <button class="btn btn-success" [disabled]="!saveButtonEnabled" (click)="saveCommandsToFile()">
+    Guardar comandos Cypress en el fichero seleccionado
+  </button>
+  <div *ngIf="!selectedFile" class="mt-2 text-muted">Selecciona un fichero para habilitar el guardado.</div>
+  <div *ngIf="selectedFile" class="mt-2 text-success">Fichero seleccionado: {{ selectedFile.name }}</div>
 </div>

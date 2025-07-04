@@ -136,17 +136,46 @@ export class LibE2eRecorderComponent {
   //#region CallBAcks de componentes hijos
   public onSaveTest(description: string | null): void {
     if (description) {
-      // Nuevo modelo: nombre, comandos, interceptores
       const commands = this.cypressCommands;
       const interceptors = this.interceptors;
       this.persistService
         .insertTest(description, commands, interceptors)
-        .subscribe((id) => {});
+        .subscribe((id) => {
+          // No hace nada extra
+        });
       if (this.e2eService.clearInterceptors) {
         this.e2eService.clearInterceptors();
       }
     }
     this.clearTestData();
+  }
+
+  public onSaveAndExportTest(description: string | null): void {
+    if (description) {
+      const commands = this.cypressCommands;
+      const interceptors = this.interceptors;
+      this.persistService
+        .insertTest(description, commands, interceptors)
+        .subscribe((id) => {
+          if (id) {
+            this.showAdvancedEditorDialogWithTestId(id);
+          }
+        });
+      if (this.e2eService.clearInterceptors) {
+        this.e2eService.clearInterceptors();
+      }
+    }
+    this.clearTestData();
+  }
+
+  public showAdvancedEditorDialogWithTestId(testId: any): void {
+    this.openSwalModal({
+      title: this.translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR'),
+      containerId: 'commands-advanced-editor-modal-content',
+      component: AdvancedTestEditorComponent,
+      stateFlag: 'isAdvancedEditorDialogOpen',
+      inputs: { testId },
+    });
   }
 
   /**
@@ -293,10 +322,17 @@ export class LibE2eRecorderComponent {
       container.appendChild((compRef.hostView as any).rootNodes[0]);
     Swal.getPopup()?.addEventListener('swalClose', () => compRef.destroy());
     // Suscribirse manualmente al output si es SaveTestComponent
-    if (component === SaveTestComponent && (compRef.instance as any).savetest) {
-      (compRef.instance as any).savetest.subscribe((data: any) => {
-        this.onSaveTest(data);
-      });
+    if (component === SaveTestComponent) {
+      if ((compRef.instance as any).savetest) {
+        (compRef.instance as any).savetest.subscribe((data: any) => {
+          this.onSaveTest(data);
+        });
+      }
+      if ((compRef.instance as any).saveAndExport) {
+        (compRef.instance as any).saveAndExport.subscribe((data: any) => {
+          this.onSaveAndExportTest(data);
+        });
+      }
     }
     // Guarda la referencia si es el previsualizador
     if (component === TestPrevisualizerComponent) {
@@ -401,7 +437,7 @@ export class LibE2eRecorderComponent {
     if (
       config === null ||
       config === undefined ||
-      savedProjectName !== currentProjectName
+      savedProjectName.projectName !== currentProjectName
     ) {
       const result = await Swal.fire({
         title: '¿Permitir acceso de lectura/escritura a archivos locales?',
