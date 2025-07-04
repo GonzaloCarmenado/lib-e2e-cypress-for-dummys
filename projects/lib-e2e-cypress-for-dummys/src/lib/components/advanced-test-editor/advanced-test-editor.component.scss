@@ -140,6 +140,12 @@
   white-space: pre;
 }
 
+.file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
 .open-file-icon {
   font-size: 1.2em;
   vertical-align: middle;

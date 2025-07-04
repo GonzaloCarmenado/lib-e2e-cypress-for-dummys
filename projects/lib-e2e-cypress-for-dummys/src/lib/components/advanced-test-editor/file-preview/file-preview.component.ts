@@ -1,23 +1,71 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CodemirrorWrapperComponent } from './code-mirror/codemirror-wrapper.component';
+import { Component, EventEmitter, Input, Output, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { EditorView, highlightSpecialChars, drawSelection } from '@codemirror/view';
+import { EditorState } from '@codemirror/state';
+import { javascript } from '@codemirror/lang-javascript';
+import { defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching, foldGutter } from '@codemirror/language';
+import { history } from '@codemirror/commands';
+import { autocompletion } from '@codemirror/autocomplete';
+
 @Component({
   selector: 'file-preview-component',
   templateUrl: './file-preview.component.html',
   styleUrls: ['./file-preview.component.scss'],
   standalone: true,
-  imports: [CommonModule, CodemirrorWrapperComponent],
+  imports: [],
 })
-export class FilePreviewComponent {
+export class FilePreviewComponent implements AfterViewInit, OnChanges {
   @Input() fileName: string | null = null;
   @Input() fileContent: string | null = null;
   @Output() close = new EventEmitter<void>();
+  @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef<HTMLDivElement>;
+  private editorView: EditorView | null = null;
 
   get language(): 'typescript' | 'javascript' {
     if (!this.fileName) return 'javascript';
     const ext = this.fileName.split('.').pop()?.toLowerCase();
     if (ext === 'ts' || ext === 'tsx') return 'typescript';
     return 'javascript';
+  }
+
+  ngAfterViewInit() {
+    this.initEditor();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['fileContent'] && this.editorView) {
+      this.editorView.dispatch({
+        changes: { from: 0, to: this.editorView.state.doc.length, insert: this.fileContent || '' }
+      });
+    }
+  }
+
+  private initEditor() {
+    if (this.editorView) return;
+    let langExtension;
+    if (this.language === 'typescript') {
+      langExtension = javascript({ typescript: true });
+    } else {
+      langExtension = javascript();
+    }
+    const state = EditorState.create({
+      doc: this.fileContent || '',
+      extensions: [
+        highlightSpecialChars(),
+        history(),
+        drawSelection(),
+        syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+        indentOnInput(),
+        bracketMatching(),
+        foldGutter(),
+        autocompletion(),
+        langExtension,
+        EditorView.editable.of(true)
+      ]
+    });
+    this.editorView = new EditorView({
+      state,
+      parent: this.editorContainer.nativeElement
+    });
   }
 
   onClose() {

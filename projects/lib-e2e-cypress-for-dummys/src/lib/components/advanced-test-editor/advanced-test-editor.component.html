@@ -27,8 +27,10 @@
           </details>
         </li>
         <li *ngIf="node.kind === 'file'" class="file-node" [ngClass]="{'selected-file': selectedFile && selectedFile.name === node.name}">
-          <span (click)="markFileAsSelected(node)">📄 {{ node.name }}</span>
-          <span class="open-file-icon" (click)="openFilePreview(node); $event.stopPropagation();" title="{{ translationService.translate('ADVANCED_EDITOR.PREVIEW_FILE') }}" style="cursor:pointer; margin-left:8px;">👁️</span>
+          <span class="file-row">
+            <span (click)="markFileAsSelected(node)">📄 {{ node.name }}</span>
+            <span class="open-file-icon" (click)="openFilePreview(node); $event.stopPropagation();" title="{{ translationService.translate('ADVANCED_EDITOR.PREVIEW_FILE') }}">🔍</span>
+          </span>
         </li>
       </ng-container>
     </ng-template>
