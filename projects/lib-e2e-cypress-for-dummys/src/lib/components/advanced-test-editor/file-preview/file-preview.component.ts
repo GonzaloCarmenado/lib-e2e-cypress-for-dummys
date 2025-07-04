@@ -28,6 +28,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit() {
+    this.injectGlobalSelectionStyle();
     this.initEditor();
   }
 
@@ -53,12 +54,12 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
       "& .cm-editor": { background: "#fff", color: "#222" },
       "& .cm-cursor": { borderLeft: "2px solid #000" }
     });
+  
     const state = EditorState.create({
       doc: this.fileContent || '',
       extensions: [
         highlightSpecialChars(),
         history(),
-        drawSelection(),
         syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
         indentOnInput(),
         bracketMatching(),
@@ -73,6 +74,25 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
       state,
       parent: this.editorContainer.nativeElement
     });
+  }
+
+  private injectGlobalSelectionStyle() {
+    const styleId = 'cm-global-selection-style';
+    if (document.getElementById(styleId)) return;
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.innerHTML = `
+      .cm-editor .cm-selectionBackground, 
+      .cm-editor ::selection, 
+      .cm-editor ::-moz-selection {
+        background: #1976d2 !important;
+        color: #fff !important;
+      }
+      .cm-editor .cm-selectionMatch {
+        background: #1976d2 !important;
+      }
+    `;
+    document.head.appendChild(style);
   }
 
   onClose() {

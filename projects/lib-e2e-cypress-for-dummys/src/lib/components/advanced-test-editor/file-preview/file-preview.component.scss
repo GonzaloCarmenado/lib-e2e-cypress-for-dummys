@@ -279,7 +279,10 @@
   background: #333 !important;
 }
 .cm-selectionBackground {
-  background: #444 !important;
+  background: #1976d2 !important;
+}
+.cm-selectionMatch {
+  background: #90caf9 !important;
 }
 .cm-tooltip-autocomplete {
   background: #222 !important;
@@ -287,4 +290,17 @@
 }
 .cm-line {
   caret-color: white !important;
+}
+
+.codemirror-container ::selection {
+  background: #1976d2 !important;
+  color: #fff !important;
+}
+.codemirror-container .cm-selectionBackground,
+.codemirror-container .cm-selectionMatch,
+.codemirror-container .cm-focused .cm-selectionBackground {
+  background: #1976d2 !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
 }
