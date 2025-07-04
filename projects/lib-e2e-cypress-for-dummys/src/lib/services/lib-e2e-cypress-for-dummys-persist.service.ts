@@ -341,25 +341,46 @@ export class LibE2eCypressForDummysPersistentService {
   }
 
   /**
-   * Obtiene un test por su id, junto a su declaración it() y comandos Cypress
+   * Obtiene un test por su id, junto a su declaración it() y comandos Cypress e interceptores
    */
   public getTestById(testId: number): Observable<any> {
     return this.dbService.getByKey('tests', testId).pipe(
       switchMap((test: any) => {
         if (!test) return of(null);
         return this.getCommandsByTestId(testId).pipe(
-          map((commandsRaw: any[]) => {
-            const commands = Array.isArray(commandsRaw)
-              ? commandsRaw
-                  .map((c) => (typeof c === 'string' ? c : c.command))
-                  .filter(Boolean)
-              : [];
-            // Construye el bloque it()
-            const itBlock = `it('${test.name}', () => {\n  ${commands.join(
-              '\n  '
-            )}\n});`;
-            return { ...test, cypressCommands: commands, itBlock };
-          })
+          switchMap((commandsRaw: any[]) =>
+            this.getInterceptorsByTestId(testId).pipe(
+              map((interceptorsRaw: any[]) => {
+                const commands = Array.isArray(commandsRaw)
+                  ? commandsRaw
+                      .map((c) => (typeof c === 'string' ? c : c.command))
+                      .filter(Boolean)
+                  : [];
+                const interceptors = Array.isArray(interceptorsRaw)
+                  ? interceptorsRaw
+                      .map((i) => (typeof i === 'string' ? i : i.interceptor))
+                      .filter(Boolean)
+                  : [];
+                // Construye el bloque it()
+                const itBlock = `it('${test.name}', () => {\n  ${commands.join(
+                  '\n  '
+                )}\n});`;
+                // Construye el bloque de interceptores
+                const interceptorsBlock = interceptors.length
+                  ? '  // Interceptores Cypress generados automáticamente\n' +
+                    interceptors.map((i) => '  ' + i).join('\n') +
+                    '\n'
+                  : '';
+                return {
+                  ...test,
+                  cypressCommands: commands,
+                  interceptors,
+                  itBlock,
+                  interceptorsBlock,
+                };
+              })
+            )
+          )
         );
       })
     );

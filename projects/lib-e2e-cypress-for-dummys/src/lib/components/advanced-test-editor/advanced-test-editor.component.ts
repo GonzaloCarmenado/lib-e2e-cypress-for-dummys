@@ -18,6 +18,7 @@ export class AdvancedTestEditorComponent implements OnInit {
   public selectedFileHandle: FileSystemFileHandle | null = null;
   public selectedFileContent: string | null = null;
   public testItBlock: string = '';
+  public interceptorsBlock: string = '';
 
   constructor(
     private readonly persistService: LibE2eCypressForDummysPersistentService
@@ -37,9 +38,11 @@ export class AdvancedTestEditorComponent implements OnInit {
       if (test?.cypressCommands) {
         this.cypressCommands = test.cypressCommands;
         this.testItBlock = test.itBlock || '';
+        this.interceptorsBlock = test.interceptorsBlock || '';
       } else {
         this.cypressCommands = [];
         this.testItBlock = '';
+        this.interceptorsBlock = '';
       }
     }
   }
@@ -136,28 +139,45 @@ export class AdvancedTestEditorComponent implements OnInit {
     this.selectedFileContent = content;
   }
 
-  // Botón guardar: inserta el bloque it() antes del último '});' y guarda el fichero
+  // Botón guardar: inserta el bloque it() y los interceptores en el fichero
   public async saveCommandsToFile() {
     if (!this.selectedFileHandle || !this.selectedFileContent) return;
     if (!this.testItBlock) return;
-    // Busca el último '});' en el contenido
-    const idx = this.selectedFileContent.lastIndexOf('});');
+    let newContent = this.selectedFileContent;
+    // --- Insertar bloque beforeEach tras el primer describe ---
+    if (this.interceptorsBlock) {
+      // Buscar el primer describe( y su apertura de llave
+      const describeRegex = /(describe\s*\(.*?{)/s;
+      const match = newContent.match(describeRegex);
+      if (match) {
+        const insertPos = match.index! + match[0].length;
+        const beforeEachBlock = `\n  beforeEach(() => {\n${this.interceptorsBlock}  });\n`;
+        newContent =
+          newContent.slice(0, insertPos) +
+          beforeEachBlock +
+          newContent.slice(insertPos);
+      } else {
+        alert('No se encontró un bloque describe en el fichero.');
+        return;
+      }
+    }
+    // --- Insertar bloque it() antes del último '});' ---
+    const idx = newContent.lastIndexOf('});');
     if (idx === -1) {
       alert('No se encontró el final de la función en el fichero.');
       return;
     }
-    // Inserta el bloque it() antes del último '});'
-    const newContent =
-      this.selectedFileContent.slice(0, idx) +
+    newContent =
+      newContent.slice(0, idx) +
       '\n' +
       this.testItBlock +
       '\n' +
-      this.selectedFileContent.slice(idx);
+      newContent.slice(idx);
     // Guarda el nuevo contenido en el fichero
     const writable = await this.selectedFileHandle.createWritable();
     await writable.write(newContent);
     await writable.close();
-    alert('Prueba Cypress insertada correctamente.');
+    alert('Prueba Cypress e interceptores insertados correctamente.');
   }
 
   // Busca recursivamente un fileHandle por nombre a partir de un directorio
