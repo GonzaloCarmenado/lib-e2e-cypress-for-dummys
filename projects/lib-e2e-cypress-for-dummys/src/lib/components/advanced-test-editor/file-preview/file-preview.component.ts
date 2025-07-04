@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CodemirrorWrapperComponent } from './code-mirror/codemirror-wrapper.component';
 @Component({
   selector: 'file-preview-component',
   templateUrl: './file-preview.component.html',
   styleUrls: ['./file-preview.component.scss'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CodemirrorWrapperComponent],
 })
 export class FilePreviewComponent {
   @Input() fileName: string | null = null;
