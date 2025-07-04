@@ -1,5 +1,5 @@
 <div class="preview-modal">
   <button class="close-preview-btn" (click)="onClose()">✖️ Cerrar</button>
   <h3>{{ fileName }}</h3>
-  <codemirror-wrapper [code]="fileContent || ''" [readOnly]="true"></codemirror-wrapper>
+  <codemirror-wrapper [code]="fileContent || ''" [readOnly]="true" [language]="language"></codemirror-wrapper>
 </div>

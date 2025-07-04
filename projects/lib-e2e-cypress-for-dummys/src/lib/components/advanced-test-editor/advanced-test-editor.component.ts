@@ -118,6 +118,11 @@ export class AdvancedTestEditorComponent implements OnInit {
     return result;
   }
 
+  public markFileAsSelected(file: any) {
+   this.selectedFile = file;
+    this.saveButtonEnabled = !this.saveButtonEnabled;
+  }
+
   // Obtiene el contenido de un fichero y lo muestra por consola
   public async onFileClick(file: any) {
     if (file.kind !== 'file') {

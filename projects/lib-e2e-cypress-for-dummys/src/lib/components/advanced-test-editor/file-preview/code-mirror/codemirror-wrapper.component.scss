@@ -1,5 +1,4 @@
 .codemirror-container {
-
   min-height: 300px;
   max-height: 80vh;
   background: #1e1e1e;
@@ -8,6 +7,11 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   font-size: 1.05rem;
   overflow: auto;
+}
+
+.codemirror-container,
+.codemirror-container * {
+  text-align: left !important;
 }
 
 .cm-editor {

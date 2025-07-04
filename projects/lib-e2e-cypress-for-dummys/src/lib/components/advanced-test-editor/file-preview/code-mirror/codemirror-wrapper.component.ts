@@ -17,6 +17,7 @@ import { lintKeymap } from '@codemirror/lint';
 export class CodemirrorWrapperComponent implements AfterViewInit, OnChanges {
   @Input() code: string = '';
   @Input() readOnly: boolean = true;
+  @Input() language: 'typescript' | 'javascript' = 'javascript';
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef<HTMLDivElement>;
   private editorView: EditorView | null = null;
 
@@ -34,6 +35,12 @@ export class CodemirrorWrapperComponent implements AfterViewInit, OnChanges {
 
   private initEditor() {
     if (this.editorView) return;
+    let langExtension;
+    if (this.language === 'typescript') {
+      langExtension = javascript({ typescript: true });
+    } else {
+      langExtension = javascript();
+    }
     const state = EditorState.create({
       doc: this.code,
       extensions: [
@@ -45,7 +52,7 @@ export class CodemirrorWrapperComponent implements AfterViewInit, OnChanges {
         bracketMatching(),
         foldGutter(),
         autocompletion(),
-        javascript(),
+        langExtension,
         EditorView.editable.of(!this.readOnly)
       ]
     });

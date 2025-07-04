@@ -13,6 +13,13 @@ export class FilePreviewComponent {
   @Input() fileContent: string | null = null;
   @Output() close = new EventEmitter<void>();
 
+  get language(): 'typescript' | 'javascript' {
+    if (!this.fileName) return 'javascript';
+    const ext = this.fileName.split('.').pop()?.toLowerCase();
+    if (ext === 'ts' || ext === 'tsx') return 'typescript';
+    return 'javascript';
+  }
+
   onClose() {
     this.close.emit();
   }
