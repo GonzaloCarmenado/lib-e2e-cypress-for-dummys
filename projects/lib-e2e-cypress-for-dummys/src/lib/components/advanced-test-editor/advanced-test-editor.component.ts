@@ -52,7 +52,6 @@ export class AdvancedTestEditorComponent implements OnInit {
     alert(this.translationService.translate(msgKey));
   }
 
-  // --- Métodos de obtención de handles ---
   private async getConfigHandle(key: string) {
     const config = await this.persistService.getConfig(key).toPromise();
     return config ? config[key] : null;
@@ -61,7 +60,6 @@ export class AdvancedTestEditorComponent implements OnInit {
     return this.getConfigHandle('cypressDirectoryHandle');
   }
 
-  // --- Árbol de carpetas ---
   public async getFoldersData(): Promise<void> {
     if (!(await this.hasPermission())) return;
     let dirHandle;
@@ -95,8 +93,6 @@ export class AdvancedTestEditorComponent implements OnInit {
   }
 
   private async requestPermissions() {
-    // Aquí puedes personalizar la lógica para solicitar permisos según tu app
-    // Por ejemplo, puedes volver a pedir el handle raíz
     await this.persistService.requestDirectoryPermissions();
   }
 
@@ -109,13 +105,11 @@ export class AdvancedTestEditorComponent implements OnInit {
     return false;
   }
 
-  // --- Selección de archivo ---
   public markFileAsSelected(file: any) {
     this.selectedFile = file;
     this.saveButtonEnabled = !this.saveButtonEnabled;
   }
 
-  // --- Lectura de archivos ---
   public async onFileClick(file: any) {
     if (!this.transformationService.isFile(file)) return this.warn('ADVANCED_EDITOR.NOT_A_FILE');
     this.selectedFile = file;
@@ -127,17 +121,12 @@ export class AdvancedTestEditorComponent implements OnInit {
     const content = await this.readFileContent(fileHandle);
     this.selectedFileHandle = fileHandle;
     this.selectedFileContent = content;
-    this.logFileContent(file.name, content);
   }
   private async readFileContent(fileHandle: FileSystemFileHandle): Promise<string> {
     const fileObj = await fileHandle.getFile();
     return fileObj.text();
   }
-  private logFileContent(name: string, content: string) {
-    console.log(this.translationService.translate('ADVANCED_EDITOR.FILE_CONTENT') + ' ' + name + ':', content);
-  }
 
-  // --- Previsualización ---
   public async openFilePreview(file: any) {
     await this.onFileClick(file);
     this.previewFileName = file.name;
@@ -153,7 +142,6 @@ export class AdvancedTestEditorComponent implements OnInit {
     }
   }
 
-  // --- Guardado de comandos ---
   public async saveCommandsToFile() {
     if (!this.selectedFileHandle || !this.selectedFileContent) return;
     if (!this.testItBlock) return;

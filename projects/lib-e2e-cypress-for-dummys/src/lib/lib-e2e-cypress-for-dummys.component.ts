@@ -342,7 +342,6 @@ export class LibE2eRecorderComponent {
         });
       }
     }
-    // Guarda la referencia si es el previsualizador
     if (component === TestPrevisualizerComponent) {
       this.testPrevisualizerCompRef = compRef;
     }
@@ -352,7 +351,6 @@ export class LibE2eRecorderComponent {
    * Setea el flag de estado de modal de forma segura (solo para los booleanos de modal).
    */
   private setModalFlag(flag: keyof LibE2eRecorderComponent, value: boolean) {
-    // Solo permite modificar los flags de modales definidos
     const allowedFlags = [
       'isCommandsDialogOpen',
       'isSavedTestsDialogOpen',
@@ -383,22 +381,13 @@ export class LibE2eRecorderComponent {
       return null;
     }
     try {
-      // Puedes filtrar por extensión si lo deseas
       const [fileHandle] = await (window as any).showOpenFilePicker({
-        /*types: [
-          {
-            description: 'Archivos de texto',
-            accept: { 'text/plain': ['.txt', '.js', '.ts', '.json'] },
-          },
-        ],*/
         multiple: false,
       });
       const file = await fileHandle.getFile();
       const content = await file.text();
-      // Puedes guardar el handle en IndexedDB para futuros accesos
       return { content, fileHandle };
     } catch (err) {
-      // El usuario puede cancelar el diálogo
       return null;
     }
   }

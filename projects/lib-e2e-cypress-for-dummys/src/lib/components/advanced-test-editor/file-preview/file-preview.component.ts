@@ -32,12 +32,12 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     return 'javascript';
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     this.injectGlobalSelectionStyle();
     this.initEditor();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges) {
     if (changes['fileContent'] && this.editorView) {
       this.editorView.dispatch({
         changes: { from: 0, to: this.editorView.state.doc.length, insert: this.fileContent || '' }
@@ -100,11 +100,11 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     document.head.appendChild(style);
   }
 
-  onClose() {
+  public onClose() {
     this.close.emit();
   }
 
-  saveFile() {
+  public saveFile() {
     if (this.editorView) {
       const content = this.editorView.state.doc.toString();
       this.save.emit(content);
@@ -112,7 +112,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  copyToClipboard(text: string) {
+  public copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
   }
 }
