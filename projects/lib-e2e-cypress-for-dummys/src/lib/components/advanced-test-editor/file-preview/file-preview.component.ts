@@ -5,17 +5,21 @@ import { javascript } from '@codemirror/lang-javascript';
 import { defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching, foldGutter } from '@codemirror/language';
 import { history } from '@codemirror/commands';
 import { autocompletion } from '@codemirror/autocomplete';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'file-preview-component',
   templateUrl: './file-preview.component.html',
   styleUrls: ['./file-preview.component.scss'],
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
 })
 export class FilePreviewComponent implements AfterViewInit, OnChanges {
   @Input() fileName: string | null = null;
   @Input() fileContent: string | null = null;
+  @Input() commands: string[] = [];
+  @Input() interceptors: string[] = [];
+  @Input() itBlock: string = '';
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<string>();
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef<HTMLDivElement>;
@@ -105,5 +109,9 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
       const content = this.editorView.state.doc.toString();
       this.save.emit(content);
     }
+  }
+
+  copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text);
   }
 }

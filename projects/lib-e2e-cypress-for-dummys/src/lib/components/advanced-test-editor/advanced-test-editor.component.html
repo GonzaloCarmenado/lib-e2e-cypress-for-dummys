@@ -2,6 +2,9 @@
   *ngIf="isPreviewMode; else normalView"
   [fileName]="previewFileName"
   [fileContent]="previewFileContent"
+  [commands]="cypressCommands"
+  [interceptors]="interceptorsBlock ? [interceptorsBlock] : []"
+  [itBlock]="testItBlock"
   (close)="closePreview()"
   (save)="onSaveFile($event)"
 ></file-preview-component>

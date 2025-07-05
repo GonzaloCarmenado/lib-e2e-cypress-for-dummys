@@ -320,3 +320,30 @@
   opacity: 1 !important;
   mix-blend-mode: normal !important;
 }
+.btn-primary.btn-small, .btn-success.btn-small {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+  display: block;
+  width: 140px;
+}
+.preview-header-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.preview-actions-row {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.preview-actions-row button {
+  min-width: 160px;
+  max-width: 160px;
+  width: 160px;
+}
