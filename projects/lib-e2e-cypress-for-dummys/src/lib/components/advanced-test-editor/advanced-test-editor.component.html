@@ -3,6 +3,7 @@
   [fileName]="previewFileName"
   [fileContent]="previewFileContent"
   (close)="closePreview()"
+  (save)="onSaveFile($event)"
 ></file-preview-component>
 <ng-template #normalView>
   <div class="e2e-tree-container">

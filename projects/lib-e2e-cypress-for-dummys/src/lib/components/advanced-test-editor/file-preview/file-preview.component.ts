@@ -17,6 +17,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
   @Input() fileName: string | null = null;
   @Input() fileContent: string | null = null;
   @Output() close = new EventEmitter<void>();
+  @Output() save = new EventEmitter<string>();
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef<HTMLDivElement>;
   private editorView: EditorView | null = null;
 
@@ -97,5 +98,12 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
 
   onClose() {
     this.close.emit();
+  }
+
+  saveFile() {
+    if (this.editorView) {
+      const content = this.editorView.state.doc.toString();
+      this.save.emit(content);
+    }
   }
 }

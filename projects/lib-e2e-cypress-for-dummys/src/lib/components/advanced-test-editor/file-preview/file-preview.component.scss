@@ -36,6 +36,14 @@
   background: #2196f3;
   color: #fff;
 }
+.btn-small {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
 .config-collapsible-section {
   width: 555px;
   margin: 2rem auto;
@@ -195,12 +203,20 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  margin-bottom: 1rem;
+  margin-bottom: 0.2rem;
   transition: color 0.2s;
   z-index: 2100;
   position: absolute;
   top: 1.2rem;
   right: 2rem;
+  display: block;
+}
+
+.save-preview-btn {
+  display: block;
+  margin-left: 0;
+  margin-bottom: 0.8rem;
+  width:110px;
 }
 
 .file-content-preview {

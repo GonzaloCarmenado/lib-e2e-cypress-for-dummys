@@ -385,4 +385,21 @@ export class LibE2eCypressForDummysPersistentService {
       })
     );
   }
+
+  /**
+   * Solicita de nuevo el directorio raíz para permisos de File System Access API
+   */
+  public async requestDirectoryPermissions(): Promise<void> {
+    // Aquí puedes personalizar el mensaje o lógica según tu app
+    // Por ejemplo, puedes mostrar un diálogo para que el usuario seleccione el directorio raíz de nuevo
+    if ('showDirectoryPicker' in window) {
+      // @ts-ignore
+      const dirHandle = await (window as any).showDirectoryPicker();
+      // Guarda el handle en tu sistema de persistencia/configuración
+      await firstValueFrom(this.setConfigKey('cypressDirectoryHandle', dirHandle));
+      await firstValueFrom(this.setConfigKey('allowReadWriteFiles', 'true'));
+    } else {
+      throw new Error('File System Access API not supported');
+    }
+  }
 }

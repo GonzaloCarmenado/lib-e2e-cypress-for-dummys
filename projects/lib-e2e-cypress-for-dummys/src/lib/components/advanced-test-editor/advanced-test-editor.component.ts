@@ -62,17 +62,42 @@ export class AdvancedTestEditorComponent implements OnInit {
   // --- Árbol de carpetas ---
   public async getFoldersData(): Promise<void> {
     if (!(await this.hasPermission())) return;
-    const dirHandle = await this.getRootDirHandle();
-    if (!dirHandle) return this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
-    for await (const entry of dirHandle.values()) {
-      if (entry.kind === 'directory' && entry.name === 'e2e') {
-        const tree = await this.transformationService.scanDirectory(entry as FileSystemDirectoryHandle);
-        this.e2eTree = tree.children;
-        return;
+    let dirHandle;
+    try {
+      dirHandle = await this.getRootDirHandle();
+      if (!dirHandle) return this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
+      for await (const entry of dirHandle.values()) {
+        if (entry.kind === 'directory' && entry.name === 'e2e') {
+          const tree = await this.transformationService.scanDirectory(entry as FileSystemDirectoryHandle);
+          this.e2eTree = tree.children;
+          return;
+        }
+      }
+      this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
+    } catch (err: any) {
+      console.error('Error reading folders:', err);
+      // Si es un error de permisos, volvemos a pedirlos y reintentamos
+      if (err && err.name === 'NotAllowedError') {
+        try {
+          // Vuelve a solicitar permisos
+          await this.requestPermissions();
+          // Reintenta el ciclo completo
+          await this.getFoldersData();
+        } catch (permErr) {
+          this.warn('ADVANCED_EDITOR.NO_PERMISSION');
+        }
+      } else {
+        this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
       }
     }
-    this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
   }
+
+  private async requestPermissions() {
+    // Aquí puedes personalizar la lógica para solicitar permisos según tu app
+    // Por ejemplo, puedes volver a pedir el handle raíz
+    await this.persistService.requestDirectoryPermissions();
+  }
+
   private async hasPermission(): Promise<boolean> {
     const config = await this.persistService
       .getConfig('allowReadWriteFiles')
@@ -171,5 +196,15 @@ export class AdvancedTestEditorComponent implements OnInit {
         this.interceptorsBlock = '';
       }
     }
+  }
+
+  public async onSaveFile(newContent: string) {
+    if (!this.selectedFileHandle) {
+      this.alert('ADVANCED_EDITOR.FILE_HANDLE_NOT_FOUND');
+      return;
+    }
+    await this.writeFileContent(this.selectedFileHandle, newContent);
+    this.previewFileContent = newContent;
+    this.alert('ADVANCED_EDITOR.SUCCESS');
   }
 }
