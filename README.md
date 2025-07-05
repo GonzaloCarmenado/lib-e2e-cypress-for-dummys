@@ -32,6 +32,15 @@
 - 🔒 Robust persistence: your tests and settings are kept even if you close the browser.
 - 🛠️ Advanced HTTP command configuration: enable automatic validations for GET/POST/PUT objects.
 - 👀 Quick preview and copy of commands and interceptors from the interface.
+- 🗝️ **Direct file/folder access and permissions:** The library now requests and manages permissions to read and write files and folders using the File System Access API. You can select the Cypress folder and save tests directly as files.
+- 💾 **Precise file saving and editing:** Edit and save test files directly from the advanced editor. Changes are written to disk with full control and permission management.
+- 🪟 **Advanced test editor modal:** Preview, edit, and save test files in a modern modal. Copy the full `it(...)` block or just interceptors to the clipboard with one click.
+- 🧩 **Copy helpers:** New buttons allow you to copy the full Cypress test block or only the interceptors, for easy pasting into your codebase.
+- 🔒 **Permission renewal:** If file/folder permissions expire, the app will prompt you to re-authorize and will retry the operation automatically.
+- 🏷️ **Smart modal closing:** After saving or closing in the advanced editor, all related modals close automatically for a seamless workflow.
+- 🖱️ **Modern UI:** All action buttons in the editor are visually consistent, compact, and grouped for quick access.
+- 📝 **Clipboard integration:** Copying commands/interceptors uses the browser clipboard API for instant results.
+- 🛡️ **Robust error handling:** If a file/folder operation fails due to permissions, the app will guide you to restore access and continue working.
 
 ---
 
