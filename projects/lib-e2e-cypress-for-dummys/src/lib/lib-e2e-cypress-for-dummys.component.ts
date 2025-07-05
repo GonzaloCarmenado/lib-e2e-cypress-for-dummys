@@ -334,6 +334,14 @@ export class LibE2eRecorderComponent {
         });
       }
     }
+    // Suscribirse al cierre del AdvancedTestEditorComponent
+    if (component === AdvancedTestEditorComponent) {
+      if ((compRef.instance as any).closeModalPadre) {
+        (compRef.instance as any).closeModalPadre.subscribe(() => {
+          Swal.close();
+        });
+      }
+    }
     // Guarda la referencia si es el previsualizador
     if (component === TestPrevisualizerComponent) {
       this.testPrevisualizerCompRef = compRef;

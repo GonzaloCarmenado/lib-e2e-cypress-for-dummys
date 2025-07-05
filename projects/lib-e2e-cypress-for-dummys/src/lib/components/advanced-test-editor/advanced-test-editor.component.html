@@ -5,7 +5,7 @@
   [commands]="cypressCommands"
   [interceptors]="interceptorsBlock ? [interceptorsBlock] : []"
   [itBlock]="testItBlock"
-  (close)="closePreview()"
+  (close)="closePreview(); testId ? closeModalPadre.emit() : null"
   (save)="onSaveFile($event)"
 ></file-preview-component>
 <ng-template #normalView>

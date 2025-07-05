@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
@@ -25,6 +25,8 @@ export class AdvancedTestEditorComponent implements OnInit {
   public isPreviewMode = false; // Controla si estamos en modo previsualización
   public previewFileName: string | null = null;
   public previewFileContent: string | null = null;
+
+  @Output() closeModalPadre = new EventEmitter<void>();
 
   constructor(
     private readonly persistService: LibE2eCypressForDummysPersistentService,
@@ -146,6 +148,9 @@ export class AdvancedTestEditorComponent implements OnInit {
     this.isPreviewMode = false;
     this.previewFileName = null;
     this.previewFileContent = null;
+    if (this.testId) {
+      this.closeModalPadre.emit();
+    }
   }
 
   // --- Guardado de comandos ---
@@ -153,7 +158,8 @@ export class AdvancedTestEditorComponent implements OnInit {
     if (!this.selectedFileHandle || !this.selectedFileContent) return;
     if (!this.testItBlock) return;
     let newContent = this.selectedFileContent;
-    if (this.interceptorsBlock) newContent = this.transformationService.insertBeforeEach(newContent, this.interceptorsBlock, this.alert.bind(this));
+    if (this.interceptorsBlock)
+      newContent = this.transformationService.insertBeforeEach(newContent, this.interceptorsBlock, this.alert.bind(this));
     newContent = this.transformationService.insertItBlock(newContent, this.testItBlock, this.alert.bind(this));
     if (!newContent) return;
     await this.writeFileContent(this.selectedFileHandle, newContent);
@@ -167,7 +173,6 @@ export class AdvancedTestEditorComponent implements OnInit {
     await writable.close();
   }
 
-  // --- Búsqueda recursiva de handles ---
   private async findFileHandleRecursive(
     dirHandle: FileSystemDirectoryHandle,
     fileName: string

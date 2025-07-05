@@ -108,6 +108,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     if (this.editorView) {
       const content = this.editorView.state.doc.toString();
       this.save.emit(content);
+      this.close.emit();
     }
   }
 
