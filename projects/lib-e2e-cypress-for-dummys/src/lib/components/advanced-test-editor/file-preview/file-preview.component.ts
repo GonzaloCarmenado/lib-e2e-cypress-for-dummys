@@ -27,6 +27,8 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
   @ViewChild('modal', { static: true }) modalRef!: ElementRef<HTMLDivElement>;
   private editorView: EditorView | null = null;
 
+  public selectedText: string = '';
+
   get language(): 'typescript' | 'javascript' {
     if (!this.fileName) return 'javascript';
     const ext = this.fileName.split('.').pop()?.toLowerCase();
@@ -38,6 +40,48 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     this.centerModal();
     this.injectGlobalSelectionStyle();
     this.initEditor();
+    // Escuchar mouseup y keyup para detectar selección finalizada
+    const container = this.editorContainer.nativeElement;
+    container.addEventListener('mouseup', this.handleSelectionEnd.bind(this));
+    container.addEventListener('keyup', this.handleSelectionEnd.bind(this));
+  }
+
+  private handleSelectionEnd() {
+    if (this.editorView) {
+      const sel = this.editorView.state.sliceDoc(
+        this.editorView.state.selection.main.from,
+        this.editorView.state.selection.main.to
+      );
+      this.selectedText = sel;
+      console.log('Texto seleccionado (on selection end):', sel);
+      this.highlightDataCyElements(sel);
+    }
+  }
+
+  private highlightDataCyElements(selectedText: string) {
+    // Eliminar marcas anteriores
+    document.querySelectorAll('.data-cy-highlight').forEach(el => {
+      el.classList.remove('data-cy-highlight');
+    });
+    // Buscar todos los data-cy="..."
+    const regex = /data-cy\s*=\s*"([^"]+)"/g;
+    let match;
+    const found: string[] = [];
+    while ((match = regex.exec(selectedText)) !== null) {
+      found.push(match[1]);
+    }
+    // Añadir clase a los elementos encontrados
+    found.forEach(dataCy => {
+      const els = document.querySelectorAll(`[data-cy="${dataCy}"]`);
+      els.forEach(el => el.classList.add('data-cy-highlight'));
+    });
+    // Añadir la clase CSS si no existe
+    if (!document.getElementById('data-cy-highlight-style')) {
+      const style = document.createElement('style');
+      style.id = 'data-cy-highlight-style';
+      style.innerHTML = `.data-cy-highlight { outline: 2px solid red !important; background: rgba(255,0,0,0.08) !important; }`;
+      document.head.appendChild(style);
+    }
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -62,7 +106,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
       "& .cm-editor": { background: "#fff", color: "#222" },
       "& .cm-cursor": { borderLeft: "2px solid #000" }
     });
-  
+
     const state = EditorState.create({
       doc: this.fileContent || '',
       extensions: [
@@ -76,6 +120,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
         langExtension,
         EditorView.editable.of(true),
         whiteCaretTheme
+        // Elimina el updateListener de selección aquí
       ]
     });
     this.editorView = new EditorView({
