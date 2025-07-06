@@ -6,13 +6,14 @@ import { defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatchi
 import { history } from '@codemirror/commands';
 import { autocompletion } from '@codemirror/autocomplete';
 import { CommonModule } from '@angular/common';
+import { DraggableDirective } from '../../../directives/draggable.directive';
 
 @Component({
   selector: 'file-preview-component',
   templateUrl: './file-preview.component.html',
   styleUrls: ['./file-preview.component.scss'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DraggableDirective],
 })
 export class FilePreviewComponent implements AfterViewInit, OnChanges {
   @Input() fileName: string | null = null;

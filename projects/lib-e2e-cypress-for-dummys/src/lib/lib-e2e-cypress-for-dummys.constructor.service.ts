@@ -53,16 +53,22 @@ export class LibE2eCypressForDummysConstructorService {
 
   /**
    * Hace draggable el modal de SweetAlert2.
+   * Ahora siempre actúa sobre el último modal abierto (el último .swal2-popup del DOM).
    */
   public makeSwalDraggable() {
-    const swal = document.querySelector('.swal2-popup') as HTMLElement;
-    const header = document.querySelector('.swal2-title') as HTMLElement;
-    if (!swal || !header) return;
+    const popups = document.querySelectorAll('.swal2-popup');
+    if (!popups.length) return;
+    const swal = popups[popups.length - 1] as HTMLElement;
+    let dragArea = swal.querySelector('.swal2-header') as HTMLElement;
+    if (!dragArea) {
+      dragArea = swal.querySelector('.swal2-title') as HTMLElement;
+    }
+    if (!swal || !dragArea) return;
     let isDragging = false;
     let offsetX = 0;
     let offsetY = 0;
-    header.style.cursor = 'move';
-    header.onmousedown = (e: MouseEvent) => {
+    dragArea.style.cursor = 'move';
+    dragArea.onmousedown = (e: MouseEvent) => {
       isDragging = true;
       const rect = swal.getBoundingClientRect();
       offsetX = e.clientX - rect.left;
@@ -73,6 +79,55 @@ export class LibE2eCypressForDummysConstructorService {
           swal.style.margin = '0';
           swal.style.left = `${ev.clientX - offsetX}px`;
           swal.style.top = `${ev.clientY - offsetY}px`;
+        }
+      };
+      document.onmouseup = () => {
+        isDragging = false;
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    };
+  }
+
+  /**
+   * Hace draggable el modal de SweetAlert2, buscando el swal2-popup que contenga el contentId indicado.
+   * Si no se encuentra, hace fallback al primero.
+   */
+  public makeSwalDraggableByContentId(contentId: string) {
+    // Busca el contenedor del contenido
+    debugger
+    const content = document.getElementById(contentId);
+    if (!content) {
+      this.makeSwalDraggable(); // fallback
+      return;
+    }
+    // Busca el swal2-popup que contenga este content
+    let swal: HTMLElement | null = content.closest('.swal2-popup');
+    if (!swal) {
+      // fallback al primero
+      swal = document.querySelector('.swal2-popup') as HTMLElement;
+    }
+    // Busca el header dentro de ese swal
+    let dragArea = swal ? swal.querySelector('.swal2-header') as HTMLElement : null;
+    if (!dragArea && swal) {
+      dragArea = swal.querySelector('.swal2-title') as HTMLElement;
+    }
+    if (!swal || !dragArea) return;
+    dragArea.style.cursor = 'move';
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+    dragArea.onmousedown = (e: MouseEvent) => {
+      isDragging = true;
+      const rect = swal!.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      document.onmousemove = (ev: MouseEvent) => {
+        if (isDragging) {
+          swal!.style.position = 'fixed';
+          swal!.style.margin = '0';
+          swal!.style.left = `${ev.clientX - offsetX}px`;
+          swal!.style.top = `${ev.clientY - offsetY}px`;
         }
       };
       document.onmouseup = () => {
