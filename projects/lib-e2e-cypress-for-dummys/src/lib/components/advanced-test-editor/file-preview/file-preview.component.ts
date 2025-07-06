@@ -24,6 +24,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<string>();
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('modal', { static: true }) modalRef!: ElementRef<HTMLDivElement>;
   private editorView: EditorView | null = null;
 
   get language(): 'typescript' | 'javascript' {
@@ -34,6 +35,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
   }
 
   public ngAfterViewInit() {
+    this.centerModal();
     this.injectGlobalSelectionStyle();
     this.initEditor();
   }
@@ -99,6 +101,23 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
       }
     `;
     document.head.appendChild(style);
+  }
+
+  private centerModal() {
+    // Centrar el modal en la pantalla solo al abrir
+    setTimeout(() => {
+      const modal = this.modalRef?.nativeElement;
+      if (!modal) return;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const { width, height } = modal.getBoundingClientRect();
+      const left = (vw - width) / 2;
+      const top = (vh - height) / 2;
+      modal.style.position = 'fixed';
+      modal.style.left = `${left}px`;
+      modal.style.top = `${top}px`;
+      modal.style.transform = 'none';
+    });
   }
 
   public onClose() {

@@ -10,13 +10,13 @@ export class AdvancedtestTransformationService {
     const match = content.match(describeRegex);
     if (!match) { alertFn?.('ADVANCED_EDITOR.NO_DESCRIBE'); return ''; }
     const insertPos = match.index! + match[0].length;
-    const beforeEachBlock = `\n  beforeEach(() => {\n${interceptors}  });\n`;
+    const beforeEachBlock = `\n  beforeEach(() => {\n${interceptors}  })\n`;
     return content.slice(0, insertPos) + beforeEachBlock + content.slice(insertPos);
   }
 
   // Inserta el bloque it() antes del último '});'
   public insertItBlock(content: string, itBlock: string, alertFn?: (msg: string) => void): string {
-    const idx = content.lastIndexOf('});');
+    const idx = content.lastIndexOf('})');
     if (idx === -1) { alertFn?.('ADVANCED_EDITOR.NO_END'); return ''; }
     return content.slice(0, idx) + '\n' + itBlock + '\n' + content.slice(idx);
   }

@@ -10,20 +10,36 @@ export class DraggableDirective implements AfterViewInit {
   private origX = 0;
   private origY = 0;
   private hasMoved = false;
+  private dragTarget!: HTMLElement;
 
   constructor(private el: ElementRef, private renderer: Renderer2) {
-    this.renderer.setStyle(this.el.nativeElement, 'z-index', '1000');
     this.renderer.setStyle(this.el.nativeElement, 'cursor', 'move');
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    // Buscar el primer ancestro con la clase 'preview-modal'
+    let parent = this.el.nativeElement.parentElement;
+    while (parent && !parent.classList.contains('preview-modal')) {
+      parent = parent.parentElement;
+    }
+    this.dragTarget = parent || this.el.nativeElement;
+    this.renderer.setStyle(this.dragTarget, 'z-index', '1000');
+  }
 
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent) {
+    // Solo permitir drag con el botón izquierdo
+    if (event.button !== 0) return;
     this.isDragging = true;
     this.hasMoved = false;
     this.startX = event.clientX;
     this.startY = event.clientY;
+    // Guardar la posición real del modal ANTES de cualquier cambio
+    const rect = this.dragTarget.getBoundingClientRect();
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    this.origX = rect.left + scrollLeft;
+    this.origY = rect.top + scrollTop;
     event.preventDefault();
   }
 
@@ -33,23 +49,17 @@ export class DraggableDirective implements AfterViewInit {
     const dx = event.clientX - this.startX;
     const dy = event.clientY - this.startY;
     if (!this.hasMoved && (Math.abs(dx) > 2 || Math.abs(dy) > 2)) {
-      const rect = this.el.nativeElement.getBoundingClientRect();
-      // Eliminar márgenes automáticos y transformaciones
-      this.el.nativeElement.style.margin = '0';
-      this.el.nativeElement.style.transform = 'none';
-      // Calcular posición absoluta respecto al viewport y scroll
-      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      this.origX = rect.left + scrollLeft;
-      this.origY = rect.top + scrollTop;
-      this.renderer.setStyle(this.el.nativeElement, 'position', 'fixed');
-      this.renderer.setStyle(this.el.nativeElement, 'left', `${rect.left}px`);
-      this.renderer.setStyle(this.el.nativeElement, 'top', `${rect.top}px`);
+      if (getComputedStyle(this.dragTarget).position !== 'fixed') {
+        this.renderer.setStyle(this.dragTarget, 'position', 'fixed');
+        this.renderer.setStyle(this.dragTarget, 'transform', 'none');
+        this.renderer.setStyle(this.dragTarget, 'left', `${this.origX - (window.pageXOffset || document.documentElement.scrollLeft)}px`);
+        this.renderer.setStyle(this.dragTarget, 'top', `${this.origY - (window.pageYOffset || document.documentElement.scrollTop)}px`);
+      }
       this.hasMoved = true;
     }
     if (this.hasMoved) {
-      this.renderer.setStyle(this.el.nativeElement, 'left', `${this.origX + dx - (window.pageXOffset || document.documentElement.scrollLeft)}px`);
-      this.renderer.setStyle(this.el.nativeElement, 'top', `${this.origY + dy - (window.pageYOffset || document.documentElement.scrollTop)}px`);
+      this.renderer.setStyle(this.dragTarget, 'left', `${this.origX + dx - (window.pageXOffset || document.documentElement.scrollLeft)}px`);
+      this.renderer.setStyle(this.dragTarget, 'top', `${this.origY + dy - (window.pageYOffset || document.documentElement.scrollTop)}px`);
     }
   }
 

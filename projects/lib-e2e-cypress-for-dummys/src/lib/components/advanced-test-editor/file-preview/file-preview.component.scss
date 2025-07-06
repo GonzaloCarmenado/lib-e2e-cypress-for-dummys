@@ -178,9 +178,6 @@
 }
 .preview-modal {
   position: fixed;
-  top: 5vh;
-  left: 50%;
-  transform: translateX(-50%);
   width: 80vw;
   max-width: 1200px;
   min-width: 600px;
@@ -335,6 +332,18 @@
   margin-bottom: 1.5rem;
 }
 
+.preview-header-row {
+  min-height: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  background: #181c24;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  user-select: none;
+}
+
 .preview-actions-row {
   display: flex;
   flex-direction: row;
@@ -346,4 +355,7 @@
   min-width: 160px;
   max-width: 160px;
   width: 160px;
+}
+.preview-header-row[appDraggable] {
+  cursor: move !important;
 }
