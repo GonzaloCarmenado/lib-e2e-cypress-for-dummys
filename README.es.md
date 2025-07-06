@@ -29,6 +29,7 @@
 - 🔒 Persistencia robusta: tus pruebas y configuraciones se mantienen aunque cierres el navegador.
 - 🛠️ Configuración avanzada de comandos HTTP: activa validaciones automáticas en GET/POST/PUT para objetos recibidos/enviados.
 - 👀 Previsualización y copia rápida de comandos e interceptores desde la interfaz.
+- ✨ **Resaltado visual de selectores:** Cuando seleccionas comandos Cypress en el editor avanzado de código (por ejemplo, `cy.get('[data-cy="email-input"]').type('...')`), todos los elementos referenciados (por `data-cy`) se resaltan automáticamente en la previsualización HTML. Así puedes identificar visualmente qué elementos está usando tu test.
 
 ---
 

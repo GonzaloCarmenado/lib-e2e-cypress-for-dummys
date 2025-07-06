@@ -41,6 +41,7 @@
 - 🖱️ **Modern UI:** All action buttons in the editor are visually consistent, compact, and grouped for quick access.
 - 📝 **Clipboard integration:** Copying commands/interceptors uses the browser clipboard API for instant results.
 - 🛡️ **Robust error handling:** If a file/folder operation fails due to permissions, the app will guide you to restore access and continue working.
+- ✨ **Visual selector highlighting:** When you select Cypress commands in the advanced code editor (e.g., `cy.get('[data-cy="email-input"]').type('...')`), all referenced elements (by `data-cy`) are automatically highlighted in the HTML preview. This helps you visually identify which elements are being targeted by your test code.
 
 ---
 
