@@ -68,6 +68,19 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     this.centerModal();
     this.injectGlobalSelectionStyle();
     this.initEditor();
+    // Forzar caret-color negro en .cm-line para CodeMirror
+    if (this.editorContainer?.nativeElement) {
+      const style = document.createElement('style');
+      style.innerHTML = `
+        .cm-line { caret-color: #000 !important; }
+      `;
+      // Inyectar en el shadowRoot del editor si existe
+      if (this.editorContainer.nativeElement.shadowRoot) {
+        this.editorContainer.nativeElement.shadowRoot.appendChild(style);
+      } else {
+        this.editorContainer.nativeElement.appendChild(style);
+      }
+    }
     // Hacer el modal redimensionable usando el servicio
     setTimeout(() => {
       if (this.modalRef?.nativeElement) {
@@ -138,11 +151,11 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     } else {
       langExtension = javascript();
     }
-    const whiteCaretTheme = EditorView.theme({
+    const blackCaretTheme = EditorView.theme({
       '& .cm-line': { caretColor: '#000' },
       '& .cm-content': { background: '#fff', color: '#222' },
       '& .cm-editor': { background: '#fff', color: '#222' },
-      '& .cm-cursor': { borderLeft: '2px solid #000' },
+      '& .cm-cursor': { borderLeft: '2px solid #000 !important', background: 'none !important' },
     });
 
     const state = EditorState.create({
@@ -157,8 +170,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
         autocompletion(),
         langExtension,
         EditorView.editable.of(true),
-        whiteCaretTheme,
-        // Elimina el updateListener de selección aquí
+        blackCaretTheme,
       ],
     });
     this.editorView = new EditorView({
