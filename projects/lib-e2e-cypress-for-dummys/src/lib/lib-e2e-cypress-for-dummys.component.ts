@@ -245,6 +245,16 @@ export class LibE2eRecorderComponent {
       this
     );
     Swal.fire(config);
+    // Hacer el modal SweetAlert2 redimensionable usando el servicio
+    setTimeout(() => {
+      const popup = Swal.getPopup();
+      if (popup) {
+        this.constructorService.makeModalResizable(popup, {
+          minWidth: 400,
+          minHeight: 200,
+        });
+      }
+    }, 0);
   }
 
   public showAdvancedEditorDialog(): void {

@@ -28,6 +28,7 @@ import { history } from '@codemirror/commands';
 import { autocompletion } from '@codemirror/autocomplete';
 import { CommonModule } from '@angular/common';
 import { DraggableDirective } from '../../../directives/draggable.directive';
+import { LibE2eCypressForDummysConstructorService } from '../../../lib-e2e-cypress-for-dummys.constructor.service';
 
 @Component({
   selector: 'file-preview-component',
@@ -52,6 +53,10 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
 
   public selectedText: string = '';
 
+  constructor(
+    private readonly constructorService: LibE2eCypressForDummysConstructorService
+  ) {}
+
   get language(): 'typescript' | 'javascript' {
     if (!this.fileName) return 'javascript';
     const ext = this.fileName.split('.').pop()?.toLowerCase();
@@ -63,6 +68,12 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     this.centerModal();
     this.injectGlobalSelectionStyle();
     this.initEditor();
+    // Hacer el modal redimensionable usando el servicio
+    setTimeout(() => {
+      if (this.modalRef?.nativeElement) {
+        this.constructorService.makeModalResizable(this.modalRef.nativeElement);
+      }
+    }, 0);
     // Escuchar mouseup y keyup para detectar selección finalizada
     const container = this.editorContainer.nativeElement;
     container.addEventListener('mouseup', this.handleSelectionEnd.bind(this));

@@ -5,6 +5,66 @@ import { Injectable } from '@angular/core';
 })
 export class LibE2eCypressForDummysConstructorService {
   /**
+   * Hace redimensionable cualquier modal pasado por referencia.
+   * Retorna una función para limpiar listeners si el padre lo necesita.
+   */
+  public makeModalResizable(
+    modal: HTMLElement,
+    options?: { minWidth?: number; minHeight?: number }
+  ) {
+    if (!modal || modal.querySelector('.modal-resizer')) return () => {};
+    modal.style.resize = 'both';
+    modal.style.overflow = 'auto';
+    modal.style.minWidth = (options?.minWidth || 320) + 'px';
+    modal.style.minHeight = (options?.minHeight || 180) + 'px';
+    modal.style.position = 'fixed';
+    // Crear el resizer visual (esquina inferior derecha)
+    const resizer = document.createElement('div');
+    resizer.className = 'modal-resizer';
+    resizer.style.position = 'absolute';
+    resizer.style.width = '16px';
+    resizer.style.height = '16px';
+    resizer.style.right = '2px';
+    resizer.style.bottom = '2px';
+    resizer.style.cursor = 'nwse-resize';
+    resizer.style.background = 'rgba(0,0,0,0.1)';
+    resizer.style.zIndex = '10';
+    modal.appendChild(resizer);
+    // Lógica de resize manual
+    let isResizing = false;
+    let lastX = 0;
+    let lastY = 0;
+    const mouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      const rect = modal.getBoundingClientRect();
+      modal.style.width = rect.width + dx + 'px';
+      modal.style.height = rect.height + dy + 'px';
+    };
+    const mouseUp = () => {
+      isResizing = false;
+      document.body.style.userSelect = '';
+    };
+    resizer.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      isResizing = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      document.body.style.userSelect = 'none';
+    });
+    window.addEventListener('mousemove', mouseMove);
+    window.addEventListener('mouseup', mouseUp);
+    // Retornar función para limpiar listeners si el padre lo necesita
+    return () => {
+      window.removeEventListener('mousemove', mouseMove);
+      window.removeEventListener('mouseup', mouseUp);
+      if (resizer.parentNode) resizer.parentNode.removeChild(resizer);
+    };
+  }
+  /**
    * Devuelve la configuración para un modal SweetAlert2 reutilizable.
    * No ejecuta el modal, solo retorna el objeto de configuración.
    */
@@ -19,7 +79,14 @@ export class LibE2eCypressForDummysConstructorService {
     },
     componentContext: any
   ) {
-    const { title, containerId, component, inputs = {}, stateFlag, onClose } = params;
+    const {
+      title,
+      containerId,
+      component,
+      inputs = {},
+      stateFlag,
+      onClose,
+    } = params;
     return {
       title,
       html: `<div id="${containerId}"></div>`,
@@ -31,7 +98,11 @@ export class LibE2eCypressForDummysConstructorService {
       didOpen: () => {
         componentContext.constructorService.makeSwalDraggable();
         componentContext.constructorService.setSwal2DataCyAttribute();
-        componentContext.clearAndCreateComponent(containerId, component, inputs);
+        componentContext.clearAndCreateComponent(
+          containerId,
+          component,
+          inputs
+        );
         componentContext.setModalFlag(stateFlag, true);
       },
       willClose: () => {
@@ -95,7 +166,7 @@ export class LibE2eCypressForDummysConstructorService {
    */
   public makeSwalDraggableByContentId(contentId: string) {
     // Busca el contenedor del contenido
-    debugger
+    debugger;
     const content = document.getElementById(contentId);
     if (!content) {
       this.makeSwalDraggable(); // fallback
@@ -108,7 +179,9 @@ export class LibE2eCypressForDummysConstructorService {
       swal = document.querySelector('.swal2-popup') as HTMLElement;
     }
     // Busca el header dentro de ese swal
-    let dragArea = swal ? swal.querySelector('.swal2-header') as HTMLElement : null;
+    let dragArea = swal
+      ? (swal.querySelector('.swal2-header') as HTMLElement)
+      : null;
     if (!dragArea && swal) {
       dragArea = swal.querySelector('.swal2-title') as HTMLElement;
     }
