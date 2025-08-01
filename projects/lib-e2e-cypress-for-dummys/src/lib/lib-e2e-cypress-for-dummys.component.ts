@@ -345,6 +345,12 @@ export class LibE2eRecorderComponent {
           Swal.close();
         });
       }
+      // Suscribirse al evento de cierre por guardado
+      if ((compRef.instance as any).closeModal) {
+        (compRef.instance as any).closeModal.subscribe(() => {
+          Swal.close();
+        });
+      }
     }
     if (component === TestPrevisualizerComponent) {
       this.testPrevisualizerCompRef = compRef;

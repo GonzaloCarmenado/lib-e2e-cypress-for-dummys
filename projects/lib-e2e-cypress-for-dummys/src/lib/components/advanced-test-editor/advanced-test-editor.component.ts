@@ -13,6 +13,7 @@ import { AdvancedtestTransformationService } from './advanced-test-editor.transf
   styleUrl: './advanced-test-editor.component.scss',
 })
 export class AdvancedTestEditorComponent implements OnInit {
+  @Output() closeModal = new EventEmitter<void>();
   public e2eTree: any[] = [];
   @Input() testId?: any;
   public selectedFile: any = null;
@@ -32,7 +33,7 @@ export class AdvancedTestEditorComponent implements OnInit {
     private readonly persistService: LibE2eCypressForDummysPersistentService,
     public translationService: TranslationService,
     private readonly transformationService: AdvancedtestTransformationService
-  ) { }
+  ) {}
 
   public ngOnInit() {
     this.getFoldersData();
@@ -44,8 +45,7 @@ export class AdvancedTestEditorComponent implements OnInit {
   // --- Helpers de validación y mensajes ---
   private warn(msgKey: string, extra?: string) {
     console.warn(
-      this.translationService.translate(msgKey) +
-      (extra ? ': ' + extra : '')
+      this.translationService.translate(msgKey) + (extra ? ': ' + extra : '')
     );
   }
   private alert(msgKey: string) {
@@ -68,7 +68,9 @@ export class AdvancedTestEditorComponent implements OnInit {
       if (!dirHandle) return this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
       for await (const entry of dirHandle.values()) {
         if (entry.kind === 'directory' && entry.name === 'e2e') {
-          const tree = await this.transformationService.scanDirectory(entry as FileSystemDirectoryHandle);
+          const tree = await this.transformationService.scanDirectory(
+            entry as FileSystemDirectoryHandle
+          );
           this.e2eTree = tree.children;
           return;
         }
@@ -111,18 +113,22 @@ export class AdvancedTestEditorComponent implements OnInit {
   }
 
   public async onFileClick(file: any) {
-    if (!this.transformationService.isFile(file)) return this.warn('ADVANCED_EDITOR.NOT_A_FILE');
+    if (!this.transformationService.isFile(file))
+      return this.warn('ADVANCED_EDITOR.NOT_A_FILE');
     this.selectedFile = file;
     this.saveButtonEnabled = true;
     const dirHandle = await this.getRootDirHandle();
     if (!dirHandle) return this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
     const fileHandle = await this.findFileHandleRecursive(dirHandle, file.name);
-    if (!fileHandle) return this.warn('ADVANCED_EDITOR.FILE_HANDLE_NOT_FOUND', file.name);
+    if (!fileHandle)
+      return this.warn('ADVANCED_EDITOR.FILE_HANDLE_NOT_FOUND', file.name);
     const content = await this.readFileContent(fileHandle);
     this.selectedFileHandle = fileHandle;
     this.selectedFileContent = content;
   }
-  private async readFileContent(fileHandle: FileSystemFileHandle): Promise<string> {
+  private async readFileContent(
+    fileHandle: FileSystemFileHandle
+  ): Promise<string> {
     const fileObj = await fileHandle.getFile();
     return fileObj.text();
   }
@@ -147,15 +153,26 @@ export class AdvancedTestEditorComponent implements OnInit {
     if (!this.testItBlock) return;
     let newContent = this.selectedFileContent;
     if (this.interceptorsBlock)
-      newContent = this.transformationService.insertBeforeEach(newContent, this.interceptorsBlock, this.alert.bind(this));
-    newContent = this.transformationService.insertItBlock(newContent, this.testItBlock, this.alert.bind(this));
+      newContent = this.transformationService.insertBeforeEach(
+        newContent,
+        this.interceptorsBlock,
+        this.alert.bind(this)
+      );
+    newContent = this.transformationService.insertItBlock(
+      newContent,
+      this.testItBlock,
+      this.alert.bind(this)
+    );
     if (!newContent) return;
     await this.writeFileContent(this.selectedFileHandle, newContent);
     this.alert('ADVANCED_EDITOR.SUCCESS');
-    try { (window as any).Swal?.close(); } catch { }
+    this.closeModal.emit();
   }
 
-  private async writeFileContent(fileHandle: FileSystemFileHandle, content: string) {
+  private async writeFileContent(
+    fileHandle: FileSystemFileHandle,
+    content: string
+  ) {
     const writable = await fileHandle.createWritable();
     await writable.write(content);
     await writable.close();
@@ -166,9 +183,13 @@ export class AdvancedTestEditorComponent implements OnInit {
     fileName: string
   ): Promise<FileSystemFileHandle | null> {
     for await (const entry of dirHandle.values()) {
-      if (entry.kind === 'file' && entry.name === fileName) return entry as FileSystemFileHandle;
+      if (entry.kind === 'file' && entry.name === fileName)
+        return entry as FileSystemFileHandle;
       else if (entry.kind === 'directory') {
-        const found = await this.findFileHandleRecursive(entry as FileSystemDirectoryHandle, fileName);
+        const found = await this.findFileHandleRecursive(
+          entry as FileSystemDirectoryHandle,
+          fileName
+        );
         if (found) return found;
       }
     }
