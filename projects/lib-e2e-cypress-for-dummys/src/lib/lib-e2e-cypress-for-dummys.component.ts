@@ -15,10 +15,7 @@ import { LibE2eCypressForDummysTransformationService } from './lib-e2e-cypress-f
 import { TestEditorComponent } from './components/test-editor/test-editor.component';
 import { AdvancedTestEditorComponent } from './components/advanced-test-editor/advanced-test-editor.component';
 import { ConfigurationComponent } from './components/configurations/configuration.component';
-import {
-  TranslationService,
-  Lang,
-} from './services/lib-e2e-cypress-for-dummys-translate.service';
+import { TranslationService } from './services/lib-e2e-cypress-for-dummys-translate.service';
 import Swal from 'sweetalert2';
 
 // Opciones para los modales SweetAlert2
@@ -32,18 +29,14 @@ export interface SwalModalOptions {
 }
 import { LIB_E2E_CYPRESS_FOR_DUMMYS_SWAL2_STYLES } from './models/swal2-custom-styles';
 import { LibE2eCypressForDummysConstructorService } from './lib-e2e-cypress-for-dummys.constructor.service';
+import { ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'lib-e2e-recorder',
   templateUrl: './lib-e2e-cypress-for-dummys.component.html',
   styleUrls: ['./lib-e2e-cypress-for-dummys.component.scss'],
   standalone: true,
-  imports: [
-    DialogModule,
-    LibE2eRecorderComponent,
-    SaveTestComponent,
-    TestEditorComponent,
-    AdvancedTestEditorComponent,
-  ],
+  imports: [DialogModule],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class LibE2eRecorderComponent {
   @ViewChild('testBtnVC', { read: ElementRef })
@@ -438,7 +431,7 @@ export class LibE2eRecorderComponent {
     ) {
       const result = await Swal.fire({
         title: '¿Permitir acceso de lectura/escritura a archivos locales?',
-        text: 'La librería puede leer y editar archivos de tu proyecto local solo si das permiso. Se solicitará acceso a la carpeta donde se guardarán los tests automáticamente.',
+        text: 'La librería puede leer y editar archivos de tu proyecto local solo si das permiso. Se solicitará acceso a la carpeta donde se guardarán los tests automáticamente. Debes seleccionar la carpeta "cypress" de tu proyecto.',
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Sí, permitir',

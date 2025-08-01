@@ -1,19 +1,30 @@
 .e2e-tree-container {
   padding: 1rem;
 }
+
+ul {
+  list-style: none;
+  padding-left: 1.2em !important;
+}
 .e2e-tree {
   list-style: none;
-  padding-left: 1.2em;
+  padding-left: 1.2em !important;
+
+  //  padding-left: 0 !important;
+  //   list-style-type: none;
+  //  margin-bottom: 0 !important;
 }
 .folder-node > details > summary {
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1.1em;
+  cursor: pointer !important;
+  font-weight: bold !important;
+  font-size: 1.1em !important;
+  font-size: 18px !important;
 }
 .file-node {
   cursor: pointer;
   color: #1976d2;
-  margin-left: 1.2em;
+  margin-left: 1.2em !important;
+  font-size: 17px !important;
   padding: 2px 0;
   border-radius: 3px;
   transition: background 0.2s;
@@ -83,6 +94,9 @@
 .folder-summary {
   padding-left: 0 !important;
   text-align: left !important;
+  font-size: 18px !important;
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
 }
 .file-padding {
   padding-left: 2em !important;
@@ -99,7 +113,7 @@
   background: #1e1e1e;
   color: #d4d4d4;
   border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   z-index: 2000; // Aumenta el z-index para estar por encima de otros elementos
   display: flex;
   flex-direction: column;
@@ -128,14 +142,14 @@
 .file-content-preview {
   background: #1e1e1e;
   color: #d4d4d4;
-  font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'monospace';
+  font-family: "Fira Mono", "Consolas", "Menlo", "Monaco", "monospace";
   font-size: 1.05rem;
   border-radius: 6px;
   border: 1px solid #333;
   padding: 1.5rem;
   overflow: auto;
   flex: 1 1 auto;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   margin-top: 0.5rem;
   white-space: pre;
 }
@@ -158,7 +172,7 @@
 }
 
 .preview-modal h3 {
-  font-family: 'Segoe UI', 'Arial', sans-serif;
+  font-family: "Segoe UI", "Arial", sans-serif;
   color: #fff;
   margin-bottom: 0.5rem;
   font-size: 1.2rem;

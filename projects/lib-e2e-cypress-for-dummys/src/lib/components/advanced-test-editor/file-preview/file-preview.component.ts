@@ -1,8 +1,29 @@
-import { Component, EventEmitter, Input, Output, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
-import { EditorView, highlightSpecialChars, drawSelection } from '@codemirror/view';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges,
+  ViewEncapsulation,
+} from '@angular/core';
+import {
+  EditorView,
+  highlightSpecialChars,
+  drawSelection,
+} from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { javascript } from '@codemirror/lang-javascript';
-import { defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching, foldGutter } from '@codemirror/language';
+import {
+  defaultHighlightStyle,
+  syntaxHighlighting,
+  indentOnInput,
+  bracketMatching,
+  foldGutter,
+} from '@codemirror/language';
 import { history } from '@codemirror/commands';
 import { autocompletion } from '@codemirror/autocomplete';
 import { CommonModule } from '@angular/common';
@@ -14,6 +35,7 @@ import { DraggableDirective } from '../../../directives/draggable.directive';
   styleUrls: ['./file-preview.component.scss'],
   standalone: true,
   imports: [CommonModule, DraggableDirective],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class FilePreviewComponent implements AfterViewInit, OnChanges {
   @Input() fileName: string | null = null;
@@ -23,7 +45,8 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
   @Input() itBlock: string = '';
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<string>();
-  @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('editorContainer', { static: true })
+  editorContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('modal', { static: true }) modalRef!: ElementRef<HTMLDivElement>;
   private editorView: EditorView | null = null;
 
@@ -60,7 +83,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
 
   private highlightDataCyElements(selectedText: string) {
     // Eliminar marcas anteriores
-    document.querySelectorAll('.data-cy-highlight').forEach(el => {
+    document.querySelectorAll('.data-cy-highlight').forEach((el) => {
       el.classList.remove('data-cy-highlight');
     });
     // Buscar todos los data-cy="..."
@@ -71,9 +94,9 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
       found.push(match[1]);
     }
     // Añadir clase a los elementos encontrados
-    found.forEach(dataCy => {
+    found.forEach((dataCy) => {
       const els = document.querySelectorAll(`[data-cy="${dataCy}"]`);
-      els.forEach(el => el.classList.add('data-cy-highlight'));
+      els.forEach((el) => el.classList.add('data-cy-highlight'));
     });
     // Añadir la clase CSS si no existe
     if (!document.getElementById('data-cy-highlight-style')) {
@@ -87,7 +110,11 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['fileContent'] && this.editorView) {
       this.editorView.dispatch({
-        changes: { from: 0, to: this.editorView.state.doc.length, insert: this.fileContent || '' }
+        changes: {
+          from: 0,
+          to: this.editorView.state.doc.length,
+          insert: this.fileContent || '',
+        },
       });
     }
   }
@@ -101,10 +128,10 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
       langExtension = javascript();
     }
     const whiteCaretTheme = EditorView.theme({
-      "& .cm-line": { caretColor: "#000" },
-      "& .cm-content": { background: "#fff", color: "#222" },
-      "& .cm-editor": { background: "#fff", color: "#222" },
-      "& .cm-cursor": { borderLeft: "2px solid #000" }
+      '& .cm-line': { caretColor: '#000' },
+      '& .cm-content': { background: '#fff', color: '#222' },
+      '& .cm-editor': { background: '#fff', color: '#222' },
+      '& .cm-cursor': { borderLeft: '2px solid #000' },
     });
 
     const state = EditorState.create({
@@ -119,13 +146,13 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
         autocompletion(),
         langExtension,
         EditorView.editable.of(true),
-        whiteCaretTheme
+        whiteCaretTheme,
         // Elimina el updateListener de selección aquí
-      ]
+      ],
     });
     this.editorView = new EditorView({
       state,
-      parent: this.editorContainer.nativeElement
+      parent: this.editorContainer.nativeElement,
     });
   }
 
