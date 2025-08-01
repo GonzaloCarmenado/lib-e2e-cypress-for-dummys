@@ -155,7 +155,10 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
       '& .cm-line': { caretColor: '#000' },
       '& .cm-content': { background: '#fff', color: '#222' },
       '& .cm-editor': { background: '#fff', color: '#222' },
-      '& .cm-cursor': { borderLeft: '2px solid #000 !important', background: 'none !important' },
+      '& .cm-cursor': {
+        borderLeft: '2px solid #000 !important',
+        background: 'none !important',
+      },
     });
 
     const state = EditorState.create({
