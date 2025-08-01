@@ -71,6 +71,7 @@ export class LibE2eRecorderComponent {
     this.constructorService.injectSwal2Styles(
       LIB_E2E_CYPRESS_FOR_DUMMYS_SWAL2_STYLES
     );
+    this.constructorService.injectModalScrollbarStyles();
     this.initSubscriptions();
     this.getHttpConfigurations();
     this.initializeLanguage();

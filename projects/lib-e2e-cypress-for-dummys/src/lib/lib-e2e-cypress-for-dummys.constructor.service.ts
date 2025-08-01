@@ -5,6 +5,42 @@ import { Injectable } from '@angular/core';
 })
 export class LibE2eCypressForDummysConstructorService {
   /**
+   * Inyecta estilos personalizados para el scrollbar de los modales.
+   * Se aplica a SweetAlert2 y a cualquier modal con clase .modal-resizer o .swal2-popup.
+   */
+  public injectModalScrollbarStyles(
+    styleId = 'lib-e2e-cypress-scrollbar-styles'
+  ) {
+    if (document.getElementById(styleId)) return;
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.innerHTML = `
+      /* Scrollbar para SweetAlert2 y modales custom */
+      .swal2-popup, .modal-resizer, .swal2-html-container, .swal2-content, .swal2-container, .modal {
+        scrollbar-width: thin;
+        scrollbar-color: #1976d2 #e0e0e0;
+      }
+      .swal2-popup::-webkit-scrollbar, .modal-resizer::-webkit-scrollbar, .swal2-html-container::-webkit-scrollbar, .swal2-content::-webkit-scrollbar, .swal2-container::-webkit-scrollbar, .modal::-webkit-scrollbar {
+        width: 8px;
+        background: #e0e0e0;
+        border-radius: 8px;
+      }
+      .swal2-popup::-webkit-scrollbar-thumb, .modal-resizer::-webkit-scrollbar-thumb, .swal2-html-container::-webkit-scrollbar-thumb, .swal2-content::-webkit-scrollbar-thumb, .swal2-container::-webkit-scrollbar-thumb, .modal::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #1976d2 60%, #42a5f5 100%);
+        border-radius: 8px;
+        min-height: 24px;
+      }
+      .swal2-popup::-webkit-scrollbar-thumb:hover, .modal-resizer::-webkit-scrollbar-thumb:hover, .swal2-html-container::-webkit-scrollbar-thumb:hover, .swal2-content::-webkit-scrollbar-thumb:hover, .swal2-container::-webkit-scrollbar-thumb:hover, .modal::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #1565c0 60%, #1976d2 100%);
+      }
+      .swal2-popup::-webkit-scrollbar-track, .modal-resizer::-webkit-scrollbar-track, .swal2-html-container::-webkit-scrollbar-track, .swal2-content::-webkit-scrollbar-track, .swal2-container::-webkit-scrollbar-track, .modal::-webkit-scrollbar-track {
+        background: #e0e0e0;
+        border-radius: 8px;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  /**
    * Hace redimensionable cualquier modal pasado por referencia.
    * Retorna una función para limpiar listeners si el padre lo necesita.
    */
