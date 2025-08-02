@@ -147,6 +147,15 @@ export class LibE2eCypressForDummysConstructorService {
       },
     };
   }
+
+  /**
+   * Inyecta estilos personalizados para SweetAlert2. Necesario para que funcione correctamente, ya que si no
+   * muchos estilos son sobreescritos más adelante.
+   * @param {string} styles
+   * @param {string} [styleId='lib-e2e-cypress-for-dummys-swal2-styles']
+   * @return {*} 
+   * @memberof LibE2eCypressForDummysConstructorService
+   */
   public injectSwal2Styles(
     styles: string,
     styleId = 'lib-e2e-cypress-for-dummys-swal2-styles'
@@ -247,10 +256,13 @@ export class LibE2eCypressForDummysConstructorService {
     };
   }
 
-  /**
-   * Añade el atributo data-cy a los contenedores de SweetAlert2.
-   */
-  public setSwal2DataCyAttribute(dataCy = 'lib-e2e-cypress-for-dummys') {
+ /**
+  * Añade el atributo data-cy a los contenedores de SweetAlert2. Esto permite a la aplicación no registrar clicks
+  * en los modales para no ensuciar los test de Cypress.
+  * @param {string} [dataCy='lib-e2e-cypress-for-dummys']
+  * @memberof LibE2eCypressForDummysConstructorService
+  */
+ public setSwal2DataCyAttribute(dataCy = 'lib-e2e-cypress-for-dummys') {
     const htmlContainer = document.querySelector('.swal2-html-container');
     if (htmlContainer) {
       htmlContainer.setAttribute('data-cy', dataCy);

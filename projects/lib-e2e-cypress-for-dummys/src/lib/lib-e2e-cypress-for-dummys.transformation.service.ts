@@ -13,6 +13,13 @@ export class LibE2eCypressForDummysTransformationService {
     return (defaultLangs.includes(lang as Lang) ? lang : 'en') as Lang;
   }
 
+  /**
+   * Genera la estructura básica de un test 'it' de Cypress.
+   * @param {string} description
+   * @param {string[]} commands
+   * @return {*}  {string}
+   * @memberof LibE2eCypressForDummysTransformationService
+   */
   public generateItDescription(
     description: string,
     commands: string[]

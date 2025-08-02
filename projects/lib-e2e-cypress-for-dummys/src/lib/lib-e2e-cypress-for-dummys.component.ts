@@ -7,7 +7,6 @@ import {
   Injector,
 } from '@angular/core';
 import { LibE2eCypressForDummysService } from './services/lib-e2e-cypress-for-dummys.service';
-import { DialogModule } from 'primeng/dialog';
 import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
 import { SaveTestComponent } from './components/save-test-data/save-test-data.component';
 import { LibE2eCypressForDummysPersistentService } from './services/lib-e2e-cypress-for-dummys-persist.service';
@@ -35,7 +34,6 @@ import { ViewEncapsulation } from '@angular/core';
   templateUrl: './lib-e2e-cypress-for-dummys.component.html',
   styleUrls: ['./lib-e2e-cypress-for-dummys.component.scss'],
   standalone: true,
-  imports: [DialogModule],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class LibE2eRecorderComponent {
@@ -77,9 +75,12 @@ export class LibE2eRecorderComponent {
     this.initializeLanguage();
     this.checkAndRequestFilePermission();
   }
+
   /**
    * Inicializa todas las suscripciones a observables del servicio E2E.
    * Centraliza la lógica reactiva del componente.
+   * @private
+   * @memberof LibE2eRecorderComponent
    */
   private initSubscriptions(): void {
     this.e2eService.isRecordingObservable().subscribe((val: any) => {
@@ -107,11 +108,17 @@ export class LibE2eRecorderComponent {
 
   /**
    * Inicializa el idioma al cargar el componente.
+   * @private
+   * @memberof LibE2eRecorderComponent
    */
   private initializeLanguage(): void {
     this.setLanguage();
   }
 
+  /**
+   * Activa o desactiva la grabación de comandos de Cypress.
+   * @memberof LibE2eRecorderComponent
+   */
   public toggle(): void {
     this.e2eService.toggleRecording();
   }
@@ -119,6 +126,7 @@ export class LibE2eRecorderComponent {
   /**
    * Limpia comandos e interceptores tras guardar un test y notifica al previsualizador.
    * Centraliza la lógica de limpieza post-guardado.
+   * @memberof LibE2eRecorderComponent
    */
   private clearTestData(): void {
     this.e2eService.clearCommands();
@@ -128,6 +136,11 @@ export class LibE2eRecorderComponent {
   }
 
   //#region CallBAcks de componentes hijos
+  /**
+   * Una vez guardado el test, limpia los datos y cierra el modal.
+   * @param {(string | null)} description
+   * @memberof LibE2eRecorderComponent
+   */
   public onSaveTest(description: string | null): void {
     if (description) {
       const commands = this.cypressCommands;
@@ -144,6 +157,11 @@ export class LibE2eRecorderComponent {
     this.clearTestData();
   }
 
+  /**
+   * Almacena el test desde la opcion de exportacion (o guardado avanzado) y limpia los datos
+   * @param {(string | null)} description
+   * @memberof LibE2eRecorderComponent
+   */
   public onSaveAndExportTest(description: string | null): void {
     if (description) {
       const commands = this.cypressCommands;
@@ -162,19 +180,11 @@ export class LibE2eRecorderComponent {
     this.clearTestData();
   }
 
-  public showAdvancedEditorDialogWithTestId(testId: any): void {
-    this.openSwalModal({
-      title: this.translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR'),
-      containerId: 'commands-advanced-editor-modal-content',
-      component: AdvancedTestEditorComponent,
-      stateFlag: 'isAdvancedEditorDialogOpen',
-      inputs: { testId },
-    });
-  }
-
   /**
    * Callback centralizado para acciones de componentes hijos.
    * Permite extender fácilmente la gestión de eventos de hijos.
+   * @param {{ type: string; payload?: any }} event
+   * @memberof LibE2eRecorderComponent
    */
   public handleChildEvent(event: { type: string; payload?: any }): void {
     if (event.type === 'saveTest') {
@@ -183,8 +193,17 @@ export class LibE2eRecorderComponent {
   }
   //#endregion CallBAcks de componentes hijos
 
-  //#region Accesos rápidos
+  /**
+   * Permite acceder a los didferentes dialogos mediante atajos de teclado.
+   * Ctrl + R: Alterna la grabación de comandos.
+   * Ctrl + 1: Muestra el diálogo de tests guardados.
+   * Ctrl + 2: Muestra el diálogo de comandos.  
+   * Ctrl + 3: Muestra el diálogo de configuración.
+   * @param {KeyboardEvent} event
+   * @memberof LibE2eRecorderComponent
+   */
   @HostListener('window:keydown', ['$event'])
+
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.ctrlKey && event.key.toLowerCase() === 'r') {
       event.preventDefault();
@@ -203,6 +222,12 @@ export class LibE2eRecorderComponent {
   //#endregion Accesos rápidos
 
   //#region configurciones generales de la aplicación
+  /**
+   * Obtiene la configuracion sobre la generación de inteceptores desde la BBDD local y lo guarda en el 
+   * localStorage para facilitar su uso.
+   * @private
+   * @memberof LibE2eRecorderComponent
+   */
   private getHttpConfigurations(): void {
     this.persistService.getExtendedHttpCommandsConfig().subscribe((tests) => {
       if (tests === null) {
@@ -215,8 +240,10 @@ export class LibE2eRecorderComponent {
   }
 
   /**
-   * Cambia el idioma de la aplicación y actualiza la traducción.
-   * Si no se pasa idioma, detecta automáticamente.
+    * Cambia el idioma de la aplicación y actualiza la traducción.
+     * Si no se pasa idioma, detecta automáticamente.
+   * @param {string} [lang]
+   * @memberof LibE2eRecorderComponent
    */
   public setLanguage(lang?: string): void {
     const language = lang
@@ -232,6 +259,7 @@ export class LibE2eRecorderComponent {
    * Abre un modal SweetAlert2 reutilizable para todos los diálogos del componente.
    * Centraliza la gestión de apertura, cierre, drag y atributos data-cy.
    * @param options Opciones del modal (título, id de contenedor, componente, inputs, estado, callback opcional)
+   * @memberof LibE2eRecorderComponent
    */
   private openSwalModal(options: SwalModalOptions) {
     const { stateFlag } = options;
@@ -258,6 +286,25 @@ export class LibE2eRecorderComponent {
     }, 0);
   }
 
+  /**
+   * Abre el modal SweetAlert2 para el editor avanzado con el test seleccionado.
+   * @param {*} testId
+   * @memberof LibE2eRecorderComponent
+   */
+  public showAdvancedEditorDialogWithTestId(testId: any): void {
+    this.openSwalModal({
+      title: this.translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR'),
+      containerId: 'commands-advanced-editor-modal-content',
+      component: AdvancedTestEditorComponent,
+      stateFlag: 'isAdvancedEditorDialogOpen',
+      inputs: { testId },
+    });
+  }
+
+    /**
+   * Abre el modal SweetAlert2 para el editor avanzado sin test guardado,
+   * @memberof LibE2eRecorderComponent
+   */
   public showAdvancedEditorDialog(): void {
     this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR'),
