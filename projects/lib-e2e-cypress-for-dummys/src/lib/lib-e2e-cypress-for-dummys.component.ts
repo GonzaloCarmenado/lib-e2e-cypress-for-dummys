@@ -170,7 +170,7 @@ export class LibE2eRecorderComponent {
         .insertTest(description, commands, interceptors)
         .subscribe((id) => {
           if (id) {
-            this.showAdvancedEditorDialogWithTestId(id);
+            this.showAdvancedEditorDialog(id);
           }
         });
       if (this.e2eService.clearInterceptors) {
@@ -287,33 +287,28 @@ export class LibE2eRecorderComponent {
   }
 
   /**
-   * Abre el modal SweetAlert2 para el editor avanzado con el test seleccionado.
-   * @param {*} testId
+   * Abre el modal SweetAlert2 para el editor avanzado, con o sin testId. Esto diferencia entre cuando se está
+   * guardando un test y es necesario que el componente lo obtenga o cuando entras en modo "consulta"
+   * @param {any} [testId] Opcional, id del test a cargar
    * @memberof LibE2eRecorderComponent
    */
-  public showAdvancedEditorDialogWithTestId(testId: any): void {
-    this.openSwalModal({
+  public showAdvancedEditorDialog(testId?: any): void {
+    const options: SwalModalOptions = {
       title: this.translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR'),
       containerId: 'commands-advanced-editor-modal-content',
       component: AdvancedTestEditorComponent,
       stateFlag: 'isAdvancedEditorDialogOpen',
-      inputs: { testId },
-    });
+    };
+    if (testId !== undefined) {
+      options.inputs = { testId };
+    }
+    this.openSwalModal(options);
   }
 
-    /**
-   * Abre el modal SweetAlert2 para el editor avanzado sin test guardado,
+  /**
+   * Abre el modal de vista rápida de comandos que se estan grabando ahora mismo (en esta sesión de grabación)
    * @memberof LibE2eRecorderComponent
    */
-  public showAdvancedEditorDialog(): void {
-    this.openSwalModal({
-      title: this.translation.translate('MAIN_FRAME.SHOW_ADVANCED_EDITOR'),
-      containerId: 'commands-advanced-editor-modal-content',
-      component: AdvancedTestEditorComponent,
-      stateFlag: 'isAdvancedEditorDialogOpen',
-    });
-  }
-
   public showCommandsDialog(): void {
     this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.DIALOG_COMMANDS'),
@@ -327,6 +322,10 @@ export class LibE2eRecorderComponent {
     });
   }
 
+  /**
+   * Abre el modal de vista rápida de tests guardados.
+   * @memberof LibE2eRecorderComponent
+   */
   public showSavedTestsDialog(): void {
     this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.DIALOG_SAVED_TESTS'),
@@ -337,6 +336,11 @@ export class LibE2eRecorderComponent {
     });
   }
 
+  /**
+   * Abre el modal SweetAlert2 para guardar un test.
+   * Permite al usuario guardar el test actual con una descripción.
+   * @memberof LibE2eRecorderComponent
+   */
   public showSaveTestDialog(): void {
     this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.DIALOG_SAVE'),
@@ -346,6 +350,10 @@ export class LibE2eRecorderComponent {
     });
   }
 
+  /**
+   * Abre el modal de configuración de la aplicación.
+   * @memberof LibE2eRecorderComponent
+   */
   public showSettingsDialog(): void {
     this.openSwalModal({
       title: this.translation.translate('MAIN_FRAME.SETTINGS'),
@@ -354,7 +362,16 @@ export class LibE2eRecorderComponent {
       stateFlag: 'isSettingsDialogOpen',
     });
   }
-
+  /**
+   * Permite gestionar la carga de componentes en un contenedor especifico. Mezcla parte de logica propia de 
+   * gestion de componentes de SweetAlert con logica propia. Usa diferentes eventos de callBack, ya que 
+   * este método es común a todos los coomponentes.
+   * @template T
+   * @param {string} containerId
+   * @param {*} component
+   * @param {Record<string, any>} [inputs={}]
+   * @memberof LibE2eRecorderComponent
+   */
   public clearAndCreateComponent<T>(
     containerId: string,
     component: any,
@@ -406,6 +423,10 @@ export class LibE2eRecorderComponent {
 
   /**
    * Setea el flag de estado de modal de forma segura (solo para los booleanos de modal).
+   * @private
+   * @param {keyof LibE2eRecorderComponent} flag
+   * @param {boolean} value
+   * @memberof LibE2eRecorderComponent
    */
   private setModalFlag(flag: keyof LibE2eRecorderComponent, value: boolean) {
     const allowedFlags = [
@@ -422,37 +443,14 @@ export class LibE2eRecorderComponent {
   //#endregion Paneles de la aplicación
 
   //#region Acceso a archivos locales
-  /**
-   * Solicita al usuario acceso a un archivo local para leerlo y editarlo.
-   * Devuelve el contenido y el handle para futuras escrituras.
-   * Solo funciona en navegadores compatibles (Chrome, Edge, etc).
-   */
-  public async requestFileAccess(): Promise<{
-    content: string;
-    fileHandle: FileSystemFileHandle;
-  } | null> {
-    if (!('showOpenFilePicker' in window)) {
-      alert(
-        'Tu navegador no soporta el acceso directo a archivos locales. Prueba con Chrome o Edge.'
-      );
-      return null;
-    }
-    try {
-      const [fileHandle] = await (window as any).showOpenFilePicker({
-        multiple: false,
-      });
-      const file = await fileHandle.getFile();
-      const content = await file.text();
-      return { content, fileHandle };
-    } catch (err) {
-      return null;
-    }
-  }
+
 
   /**
    * Solicita al usuario acceso a una carpeta local (por ejemplo, la carpeta cypress) para leer y escribir archivos.
    * Guarda el handle serializado en la BBDD para futuras operaciones.
    * Solo funciona en navegadores compatibles (Chrome, Edge, etc).
+   * @return {*}  {(Promise<FileSystemDirectoryHandle | null>)}
+   * @memberof LibE2eRecorderComponent
    */
   public async requestDirectoryAccess(): Promise<FileSystemDirectoryHandle | null> {
     if (!('showDirectoryPicker' in window)) {
@@ -476,10 +474,17 @@ export class LibE2eRecorderComponent {
     }
   }
 
+  /**
+   * Muestra la ventana modal que informa al usuario sobre el acceso a archivos locales. Chrome va a seguir mostrando
+   * una ventana emergente propia para validar la respuesta del usuario, sin embargo, esta ventana nos permite conocer
+   * que carpeta quiere seleccionar el usuario y guardar la configuración.
+   * Si el usuario ya ha dado permiso, no hace nada.
+   * @private
+   * @return {*}  {Promise<void>}
+   * @memberof LibE2eRecorderComponent
+   */
   private async checkAndRequestFilePermission(): Promise<void> {
-    // Lee el nombre del proyecto desde la variable global JS
     const currentProjectName = (window as any).PROJECT_NAME || '';
-    // Consulta la configuración
     const config = await this.persistService
       .getConfig('allowReadWriteFiles')
       .toPromise();

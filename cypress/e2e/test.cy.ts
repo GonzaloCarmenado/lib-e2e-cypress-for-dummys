@@ -45,4 +45,12 @@ it('as', () => {
   cy.visit('/')
   cy.get('[data-cy="lib-e2e-cypress-for-dummys"]').invoke('hide');
 });
+
+it('fdsfs', () => {
+  cy.viewport(1900, 1200)
+  cy.visit('/')
+  cy.get('[data-cy="lib-e2e-cypress-for-dummys"]').invoke('hide');
+  cy.get('[data-cy="login-button"]').click()
+  cy.get('[data-cy="password-input"]').clear().type('dasda')
+});
 })
