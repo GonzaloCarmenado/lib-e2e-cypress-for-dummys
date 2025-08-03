@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, Input, ViewChild, AfterViewChecked } from '@angular/core';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-tr
   standalone: true,
   imports: [CommonModule],
 })
-export class TestPrevisualizerComponent {
+export class TestPrevisualizerComponent implements AfterViewChecked {
   @ViewChild('scrollCommands', { static: false })
   private readonly scrollCommands!: ElementRef;
   @ViewChild('scrollInterceptors', { static: false })
@@ -23,9 +23,9 @@ export class TestPrevisualizerComponent {
    */
   public showInterceptors = false;
 
-  constructor(public translation: TranslationService) {}
+  public translation = inject(TranslationService);
 
-  public ngAfterViewChecked() {
+  public ngAfterViewChecked(): void {
     this.scrollToBottom();
     this.scrollToBottomInterceptors();
   }

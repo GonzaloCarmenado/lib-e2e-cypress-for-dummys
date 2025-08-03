@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import {
   ClientModel,
@@ -16,14 +16,9 @@ import { AppTranslationService } from './services/translations.service';
   standalone: true,
 })
 export class AppComponent {
-  public translation: AppTranslationService;
-  constructor(
-    private readonly clientService: CommonConnectorClientsService,
-    translation: AppTranslationService,
-    private readonly router: Router
-  ) {
-    this.translation = translation;
-  }
+  public translation = inject(AppTranslationService);
+  private readonly clientService = inject(CommonConnectorClientsService);
+  private readonly router = inject(Router);
 
   public goToNavigationWindow(): void {
     this.router.navigate(['/navigation-window']);

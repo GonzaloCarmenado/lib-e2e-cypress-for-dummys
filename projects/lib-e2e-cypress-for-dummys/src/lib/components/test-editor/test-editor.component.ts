@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { DatePipe } from '@angular/common';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
@@ -19,18 +19,15 @@ export class TestEditorComponent implements OnInit {
   @Input() public visible = false;
   public tests: any[] = [];
   public expandedIndex: number | null = null;
-  public interceptorsByTest!: { [testId: number]: string[] };
-  public translation: TranslationService;
+  public interceptorsByTest!: Record<number, string[]>;
+  public translation = inject(TranslationService);
+  private readonly persistService = inject(LibE2eCypressForDummysPersistentService);
 
-  constructor(
-    private readonly persistService: LibE2eCypressForDummysPersistentService,
-    translation: TranslationService
-  ) {
+  constructor() {
     this.interceptorsByTest = {};
-    this.translation = translation;
   }
 
-  public ngOnInit() {
+  public ngOnInit():void {
     this.loadTests();
   }
 

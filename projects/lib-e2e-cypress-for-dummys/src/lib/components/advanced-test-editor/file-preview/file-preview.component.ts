@@ -9,11 +9,11 @@ import {
   OnChanges,
   SimpleChanges,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import {
   EditorView,
   highlightSpecialChars,
-  drawSelection,
 } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { javascript } from '@codemirror/lang-javascript';
@@ -39,32 +39,30 @@ import { LibE2eCypressForDummysConstructorService } from '../../../lib-e2e-cypre
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class FilePreviewComponent implements AfterViewInit, OnChanges {
-  @Input() fileName: string | null = null;
-  @Input() fileContent: string | null = null;
-  @Input() commands: string[] = [];
-  @Input() interceptors: string[] = [];
-  @Input() itBlock: string = '';
-  @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<string>();
+  @Input() public fileName: string | null = null;
+  @Input() public fileContent: string | null = null;
+  @Input() public commands: string[] = [];
+  @Input() public interceptors: string[] = [];
+  @Input() public itBlock: string = '';
+  @Output() public closeEmitter = new EventEmitter<void>();
+  @Output() public saveEmitter = new EventEmitter<string>();
   @ViewChild('editorContainer', { static: true })
-  editorContainer!: ElementRef<HTMLDivElement>;
-  @ViewChild('modal', { static: true }) modalRef!: ElementRef<HTMLDivElement>;
+  public editorContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('modal', { static: true }) public modalRef!: ElementRef<HTMLDivElement>;
   private editorView: EditorView | null = null;
 
   public selectedText: string = '';
 
-  constructor(
-    private readonly constructorService: LibE2eCypressForDummysConstructorService
-  ) {}
+  private readonly constructorService = inject(LibE2eCypressForDummysConstructorService);
 
-  get language(): 'typescript' | 'javascript' {
+  public get language(): 'typescript' | 'javascript' {
     if (!this.fileName) return 'javascript';
     const ext = this.fileName.split('.').pop()?.toLowerCase();
     if (ext === 'ts' || ext === 'tsx') return 'typescript';
     return 'javascript';
   }
 
-  public ngAfterViewInit() {
+  public ngAfterViewInit():void {
     this.centerModal();
     this.injectGlobalSelectionStyle();
     this.initEditor();
@@ -93,7 +91,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     container.addEventListener('keyup', this.handleSelectionEnd.bind(this));
   }
 
-  private handleSelectionEnd() {
+  private handleSelectionEnd(): void {
     if (this.editorView) {
       const sel = this.editorView.state.sliceDoc(
         this.editorView.state.selection.main.from,
@@ -105,7 +103,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  private highlightDataCyElements(selectedText: string) {
+  private highlightDataCyElements(selectedText: string): void {
     // Eliminar marcas anteriores
     document.querySelectorAll('.data-cy-highlight').forEach((el) => {
       el.classList.remove('data-cy-highlight');
@@ -131,7 +129,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  public ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes['fileContent'] && this.editorView) {
       this.editorView.dispatch({
         changes: {
@@ -143,7 +141,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     }
   }
 
-  private initEditor() {
+  private initEditor(): void {
     if (this.editorView) return;
     let langExtension;
     if (this.language === 'typescript') {
@@ -182,7 +180,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     });
   }
 
-  private injectGlobalSelectionStyle() {
+  private injectGlobalSelectionStyle(): void {
     const styleId = 'cm-global-selection-style';
     if (document.getElementById(styleId)) return;
     const style = document.createElement('style');
@@ -201,7 +199,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     document.head.appendChild(style);
   }
 
-  private centerModal() {
+  private centerModal(): void {
     // Centrar el modal en la pantalla solo al abrir
     setTimeout(() => {
       const modal = this.modalRef?.nativeElement;
@@ -218,19 +216,19 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     });
   }
 
-  public onClose() {
-    this.close.emit();
+  public onClose(): void {
+    this.closeEmitter.emit();
   }
 
-  public saveFile() {
+  public saveFile(): void {
     if (this.editorView) {
       const content = this.editorView.state.doc.toString();
-      this.save.emit(content);
-      this.close.emit();
+      this.saveEmitter.emit(content);
+      this.closeEmitter.emit();
     }
   }
 
-  public copyToClipboard(text: string) {
+  public copyToClipboard(text: string): void {
     navigator.clipboard.writeText(text);
   }
 }

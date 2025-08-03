@@ -18,15 +18,15 @@ export class AppTranslationService {
     de: I18N_DE
   };
 
-  setLang(lang: Lang) {
+  public setLang(lang: Lang):void {
     this.lang = lang;
   }
 
-  getLang(): Lang {
+  public getLang(): Lang {
     return this.lang;
   }
 
-  translate(key: string): string {
+  public translate(key: string): string {
     const keys = key.split('.');
     let value: any = this.translations[this.lang];
     for (const k of keys) {

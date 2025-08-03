@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
-export class ConfigurationComponent {
+export class ConfigurationComponent implements OnInit {
   /**
    * Controla la visibilidad de la sección de exportación de datos.
    * @type {boolean}
@@ -50,15 +50,12 @@ export class ConfigurationComponent {
     { value: 'it', label: 'Italiano' },
     { value: 'de', label: 'Deutsch' },
   ];
-  public translation: TranslationService;
+  public translation = inject(TranslationService);
   public advancedHttpConfig =
     localStorage.getItem('extendedHttpCommands') === 'true';
+  private readonly persistService = inject(LibE2eCypressForDummysPersistentService);
 
-  constructor(
-    private readonly persistService: LibE2eCypressForDummysPersistentService,
-    translation: TranslationService
-  ) {
-    this.translation = translation;
+  constructor() {
     this.persistService.getGeneralConfig().subscribe((config) => {
       if (config?.language) {
         this.selectedLanguage = config.language;
@@ -129,8 +126,9 @@ export class ConfigurationComponent {
       a.download = 'e2e-cypress-export.json';
       a.click();
       URL.revokeObjectURL(url);
-    } catch (e) {
+    } catch (error:unknown) {
       alert('Error al exportar los datos.');
+      console.error('Error exporting data:', error);
     }
   }
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
 import Swal from 'sweetalert2';
@@ -17,8 +17,8 @@ export class SaveTestComponent {
    * a guardado el test. Si se envia null, implica que el usuario ha cancelado la acción de guardar.
    * @memberof SaveTestComponent
    */
-  @Output() savetest = new EventEmitter<string | null>();
-  @Output() saveAndExport = new EventEmitter<string | null>();
+  @Output() private savetest = new EventEmitter<string | null>();
+  @Output() private saveAndExport = new EventEmitter<string | null>();
 
   /**
    * Controla el paso de guardado para mostrar la diferentes pantallas
@@ -33,7 +33,7 @@ export class SaveTestComponent {
    */
   public description = '';
 
-  constructor(public translation: TranslationService) {}
+  public translation = inject(TranslationService);
 
   public askSave(): void {
     this.step = 'desc';
@@ -41,23 +41,17 @@ export class SaveTestComponent {
 
   public confirmSave(): void {
     this.savetest.emit(this.description.trim());
-    try {
-      Swal.close();
-    } catch {}
+    Swal.close();
   }
 
   public confirmSaveAndExport(): void {
     this.saveAndExport.emit(this.description.trim());
-    try {
-      Swal.close();
-    } catch {}
+    Swal.close();
   }
 
   public cancel(): void {
     this.savetest.emit(null);
-    try {
-      Swal.close();
-    } catch {}
+    Swal.close();
   }
 
   /**

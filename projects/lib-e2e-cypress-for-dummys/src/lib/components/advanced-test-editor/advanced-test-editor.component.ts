@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LibE2eCypressForDummysPersistentService } from '../../services/lib-e2e-cypress-for-dummys-persist.service';
 import { TranslationService } from '../../services/lib-e2e-cypress-for-dummys-translate.service';
@@ -13,9 +13,11 @@ import { AdvancedtestTransformationService } from './advanced-test-editor.transf
   styleUrl: './advanced-test-editor.component.scss',
 })
 export class AdvancedTestEditorComponent implements OnInit {
-  @Output() closeModal = new EventEmitter<void>();
+  @Input() public testId?: any;
+  @Output() public closeModal = new EventEmitter<void>();
+  @Output() public closeModalPadre = new EventEmitter<void>();
+
   public e2eTree: any[] = [];
-  @Input() testId?: any;
   public selectedFile: any = null;
   public saveButtonEnabled = false;
   public cypressCommands: string[] = [];
@@ -27,36 +29,32 @@ export class AdvancedTestEditorComponent implements OnInit {
   public previewFileName: string | null = null;
   public previewFileContent: string | null = null;
 
-  @Output() closeModalPadre = new EventEmitter<void>();
+  private readonly persistService = inject(LibE2eCypressForDummysPersistentService);
+  public translationService = inject(TranslationService);
+  private readonly transformationService = inject(AdvancedtestTransformationService);
 
-  constructor(
-    private readonly persistService: LibE2eCypressForDummysPersistentService,
-    public translationService: TranslationService,
-    private readonly transformationService: AdvancedtestTransformationService
-  ) {}
-
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.getFoldersData();
     if (this.testId) {
       this.loadCypressCommandsForTest(this.testId);
     }
   }
 
-  // --- Helpers de validación y mensajes ---
-  private warn(msgKey: string, extra?: string) {
+  // Helpers de validación y mensajes
+  private warn(msgKey: string, extra?: string): void {
     console.warn(
       this.translationService.translate(msgKey) + (extra ? ': ' + extra : '')
     );
   }
-  private alert(msgKey: string) {
+  private alert(msgKey: string): void {
     alert(this.translationService.translate(msgKey));
   }
 
-  private async getConfigHandle(key: string) {
+  private async getConfigHandle(key: string): Promise<any | null> {
     const config = await this.persistService.getConfig(key).toPromise();
     return config ? config[key] : null;
   }
-  private async getRootDirHandle() {
+  private async getRootDirHandle():  Promise<any | null> {
     return this.getConfigHandle('cypressDirectoryHandle');
   }
 
@@ -85,8 +83,9 @@ export class AdvancedTestEditorComponent implements OnInit {
           await this.requestPermissions();
           // Reintenta el ciclo completo
           await this.getFoldersData();
-        } catch (permErr) {
+        } catch (permErr: unknown) {
           this.warn('ADVANCED_EDITOR.NO_PERMISSION');
+          console.error('Error requesting permissions:', permErr);
         }
       } else {
         this.warn('ADVANCED_EDITOR.NO_DIR_HANDLE');
@@ -94,7 +93,7 @@ export class AdvancedTestEditorComponent implements OnInit {
     }
   }
 
-  private async requestPermissions() {
+  private async requestPermissions(): Promise<void> {
     await this.persistService.requestDirectoryPermissions();
   }
 
@@ -107,12 +106,12 @@ export class AdvancedTestEditorComponent implements OnInit {
     return false;
   }
 
-  public markFileAsSelected(file: any) {
+  public markFileAsSelected(file: any): void {
     this.selectedFile = file;
     this.saveButtonEnabled = !this.saveButtonEnabled;
   }
 
-  public async onFileClick(file: any) {
+  public async onFileClick(file: any): Promise<void> {
     if (!this.transformationService.isFile(file))
       return this.warn('ADVANCED_EDITOR.NOT_A_FILE');
     this.selectedFile = file;
@@ -133,13 +132,13 @@ export class AdvancedTestEditorComponent implements OnInit {
     return fileObj.text();
   }
 
-  public async openFilePreview(file: any) {
+  public async openFilePreview(file: any): Promise<void> {
     await this.onFileClick(file);
     this.previewFileName = file.name;
     this.previewFileContent = this.selectedFileContent;
     this.isPreviewMode = true;
   }
-  public closePreview() {
+  public closePreview(): void {
     this.isPreviewMode = false;
     this.previewFileName = null;
     this.previewFileContent = null;
@@ -148,7 +147,7 @@ export class AdvancedTestEditorComponent implements OnInit {
     }
   }
 
-  public async saveCommandsToFile() {
+  public async saveCommandsToFile(): Promise<void> {
     if (!this.selectedFileHandle || !this.selectedFileContent) return;
     if (!this.testItBlock) return;
     let newContent = this.selectedFileContent;
@@ -172,7 +171,7 @@ export class AdvancedTestEditorComponent implements OnInit {
   private async writeFileContent(
     fileHandle: FileSystemFileHandle,
     content: string
-  ) {
+  ): Promise<void> {
     const writable = await fileHandle.createWritable();
     await writable.write(content);
     await writable.close();
@@ -196,8 +195,8 @@ export class AdvancedTestEditorComponent implements OnInit {
     return null;
   }
 
-  // --- Carga de comandos Cypress ---
-  private async loadCypressCommandsForTest(testId: any) {
+  //  Carga de comandos Cypress
+  private async loadCypressCommandsForTest(testId: any): Promise<void> {
     if (typeof this.persistService.getTestById === 'function') {
       const test = await this.persistService.getTestById(testId)?.toPromise?.();
       if (test?.cypressCommands) {
@@ -212,7 +211,7 @@ export class AdvancedTestEditorComponent implements OnInit {
     }
   }
 
-  public async onSaveFile(newContent: string) {
+  public async onSaveFile(newContent: string): Promise<void> {
     if (!this.selectedFileHandle) {
       this.alert('ADVANCED_EDITOR.FILE_HANDLE_NOT_FOUND');
       return;
