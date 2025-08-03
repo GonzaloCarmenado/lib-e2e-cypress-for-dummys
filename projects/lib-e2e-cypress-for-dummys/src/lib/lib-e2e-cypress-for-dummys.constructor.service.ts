@@ -10,7 +10,7 @@ export class LibE2eCypressForDummysConstructorService {
    */
   public injectModalScrollbarStyles(
     styleId = 'lib-e2e-cypress-scrollbar-styles'
-  ) {
+  ) : void{
     if (document.getElementById(styleId)) return;
     const style = document.createElement('style');
     style.id = styleId;
@@ -48,7 +48,7 @@ export class LibE2eCypressForDummysConstructorService {
     modal: HTMLElement,
     options?: { minWidth?: number; minHeight?: number }
   ) {
-    if (!modal || modal.querySelector('.modal-resizer')) return () => {};
+    if (!modal || modal.querySelector('.modal-resizer')) return () => { /* no-op */ };
     modal.style.resize = 'both';
     modal.style.overflow = 'auto';
     modal.style.minWidth = (options?.minWidth || 320) + 'px';
@@ -70,7 +70,7 @@ export class LibE2eCypressForDummysConstructorService {
     let isResizing = false;
     let lastX = 0;
     let lastY = 0;
-    const mouseMove = (e: MouseEvent) => {
+    const mouseMove = (e: MouseEvent): void => {
       if (!isResizing) return;
       const dx = e.clientX - lastX;
       const dy = e.clientY - lastY;
@@ -80,7 +80,7 @@ export class LibE2eCypressForDummysConstructorService {
       modal.style.width = rect.width + dx + 'px';
       modal.style.height = rect.height + dy + 'px';
     };
-    const mouseUp = () => {
+    const mouseUp = (): void => {
       isResizing = false;
       document.body.style.userSelect = '';
     };
@@ -114,7 +114,7 @@ export class LibE2eCypressForDummysConstructorService {
       onClose?: () => void;
     },
     componentContext: any
-  ) {
+  ): object {
     const {
       title,
       containerId,
@@ -159,7 +159,7 @@ export class LibE2eCypressForDummysConstructorService {
   public injectSwal2Styles(
     styles: string,
     styleId = 'lib-e2e-cypress-for-dummys-swal2-styles'
-  ) {
+  ): void {
     if (document.getElementById(styleId)) return;
     const style = document.createElement('style');
     style.id = styleId;
@@ -171,7 +171,7 @@ export class LibE2eCypressForDummysConstructorService {
    * Hace draggable el modal de SweetAlert2.
    * Ahora siempre actúa sobre el último modal abierto (el último .swal2-popup del DOM).
    */
-  public makeSwalDraggable() {
+  public makeSwalDraggable(): void {
     const popups = document.querySelectorAll('.swal2-popup');
     if (!popups.length) return;
     const swal = popups[popups.length - 1] as HTMLElement;
@@ -209,9 +209,8 @@ export class LibE2eCypressForDummysConstructorService {
    * Hace draggable el modal de SweetAlert2, buscando el swal2-popup que contenga el contentId indicado.
    * Si no se encuentra, hace fallback al primero.
    */
-  public makeSwalDraggableByContentId(contentId: string) {
+  public makeSwalDraggableByContentId(contentId: string): void {
     // Busca el contenedor del contenido
-    debugger;
     const content = document.getElementById(contentId);
     if (!content) {
       this.makeSwalDraggable(); // fallback
@@ -256,13 +255,13 @@ export class LibE2eCypressForDummysConstructorService {
     };
   }
 
- /**
-  * Añade el atributo data-cy a los contenedores de SweetAlert2. Esto permite a la aplicación no registrar clicks
-  * en los modales para no ensuciar los test de Cypress.
-  * @param {string} [dataCy='lib-e2e-cypress-for-dummys']
-  * @memberof LibE2eCypressForDummysConstructorService
-  */
- public setSwal2DataCyAttribute(dataCy = 'lib-e2e-cypress-for-dummys') {
+  /**
+   * Añade el atributo data-cy a los contenedores de SweetAlert2. Esto permite a la aplicación no registrar clicks
+   * en los modales para no ensuciar los test de Cypress.
+   * @param {string} [dataCy='lib-e2e-cypress-for-dummys']
+   * @memberof LibE2eCypressForDummysConstructorService
+   */
+  public setSwal2DataCyAttribute(dataCy = 'lib-e2e-cypress-for-dummys'): void {
     const htmlContainer = document.querySelector('.swal2-html-container');
     if (htmlContainer) {
       htmlContainer.setAttribute('data-cy', dataCy);

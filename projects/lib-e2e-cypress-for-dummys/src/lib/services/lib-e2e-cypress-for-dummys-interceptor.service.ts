@@ -25,7 +25,7 @@ export const CypressHttpInterceptor = (
         e2eService.registerInterceptor(req.method, url, alias);
 
         const extendedHttp = isExtendedHttpEnabled();
-        let cyWaitCommand = buildCyWaitCommand(
+        const cyWaitCommand: string = buildCyWaitCommand(
           req,
           event as HttpResponse<any>,
           alias,

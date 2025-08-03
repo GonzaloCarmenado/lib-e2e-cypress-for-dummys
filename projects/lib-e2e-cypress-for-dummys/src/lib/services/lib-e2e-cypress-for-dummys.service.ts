@@ -1,6 +1,6 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { INPUT_TYPES } from '../models/input-types.model';
 
 //TODO:
@@ -46,7 +46,9 @@ export class LibE2eCypressForDummysService {
    */
   private readonly inputDebounceTimers = new Map<HTMLElement, any>();
 
-  constructor(@Inject(DOCUMENT) private document: Document) {
+  private document: Document = inject(DOCUMENT);
+
+  constructor() {
     this.listenToClicks();
     this.listenToInput();
     this.listenToSelect();
@@ -59,7 +61,7 @@ export class LibE2eCypressForDummysService {
   private listenToRouteChanges(): void {
     let lastUrl =
       window.location.pathname + window.location.search + window.location.hash;
-    const addUrlCommand = (newUrl: string) => {
+    const addUrlCommand = (newUrl: string): void => {
       if (!this.isRecording$.getValue()) return;
       // Solo añade si la URL realmente cambió
       if (newUrl !== lastUrl) {
@@ -69,7 +71,7 @@ export class LibE2eCypressForDummysService {
     };
 
     // Intercepta pushState y replaceState
-    const wrapHistoryMethod = (type: 'pushState' | 'replaceState') => {
+    const wrapHistoryMethod = (type: 'pushState' | 'replaceState'): void => {
       const orig = history[type];
       history[type] = function (
         this: History,
@@ -119,7 +121,7 @@ export class LibE2eCypressForDummysService {
   private listenToClicks(): void {
     this.document.addEventListener('click', (event: Event) => {
       if (!this.isRecording$.getValue()) return;
-      let target = event.target as HTMLElement;
+      const target = event.target as HTMLElement;
       if (!target) return;
 
       // Modularización: Procesa el click y delega en helpers
@@ -409,7 +411,7 @@ export class LibE2eCypressForDummysService {
     }
   }
 
-  public getInterceptors$() {
+  public getInterceptors$(): Observable<string[]> {
     return this.interceptors$.asObservable();
   }
 
@@ -477,14 +479,14 @@ export class LibE2eCypressForDummysService {
     }
   }
 
-  public isRecordingObservable() {
+  public isRecordingObservable():Observable<boolean> {
     return this.isRecording$.asObservable();
   }
 
   //#endregion Métodos publicos de comunicación con componente
 
   //#region Métodos miscelaneos
-  public getCommands$() {
+  public getCommands$():Observable<string[]> {
     return this.commandList$.asObservable();
   }
 

@@ -16,7 +16,7 @@ export class TranslationService {
     it: I18N_IT,
     de: I18N_DE,
   };
-  public setLang(lang: Lang) {
+  public setLang(lang: Lang): void {
     this.lang = lang;
   }
 

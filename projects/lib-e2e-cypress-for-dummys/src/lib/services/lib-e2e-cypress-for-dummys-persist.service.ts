@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { map, Observable, of, switchMap, firstValueFrom } from 'rxjs';
-
+import { inject } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
+
+
 export class LibE2eCypressForDummysPersistentService {
-  constructor(private readonly dbService: NgxIndexedDBService) {}
+  private readonly dbService = inject(NgxIndexedDBService);
 
   //#region Persistencia de los Test
   // Insertar un test
@@ -245,7 +247,7 @@ export class LibE2eCypressForDummysPersistentService {
     return this.dbService.getAll('configuration').pipe(
       map((records: any[]) => {
         const found = records.find((r) =>
-          r.hasOwnProperty('extendedHttpCommands')
+          Object.prototype.hasOwnProperty.call(r, 'extendedHttpCommands')
         );
         return found ?? null;
       })
@@ -260,7 +262,7 @@ export class LibE2eCypressForDummysPersistentService {
       map((records: any[]) => {
         if (!records.length) return null;
         const config = records[0];
-        return config.hasOwnProperty(key) ? { [key]: config[key] } : null;
+        return Object.prototype.hasOwnProperty.call(config, key) ? { [key]: config[key] } : null;
       })
     );
   }
@@ -335,7 +337,9 @@ export class LibE2eCypressForDummysPersistentService {
   ): Promise<void> {
     if (!Array.isArray(items)) return;
     for (const item of items) {
-      const { id, ...itemWithoutId } = item;
+      // Elimina la propiedad id si existe, sin warning de variable no usada
+      const itemWithoutId = { ...item };
+      delete itemWithoutId.id;
       await firstValueFrom(this.dbService.add(store, itemWithoutId));
     }
   }
@@ -393,7 +397,6 @@ export class LibE2eCypressForDummysPersistentService {
     // Aquí puedes personalizar el mensaje o lógica según tu app
     // Por ejemplo, puedes mostrar un diálogo para que el usuario seleccione el directorio raíz de nuevo
     if ('showDirectoryPicker' in window) {
-      // @ts-ignore
       const dirHandle = await (window as any).showDirectoryPicker();
       // Guarda el handle en tu sistema de persistencia/configuración
       await firstValueFrom(this.setConfigKey('cypressDirectoryHandle', dirHandle));

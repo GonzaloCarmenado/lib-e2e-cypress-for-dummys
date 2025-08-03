@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Renderer2, AfterViewInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, Renderer2, AfterViewInit, inject } from '@angular/core';
 
 @Directive({
   selector: '[appDraggable]'
@@ -12,11 +12,14 @@ export class DraggableDirective implements AfterViewInit {
   private hasMoved = false;
   private dragTarget!: HTMLElement;
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
+
+  constructor() {
     this.renderer.setStyle(this.el.nativeElement, 'cursor', 'move');
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit(): void {
     // Buscar el primer ancestro con la clase 'preview-modal'
     let parent = this.el.nativeElement.parentElement;
     while (parent && !parent.classList.contains('preview-modal')) {
@@ -27,7 +30,7 @@ export class DraggableDirective implements AfterViewInit {
   }
 
   @HostListener('mousedown', ['$event'])
-  onMouseDown(event: MouseEvent) {
+  public onMouseDown(event: MouseEvent): void {
     // Solo permitir drag con el botón izquierdo
     if (event.button !== 0) return;
     this.isDragging = true;
@@ -44,7 +47,7 @@ export class DraggableDirective implements AfterViewInit {
   }
 
   @HostListener('document:mousemove', ['$event'])
-  onMouseMove(event: MouseEvent) {
+  public onMouseMove(event: MouseEvent): void {
     if (!this.isDragging) return;
     const dx = event.clientX - this.startX;
     const dy = event.clientY - this.startY;
@@ -64,7 +67,7 @@ export class DraggableDirective implements AfterViewInit {
   }
 
   @HostListener('document:mouseup')
-  onMouseUp() {
+  public onMouseUp(): void {
     this.isDragging = false;
     this.hasMoved = false;
   }

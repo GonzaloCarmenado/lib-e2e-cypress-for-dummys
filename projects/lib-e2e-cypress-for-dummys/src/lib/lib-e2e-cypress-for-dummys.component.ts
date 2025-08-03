@@ -5,6 +5,7 @@ import {
   ViewChild,
   ViewContainerRef,
   Injector,
+  inject,
 } from '@angular/core';
 import { LibE2eCypressForDummysService } from './services/lib-e2e-cypress-for-dummys.service';
 import { TestPrevisualizerComponent } from './components/test-previsualizer/test-previsualizer.component';
@@ -57,15 +58,16 @@ export class LibE2eRecorderComponent {
   public isAdvancedEditorDialogOpen = false;
   private testPrevisualizerCompRef: any = null;
 
-  constructor(
-    private readonly e2eService: LibE2eCypressForDummysService,
-    private readonly persistService: LibE2eCypressForDummysPersistentService,
-    private readonly transformationService: LibE2eCypressForDummysTransformationService,
-    public readonly translation: TranslationService,
-    private readonly viewContainerRef: ViewContainerRef,
-    private readonly injector: Injector,
-    private readonly constructorService: LibE2eCypressForDummysConstructorService
-  ) {
+  // Use inject() for dependency injection as per Angular's latest recommendations
+  private readonly e2eService = inject(LibE2eCypressForDummysService);
+  private readonly persistService = inject(LibE2eCypressForDummysPersistentService);
+  private readonly transformationService = inject(LibE2eCypressForDummysTransformationService);
+  public readonly translation = inject(TranslationService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
+  private readonly injector = inject(Injector);
+  private readonly constructorService = inject(LibE2eCypressForDummysConstructorService);
+
+  constructor() {
     this.constructorService.injectSwal2Styles(
       LIB_E2E_CYPRESS_FOR_DUMMYS_SWAL2_STYLES
     );
@@ -147,7 +149,7 @@ export class LibE2eRecorderComponent {
       const interceptors = this.interceptors;
       this.persistService
         .insertTest(description, commands, interceptors)
-        .subscribe((id) => {
+        .subscribe(() => {
           // No hace nada extra
         });
       if (this.e2eService.clearInterceptors) {
@@ -204,7 +206,7 @@ export class LibE2eRecorderComponent {
    */
   @HostListener('window:keydown', ['$event'])
 
-  public handleKeyboardEvent(event: KeyboardEvent) {
+  public handleKeyboardEvent(event: KeyboardEvent): void {
     if (event.ctrlKey && event.key.toLowerCase() === 'r') {
       event.preventDefault();
       this.toggle();
@@ -261,7 +263,7 @@ export class LibE2eRecorderComponent {
    * @param options Opciones del modal (título, id de contenedor, componente, inputs, estado, callback opcional)
    * @memberof LibE2eRecorderComponent
    */
-  private openSwalModal(options: SwalModalOptions) {
+  private openSwalModal(options: SwalModalOptions): void {
     const { stateFlag } = options;
     if ((this as any)[stateFlag]) {
       Swal.close();
@@ -372,11 +374,11 @@ export class LibE2eRecorderComponent {
    * @param {Record<string, any>} [inputs={}]
    * @memberof LibE2eRecorderComponent
    */
-  public clearAndCreateComponent<T>(
+  public clearAndCreateComponent(
     containerId: string,
     component: any,
     inputs: Record<string, any> = {}
-  ) {
+  ): void {
     const container = document.getElementById(containerId);
     if (container) {
       container.innerHTML = '';
@@ -428,7 +430,7 @@ export class LibE2eRecorderComponent {
    * @param {boolean} value
    * @memberof LibE2eRecorderComponent
    */
-  private setModalFlag(flag: keyof LibE2eRecorderComponent, value: boolean) {
+  private setModalFlag(flag: keyof LibE2eRecorderComponent, value: boolean):void {
     const allowedFlags = [
       'isCommandsDialogOpen',
       'isSavedTestsDialogOpen',
@@ -469,7 +471,7 @@ export class LibE2eRecorderComponent {
           .toPromise();
       }
       return dirHandle;
-    } catch (err) {
+    } catch {
       return null;
     }
   }

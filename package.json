@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "docs:lib": "npx compodoc projects/lib-e2e-cypress-for-dummys/src/lib --tsconfig projects/lib-e2e-cypress-for-dummys/tsconfig.lib.json"
+    "docs:lib": "npx compodoc projects/lib-e2e-cypress-for-dummys/src/lib --tsconfig projects/lib-e2e-cypress-for-dummys/tsconfig.lib.json",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
@@ -43,7 +44,9 @@
     "@angular/compiler-cli": "^19.2.0",
     "@compodoc/compodoc": "^1.1.26",
     "@types/jasmine": "~5.1.0",
+    "angular-eslint": "20.1.1",
     "cypress": "^14.5.1",
+    "eslint": "^9.29.0",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -51,6 +54,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^19.2.0",
-    "typescript": "~5.7.2"
+    "typescript": "~5.7.2",
+    "typescript-eslint": "8.34.1"
   }
 }
