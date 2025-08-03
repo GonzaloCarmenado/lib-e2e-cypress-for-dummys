@@ -211,7 +211,7 @@ export class AdvancedTestEditorComponent implements OnInit {
     }
   }
 
-  public async onSaveFile(newContent: string): Promise<void> {
+  public async onSaveFile(newContent: any): Promise<void> {
     if (!this.selectedFileHandle) {
       this.alert('ADVANCED_EDITOR.FILE_HANDLE_NOT_FOUND');
       return;

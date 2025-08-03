@@ -6,7 +6,8 @@
   }
   @for (test of tests; track test; let i = $index) {
   <div class="test-card">
-    <div class="test-card-header" (click)="toggleExpand(i)">
+    <div class="test-card-header" (click)="toggleExpand(i)"
+      (keyup)="($event.key === ' ') && (toggleExpand(i))" tabindex="0">
       <div>
         <span class="test-card-desc">{{ test.name }}</span>
         <span class="test-card-date">{{ test.createdAt | date:'short' }}</span>
@@ -20,7 +21,8 @@
       <div class="test-card-section">
         <div class="test-card-section-header">
           <span>{{ translation.translate('TEST_EDITOR.COMMANDS') }}</span>
-          <button class="btn btn-copy" (click)="copyToClipboard(test.commands?.join('\n')); $event.stopPropagation();"
+          <button class="btn btn-copy"
+            (click)="copyToClipboard(test.commands?.join('\n')); $event.stopPropagation();"
             [title]="translation.translate('TEST_EDITOR.COPY_COMMANDS')">
             📋 {{ translation.translate('TEST_EDITOR.COPY') }}
           </button>
@@ -31,8 +33,10 @@
       <ng-container>
         <div class="test-card-section">
           <div class="test-card-section-header">
-            <span class="test-card-interceptors-title">{{ translation.translate('TEST_EDITOR.INTERCEPTORS') }}</span>
-            <button class="btn btn-copy" (click)="copyInterceptors(test.id); $event.stopPropagation();"
+            <span class="test-card-interceptors-title">{{
+              translation.translate('TEST_EDITOR.INTERCEPTORS') }}</span>
+            <button class="btn btn-copy"
+              (click)="copyInterceptors(test.id); $event.stopPropagation();"
               [title]="translation.translate('TEST_EDITOR.COPY_INTERCEPTORS')">
               📋 {{ translation.translate('TEST_EDITOR.COPY') }}
             </button>
@@ -44,7 +48,8 @@
       </ng-container>
       }
       <div class="test-card-actions">
-        <button class="btn btn-delete" (click)="deleteTest(test.id); $event.stopPropagation();"
+        <button class="btn btn-delete"
+          (click)="deleteTest(test.id); $event.stopPropagation();"
           [title]="translation.translate('TEST_EDITOR.DELETE')">
           🗑️ {{ translation.translate('TEST_EDITOR.DELETE_SHORT') }}
         </button>

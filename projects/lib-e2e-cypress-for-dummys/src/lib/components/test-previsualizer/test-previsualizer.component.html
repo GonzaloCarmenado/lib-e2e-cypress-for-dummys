@@ -1,7 +1,12 @@
 <div class="test-previsualizer-outer">
   <div class="previsualizer-block" [ngClass]="showInterceptors ? 'interceptors-expanded' : 'interceptors-collapsed'">
     <div class="previsualizer-section-title previsualizer-collapsible-title"
-      (click)="showInterceptors = !showInterceptors" style="cursor:pointer;">
+      tabindex="0"
+      (click)="showInterceptors = !showInterceptors"
+      (keyup)="($event.key === 'Enter' || $event.key === ' ') && (showInterceptors = !showInterceptors)"
+      style="cursor:pointer;"
+      role="button"
+     >
       {{ translation.translate('SAVE_TEST_DATA.INTERCEPTORS_LABEL') }} ({{ interceptors.length }})
       <span>{{ showInterceptors ? '▲' : '▼' }}</span>
     </div>

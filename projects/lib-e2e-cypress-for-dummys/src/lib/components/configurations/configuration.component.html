@@ -1,5 +1,6 @@
 <div class="config-collapsible-section">
-    <div class="collapsible-header" (click)="showGeneralSection = !showGeneralSection">
+    <div class="collapsible-header" (click)="showGeneralSection = !showGeneralSection"
+    (keyup)="($event.key === ' ') && (showGeneralSection = !showGeneralSection)" tabindex="0">
         <span>{{ translation.translate('CONFIG.GENERAL') }}</span>
         <span class="collapsible-icon">{{ showGeneralSection ? '▲' : '▼'
             }}</span>
@@ -29,7 +30,8 @@
 </div>
 
 <div class="config-collapsible-section">
-    <div class="collapsible-header" (click)="showExportSection = !showExportSection">
+    <div class="collapsible-header" (click)="showExportSection = !showExportSection"
+     (keyup)="($event.key === ' ') && (showExportSection = !showExportSection)" tabindex="0">
         <span>{{ translation.translate('CONFIG.EXPORT_IMPORT') }}</span>
         <span class="collapsible-icon">{{ showExportSection ? '▲' : '▼'
             }}</span>

@@ -5,8 +5,8 @@
   [commands]="cypressCommands"
   [interceptors]="interceptorsBlock ? [interceptorsBlock] : []"
   [itBlock]="testItBlock"
-  (close)="closePreview(); testId ? closeModalPadre.emit() : null"
-  (save)="onSaveFile($event)"
+  (closeEmitter)="closePreview(); testId ? closeModalPadre.emit() : null"
+  (saveEmitter)="onSaveFile($event)"
 ></file-preview-component>
 <ng-template #normalView>
   <div class="e2e-tree-container">
@@ -32,8 +32,10 @@
         </li>
         <li *ngIf="node.kind === 'file'" class="file-node" [ngClass]="{'selected-file': selectedFile && selectedFile.name === node.name}">
           <span class="file-row">
-            <span (click)="onFileClick(node)">📄 {{ node.name }}</span>
-            <span class="open-file-icon" (click)="openFilePreview(node); $event.stopPropagation();" title="{{ translationService.translate('ADVANCED_EDITOR.PREVIEW_FILE') }}">🔍</span>
+            <span (click)="onFileClick(node)"
+            (keyup)="($event.key === ' ') && (onFileClick(node))" tabindex="0">📄 {{ node.name }}</span>
+            <span class="open-file-icon" (click)="openFilePreview(node); $event.stopPropagation();" title="{{ translationService.translate('ADVANCED_EDITOR.PREVIEW_FILE') }}"
+            (keyup)="($event.key === 'e') && (openFilePreview(node)); $event.stopPropagation();" tabindex="0">🔍</span>
           </span>
         </li>
       </ng-container>
