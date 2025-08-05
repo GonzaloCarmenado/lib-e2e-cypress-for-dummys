@@ -11,10 +11,7 @@ import {
   ViewEncapsulation,
   inject,
 } from '@angular/core';
-import {
-  EditorView,
-  highlightSpecialChars,
-} from '@codemirror/view';
+import { EditorView, highlightSpecialChars } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { javascript } from '@codemirror/lang-javascript';
 import {
@@ -48,12 +45,15 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
   @Output() public saveEmitter = new EventEmitter<string>();
   @ViewChild('editorContainer', { static: true })
   public editorContainer!: ElementRef<HTMLDivElement>;
-  @ViewChild('modal', { static: true }) public modalRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('modal', { static: true })
+  public modalRef!: ElementRef<HTMLDivElement>;
   private editorView: EditorView | null = null;
 
   public selectedText: string = '';
 
-  private readonly constructorService = inject(LibE2eCypressForDummysConstructorService);
+  private readonly constructorService = inject(
+    LibE2eCypressForDummysConstructorService
+  );
 
   public get language(): 'typescript' | 'javascript' {
     if (!this.fileName) return 'javascript';
@@ -62,7 +62,7 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
     return 'javascript';
   }
 
-  public ngAfterViewInit():void {
+  public ngAfterViewInit(): void {
     this.centerModal();
     this.injectGlobalSelectionStyle();
     this.initEditor();
@@ -230,5 +230,46 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
 
   public copyToClipboard(text: string): void {
     navigator.clipboard.writeText(text);
+  }
+
+  public launchTest(): void {
+    const specPath = this.fileName ? `cypress/e2e/test.cy.ts` : '';
+    const callbackUrl = 'http://localhost:9000/resultado';
+    if (!specPath) {
+      alert('No hay fichero de test seleccionado.');
+      return;
+    }
+    // Lanzar el test
+    fetch('http://localhost:8123/run-test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ specPath, callbackUrl }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert('Prueba lanzada: ' + JSON.stringify(data));
+        // Esperar el resultado del callback
+        this.listenForTestResult();
+      })
+      .catch((err) => {
+        alert('Error al lanzar la prueba: ' + err);
+      });
+  }
+
+  private listenForTestResult(): void {
+    fetch('http://localhost:8123/resultado/last')
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.error !== undefined) {
+          setTimeout(() => this.listenForTestResult(), 2000);
+        } else {
+          console.log('Resultado Cypress recibido:', result.stdout);
+          console.log('Resultado Cypress recibido:', result.stderr);
+        }
+      })
+      .catch(() => {
+        // No hay resultado aún, reintentar en 2s
+        setTimeout(() => this.listenForTestResult(), 2000);
+      });
   }
 }
