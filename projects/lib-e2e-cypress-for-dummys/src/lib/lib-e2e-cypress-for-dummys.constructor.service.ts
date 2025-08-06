@@ -10,7 +10,7 @@ export class LibE2eCypressForDummysConstructorService {
    */
   public injectModalScrollbarStyles(
     styleId = 'lib-e2e-cypress-scrollbar-styles'
-  ) : void{
+  ): void {
     if (document.getElementById(styleId)) return;
     const style = document.createElement('style');
     style.id = styleId;
@@ -48,7 +48,10 @@ export class LibE2eCypressForDummysConstructorService {
     modal: HTMLElement,
     options?: { minWidth?: number; minHeight?: number }
   ) {
-    if (!modal || modal.querySelector('.modal-resizer')) return () => { /* no-op */ };
+    if (!modal || modal.querySelector('.modal-resizer'))
+      return () => {
+        /* no-op */
+      };
     modal.style.resize = 'both';
     modal.style.overflow = 'auto';
     modal.style.minWidth = (options?.minWidth || 320) + 'px';
@@ -112,6 +115,7 @@ export class LibE2eCypressForDummysConstructorService {
       inputs?: Record<string, any>;
       stateFlag: string;
       onClose?: () => void;
+      dataCy?: string;
     },
     componentContext: any
   ): object {
@@ -122,6 +126,7 @@ export class LibE2eCypressForDummysConstructorService {
       inputs = {},
       stateFlag,
       onClose,
+      dataCy,
     } = params;
     return {
       title,
@@ -133,7 +138,7 @@ export class LibE2eCypressForDummysConstructorService {
       backdrop: false,
       didOpen: () => {
         componentContext.constructorService.makeSwalDraggable();
-        componentContext.constructorService.setSwal2DataCyAttribute();
+        componentContext.constructorService.setSwal2DataCyAttribute(dataCy);
         componentContext.clearAndCreateComponent(
           containerId,
           component,
@@ -153,7 +158,7 @@ export class LibE2eCypressForDummysConstructorService {
    * muchos estilos son sobreescritos más adelante.
    * @param {string} styles
    * @param {string} [styleId='lib-e2e-cypress-for-dummys-swal2-styles']
-   * @return {*} 
+   * @return {*}
    * @memberof LibE2eCypressForDummysConstructorService
    */
   public injectSwal2Styles(
@@ -262,6 +267,12 @@ export class LibE2eCypressForDummysConstructorService {
    * @memberof LibE2eCypressForDummysConstructorService
    */
   public setSwal2DataCyAttribute(dataCy = 'lib-e2e-cypress-for-dummys'): void {
+    // Añadir data-cy al overlay principal del modal
+    const container = document.querySelector('.swal2-container');
+    if (container) {
+      container.setAttribute('data-cy', dataCy);
+    }
+    // Añadir data-cy al contenido interno (opcional, legacy)
     const htmlContainer = document.querySelector('.swal2-html-container');
     if (htmlContainer) {
       htmlContainer.setAttribute('data-cy', dataCy);

@@ -263,12 +263,12 @@ export class FilePreviewComponent implements AfterViewInit, OnChanges {
         if (result.error !== undefined) {
           setTimeout(() => this.listenForTestResult(), 2000);
         } else {
+          console.log(result);
           console.log('Resultado Cypress recibido:', result.stdout);
           console.log('Resultado Cypress recibido:', result.stderr);
         }
       })
       .catch(() => {
-        // No hay resultado aún, reintentar en 2s
         setTimeout(() => this.listenForTestResult(), 2000);
       });
   }

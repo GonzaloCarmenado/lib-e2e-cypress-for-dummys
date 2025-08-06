@@ -9,8 +9,7 @@ describe('template spec', () => {
   it('Completa', () => {
     cy.viewport(1900, 1200);
     cy.visit('/');
-    //cy.get('[data-cy="lib-e2e-cypress-for-dummys"]').invoke('hide');
-    cy.get('[data-cy="email-input"]').clear().type('gonzalog');
+    cy.get('[data-cy="lib-e2e-cypress-for-dummys"]').invoke('hide');
     cy.get('[data-cy="password-input"]').clear().type('1234567');
     cy.get('[data-cy="user-role"]').select('user');
     cy.get('[data-cy="login-button"]').click();
