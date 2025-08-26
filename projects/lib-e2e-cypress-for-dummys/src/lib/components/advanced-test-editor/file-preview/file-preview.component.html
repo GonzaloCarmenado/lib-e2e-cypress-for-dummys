@@ -8,7 +8,9 @@
       comandos</button>
     <button *ngIf="interceptors?.length" class="btn btn-success btn-small"
       (click)="copyToClipboard(interceptors.join('\n'))">📋 Copiar interceptores</button>
-    <button class="save-preview-btn btn-primary btn-small" (click)="launchTest()">🚀 Lanzar prueba E2E</button>
+    <button class="save-preview-btn btn-primary btn-small" (click)="launchTest()">🚀 Lanzar prueba E2E completa</button>
+    <button class="save-preview-btn btn-primary btn-small" (click)="launchPartialTest()">🚀 Lanzar prueba E2E
+      seleccionada</button>
   </div>
   <h3>{{ fileName }}</h3>
   <div #editorContainer class="codemirror-container"></div>
