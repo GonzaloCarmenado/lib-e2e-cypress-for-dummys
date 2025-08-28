@@ -9,7 +9,8 @@
     "test": "ng test",
     "docs:lib": "npx compodoc projects/lib-e2e-cypress-for-dummys/src/lib --tsconfig projects/lib-e2e-cypress-for-dummys/tsconfig.lib.json",
     "lint": "ng lint",
-    "cypress": "npx cypress open"
+    "cypress": "npx cypress open",
+    "dummyserver": "node ./node_modules/lib-e2e-cypress-for-dummys/dummyserver.js"
   },
   "private": true,
   "dependencies": {
