@@ -26,6 +26,7 @@ export interface SwalModalOptions {
   inputs?: Record<string, any>;
   stateFlag: keyof LibE2eRecorderComponent;
   onClose?: () => void;
+  dataCy?: string;
 }
 import { LIB_E2E_CYPRESS_FOR_DUMMYS_SWAL2_STYLES } from './models/swal2-custom-styles';
 import { LibE2eCypressForDummysConstructorService } from './lib-e2e-cypress-for-dummys.constructor.service';
@@ -60,12 +61,18 @@ export class LibE2eRecorderComponent {
 
   // Use inject() for dependency injection as per Angular's latest recommendations
   private readonly e2eService = inject(LibE2eCypressForDummysService);
-  private readonly persistService = inject(LibE2eCypressForDummysPersistentService);
-  private readonly transformationService = inject(LibE2eCypressForDummysTransformationService);
+  private readonly persistService = inject(
+    LibE2eCypressForDummysPersistentService
+  );
+  private readonly transformationService = inject(
+    LibE2eCypressForDummysTransformationService
+  );
   public readonly translation = inject(TranslationService);
   private readonly viewContainerRef = inject(ViewContainerRef);
   private readonly injector = inject(Injector);
-  private readonly constructorService = inject(LibE2eCypressForDummysConstructorService);
+  private readonly constructorService = inject(
+    LibE2eCypressForDummysConstructorService
+  );
 
   constructor() {
     this.constructorService.injectSwal2Styles(
@@ -199,13 +206,12 @@ export class LibE2eRecorderComponent {
    * Permite acceder a los didferentes dialogos mediante atajos de teclado.
    * Ctrl + R: Alterna la grabación de comandos.
    * Ctrl + 1: Muestra el diálogo de tests guardados.
-   * Ctrl + 2: Muestra el diálogo de comandos.  
+   * Ctrl + 2: Muestra el diálogo de comandos.
    * Ctrl + 3: Muestra el diálogo de configuración.
    * @param {KeyboardEvent} event
    * @memberof LibE2eRecorderComponent
    */
   @HostListener('window:keydown', ['$event'])
-
   public handleKeyboardEvent(event: KeyboardEvent): void {
     if (event.ctrlKey && event.key.toLowerCase() === 'r') {
       event.preventDefault();
@@ -225,7 +231,7 @@ export class LibE2eRecorderComponent {
 
   //#region configurciones generales de la aplicación
   /**
-   * Obtiene la configuracion sobre la generación de inteceptores desde la BBDD local y lo guarda en el 
+   * Obtiene la configuracion sobre la generación de inteceptores desde la BBDD local y lo guarda en el
    * localStorage para facilitar su uso.
    * @private
    * @memberof LibE2eRecorderComponent
@@ -242,8 +248,8 @@ export class LibE2eRecorderComponent {
   }
 
   /**
-    * Cambia el idioma de la aplicación y actualiza la traducción.
-     * Si no se pasa idioma, detecta automáticamente.
+   * Cambia el idioma de la aplicación y actualiza la traducción.
+   * Si no se pasa idioma, detecta automáticamente.
    * @param {string} [lang]
    * @memberof LibE2eRecorderComponent
    */
@@ -264,7 +270,7 @@ export class LibE2eRecorderComponent {
    * @memberof LibE2eRecorderComponent
    */
   private openSwalModal(options: SwalModalOptions): void {
-    const { stateFlag } = options;
+    const { stateFlag, dataCy } = options;
     if ((this as any)[stateFlag]) {
       Swal.close();
       this.setModalFlag(stateFlag, false);
@@ -272,7 +278,7 @@ export class LibE2eRecorderComponent {
     }
     // Reutiliza el tipo y pasa el flag como string para el servicio
     const config = this.constructorService.buildSwalModalConfig(
-      { ...options, stateFlag: stateFlag as string },
+      { ...options, stateFlag: stateFlag as string, dataCy },
       this
     );
     Swal.fire(config);
@@ -365,8 +371,8 @@ export class LibE2eRecorderComponent {
     });
   }
   /**
-   * Permite gestionar la carga de componentes en un contenedor especifico. Mezcla parte de logica propia de 
-   * gestion de componentes de SweetAlert con logica propia. Usa diferentes eventos de callBack, ya que 
+   * Permite gestionar la carga de componentes en un contenedor especifico. Mezcla parte de logica propia de
+   * gestion de componentes de SweetAlert con logica propia. Usa diferentes eventos de callBack, ya que
    * este método es común a todos los coomponentes.
    * @template T
    * @param {string} containerId
@@ -430,7 +436,10 @@ export class LibE2eRecorderComponent {
    * @param {boolean} value
    * @memberof LibE2eRecorderComponent
    */
-  private setModalFlag(flag: keyof LibE2eRecorderComponent, value: boolean):void {
+  private setModalFlag(
+    flag: keyof LibE2eRecorderComponent,
+    value: boolean
+  ): void {
     const allowedFlags = [
       'isCommandsDialogOpen',
       'isSavedTestsDialogOpen',
@@ -445,7 +454,6 @@ export class LibE2eRecorderComponent {
   //#endregion Paneles de la aplicación
 
   //#region Acceso a archivos locales
-
 
   /**
    * Solicita al usuario acceso a una carpeta local (por ejemplo, la carpeta cypress) para leer y escribir archivos.
@@ -507,6 +515,13 @@ export class LibE2eRecorderComponent {
         showCancelButton: true,
         confirmButtonText: 'Sí, permitir',
         cancelButtonText: 'No, nunca',
+        willOpen: () => {
+          // Añade el data-cy al overlay del modal de permisos
+          const container = document.querySelector('.swal2-container');
+          if (container) {
+            container.setAttribute('data-cy', 'lib-e2e-cypress-for-dummys');
+          }
+        },
       });
       if (result.isConfirmed) {
         await this.persistService

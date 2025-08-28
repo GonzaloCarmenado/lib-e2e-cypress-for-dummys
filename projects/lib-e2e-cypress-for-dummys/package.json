@@ -1,6 +1,6 @@
 {
   "name": "lib-e2e-cypress-for-dummys",
-  "version": "1.0.0",
+  "version": "1.0.1-beta",
   "repository": {
     "type": "git",
     "url": "https://github.com/GonzaloCarmenado/lib-e2e-cypress-for-dummys"
@@ -18,7 +18,10 @@
     "@codemirror/language": "^6.11.2",
     "@codemirror/lint": "^6.8.5",
     "@codemirror/state": "^6.5.2",
-    "@codemirror/view": "^6.38.0"
+    "@codemirror/view": "^6.38.0",
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "axios": "^1.6.8"
   },
   "dependencies": {
     "tslib": "^2.3.0"
