@@ -13,7 +13,10 @@
   </tr>
 </table>
 
+
 ## 🧐 ¿Qué hace?
+
+- 🚦 **Ejecuta pruebas Cypress directamente desde la extensión:** Puedes lanzar tests E2E desde el editor avanzado, sin salir de la interfaz. La extensión se comunica con un servidor local para ejecutar el fichero de test seleccionado o una prueba parcial automáticamente.
 
 - 🎥 Graba interacciones de usuario (clicks, inputs, selects...) y las convierte en comandos Cypress (`cy.get(...).click()`, `cy.get(...).type()`, etc.).
 - 🌐 Genera automáticamente comandos para interceptar peticiones HTTP y esperarlas con Cypress (`cy.intercept`, `cy.wait`).
@@ -46,7 +49,27 @@ npm install lib-e2e-cypress-for-dummys
 
 ---
 
+
 ## 🚦 Uso básico
+
+### 0. **Activar la ejecución directa de pruebas**
+
+Para ejecutar pruebas Cypress directamente desde la extensión, necesitas tener un servidor local en marcha. Añade el siguiente script en el `package.json` de tu proyecto:
+
+```json
+"scripts": {
+  ...
+  "dummyserver": "node ./node_modules/lib-e2e-cypress-for-dummys/dummyserver.js"
+}
+```
+
+Luego, inicia el servidor con:
+
+```bash
+npm run dummyserver
+```
+
+Esto permite que la extensión envíe peticiones de ejecución de pruebas y reciba los resultados automáticamente.
 
 ### 1. **Configura la base de datos indexada (IndexedDB)**
 
@@ -98,7 +121,10 @@ export const appConfig = {
 };
 ```
 
+
 ### 6. **¡Listo! Usa la interfaz:**
+
+- Para ejecutar un fichero de test o una prueba parcial, usa el editor avanzado y haz clic en el botón de ejecutar. La extensión enviará el test al servidor local y mostrará el resultado en la interfaz.
 
 - Haz clic en el botón flotante ▶️ "Grabar" o usa `Ctrl+R` para empezar a grabar. Interactúa con la app y, cuando termines, pulsa ⏹️ "Parar".
 - Pulsa 📋 o `Ctrl+2` para ver la previsualización de comandos generados.

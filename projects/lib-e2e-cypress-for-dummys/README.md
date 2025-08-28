@@ -16,7 +16,10 @@
   </tr>
 </table>
 
+
 ## 🧐 What does it do?
+
+- 🚦 **Run Cypress tests directly from the extension:** You can launch E2E tests from the advanced editor modal, without leaving the interface. The extension communicates with a local server to execute the selected test file or partial test automatically.
 
 - 🎥 Records user interactions (clicks, inputs, selects...) and converts them into Cypress commands (`cy.get(...).click()`, `cy.get(...).type()`, etc.).
 - 🌐 Automatically generates commands to intercept and wait for HTTP requests using Cypress (`cy.intercept`, `cy.wait`).
@@ -58,7 +61,27 @@ npm install lib-e2e-cypress-for-dummys
 
 ---
 
+
 ## 🚦 Basic Usage
+
+### 0. **Enable direct test execution**
+
+To run Cypress tests directly from the extension, you need a local server running. Add the following script to your project's `package.json`:
+
+```json
+"scripts": {
+  ...
+  "dummyserver": "node ./node_modules/lib-e2e-cypress-for-dummys/dummyserver.js"
+}
+```
+
+Then, start the server with:
+
+```bash
+npm run dummyserver
+```
+
+This enables the extension to send test execution requests and receive results automatically.
 
 ### 1. **Configure IndexedDB**
 
@@ -110,7 +133,10 @@ export const appConfig = {
 };
 ```
 
+
 ### 6. **Done! Use the interface:**
+
+- To execute a test file or a partial test, use the advanced editor modal and click the run button. The extension will send the test to the local server and display the result in the UI.
 
 - Click the floating ▶️ "Record" button or use `Ctrl+R` to start recording. Interact with the app, then press ⏹️ "Stop".
 - Click 📋 or `Ctrl+2` to preview generated commands.
