@@ -1,6 +1,6 @@
 {
   "name": "lib-e2e-cypress-for-dummys",
-  "version": "1.0.1-beta",
+  "version": "1.0.1-beta.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/GonzaloCarmenado/lib-e2e-cypress-for-dummys"
@@ -26,5 +26,8 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "scripts": {
+    "postbuild": "copy dummyserver.js ..\\..\\dist\\lib-e2e-cypress-for-dummys\\dummyserver.js"
+  }
 }
